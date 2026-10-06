@@ -204,7 +204,7 @@ def _unmatched_status(outputs: tuple[str, ...]) -> str:
     normalized = [re.sub(r"\s+", "", text) for text in outputs if text.strip()]
     readable = [
         text for text in normalized
-        if re.search(r"\d", text) and re.search(r"[ぁ-んァ-ヶ一-龯]", text)
+        if re.search(r"\d", text) and re.search(r"[ぁ-んァ-ヶ一-龯]|[A-Za-z]{3}", text)
         and len(text) >= 5
     ]
     if readable and Counter(readable).most_common(1)[0][1] >= 2:

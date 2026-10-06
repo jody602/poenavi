@@ -522,7 +522,7 @@ def test_shared_screen_reading_off_stops_both_features_and_keeps_regions():
             window, "expedition_reward_overlay", {"region": expedition_region},
             "expedition_reward_ocr", "alt+e", False,
         )
-    assert window.config["poetore"]["screen_reading"] == {"enabled": False}
+    assert window.config["poetore"]["screen_reading"] == {"enabled": False, "game_language": "en"}
     assert window.config["poetore"]["desecration_tier_overlay"]["inventory_open_region"] == desecration_region
     window._shutdown_screen_reading.assert_called_once_with()
     window._restart_hotkeys.assert_called_once_with()
@@ -593,7 +593,7 @@ def test_expedition_header_button_saves_settings_and_restarts_hotkeys():
     assert window.config["poetore"]["expedition_reward_overlay"] == {
         "region": region,
     }
-    assert window.config["poetore"]["screen_reading"] == {"enabled": True}
+    assert window.config["poetore"]["screen_reading"] == {"enabled": True, "game_language": "en"}
     save_config.assert_called_once_with(window.config)
     window._restart_hotkeys.assert_called_once_with()
     controller.warm_up.assert_called_once_with()

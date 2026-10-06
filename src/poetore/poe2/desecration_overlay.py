@@ -25,6 +25,7 @@ from PySide6.QtWidgets import (
 )
 
 from src.poetore.expedition_ocr_probe import WindowsOcrServer
+from src.poetore.game_language import JAPANESE, normalize_game_language, ocr_language_tag
 from src.poetore.performance import record_ndlocr_event
 from src.poetore.poe2.desecration_ocr import (
     ChoiceBand,
@@ -40,6 +41,7 @@ from src.poetore.poe2.desecration_tiers import (
     AffixTierOption,
     TierValue,
     available_categories,
+    set_text_language,
 )
 from src.poetore.poe2.ndlocr_lite import NdlOcrLiteServer
 from src.poetore.window_position import path_of_exile_client_rect
@@ -416,6 +418,11 @@ class HighAccuracyOcrStatusOverlay(QWidget):
         if y < client_rect.top():
             y = min(client_rect.bottom() - height + 1, capture_rect.top() + 12)
         self.setGeometry(x, y, width, height)
+        if self.width() != width:
+            # The layout can need more than the capped width (e.g. longer
+            # translated text); keep the real size inside the game window.
+            x = min(max(client_rect.left(), x), client_rect.right() - self.width() + 1)
+            self.move(x, y)
         self.show()
         self.raise_()
         self._animation.start()
@@ -436,11 +443,13 @@ class DesecrationTierController(QObject):
     def __init__(
         self, parent=None, *, regions_getter=None, ocr_server=None,
         numeric_ocr_server=None, ndl_ocr_server=None, scan_coordinator=None,
-        trace_factory=None,
+        trace_factory=None, game_language=JAPANESE,
     ):
         super().__init__(parent)
         self._regions_getter = regions_getter or dict
-        self._ocr = ocr_server or WindowsOcrServer()
+        game_language = normalize_game_language(game_language)
+        set_text_language(game_language)
+        self._ocr = ocr_server or WindowsOcrServer(ocr_language_tag(game_language))
         self._owns_ocr = ocr_server is None
         self._numeric_ocr = numeric_ocr_server or WindowsOcrServer("en-US")
         self._owns_numeric_ocr = numeric_ocr_server is None
@@ -897,14 +906,14 @@ class DesecrationTierController(QObject):
         if self._client_rect is None or self._capture_rect is None:
             return
         lines = [
-            "Standard reading could not confirm some values",
+            "Some values could not be read",
             (
                 "Preparing high-accuracy OCR…"
                 if cold_start else "Rechecking with high-accuracy OCR…"
             ),
         ]
         if cold_start:
-            lines.append("The first run takes about 10–15 seconds")
+            lines.append("First run takes 10–15 seconds")
         self._ndl_status_overlay.show_status(
             self._client_rect, self._capture_rect, lines,
         )

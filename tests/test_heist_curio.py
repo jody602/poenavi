@@ -431,7 +431,7 @@ def test_high_accuracy_status_explains_cold_start(qapp):
 
     lines = overlay.show_status.call_args.args[2]
     assert 'Preparing high-accuracy OCR…' in lines
-    assert 'The first run takes about 10–15 seconds' in lines
+    assert 'First run takes 10–15 seconds' in lines
 
 
 def test_experimental_base_opens_existing_search_with_empty_optional_ilvl(qapp):

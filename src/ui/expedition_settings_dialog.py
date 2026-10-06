@@ -9,6 +9,7 @@ from PySide6.QtGui import QColor, QKeyEvent, QMouseEvent, QPainter, QPen, QPixma
 from PySide6.QtWidgets import (
     QApplication,
     QCheckBox,
+    QComboBox,
     QDialog,
     QFormLayout,
     QFrame,
@@ -22,6 +23,11 @@ from PySide6.QtWidgets import (
     QWidget,
 )
 
+from src.poetore.game_language import (
+    DEFAULT_GAME_LANGUAGE,
+    GAME_LANGUAGE_LABELS,
+    normalize_game_language,
+)
 from src.poetore.window_position import path_of_exile_client_rect
 from src.ui.dialog_theme import (
     POETORE_DIALOG_THEME,
@@ -205,6 +211,17 @@ class ClickableImageLabel(QLabel):
         super().mouseReleaseEvent(event)
 
 
+def build_game_language_combo(language=DEFAULT_GAME_LANGUAGE) -> QComboBox:
+    """Client language selector shared by the Expedition and Abyss screen readers."""
+    combo = QComboBox()
+    combo.setObjectName("screenReadingGameLanguage")
+    for code, label in GAME_LANGUAGE_LABELS.items():
+        combo.addItem(label, code)
+    combo.setCurrentIndex(max(0, combo.findData(normalize_game_language(language))))
+    combo.setToolTip("The language your PoE2 client displays. Screen reading matches text in this language.")
+    return combo
+
+
 class ExpeditionSettingsDialog(QDialog):
     def __init__(
         self,
@@ -215,6 +232,7 @@ class ExpeditionSettingsDialog(QDialog):
         example_image_path=None,
         client_rect_getter=path_of_exile_client_rect,
         selector_class=ExpeditionRegionSelector,
+        game_language=DEFAULT_GAME_LANGUAGE,
     ):
         super().__init__(parent)
         self._config = dict(expedition_config or {})
@@ -277,6 +295,8 @@ class ExpeditionSettingsDialog(QDialog):
         )
         self.hotkey_widget.key_button.setStyleSheet("")
         hotkey_form.addRow("Capture shortcut:", self.hotkey_widget)
+        self.game_language_combo = build_game_language_combo(game_language)
+        hotkey_form.addRow("Game client language:", self.game_language_combo)
         basic.addLayout(hotkey_form)
         content.addWidget(basic_group)
 
@@ -378,6 +398,9 @@ class ExpeditionSettingsDialog(QDialog):
         else:
             config["region"] = dict(self._region)
         return config, self.hotkey_widget.key_text, self.enabled_checkbox.isChecked()
+
+    def game_language(self) -> str:
+        return normalize_game_language(self.game_language_combo.currentData())
 
     def _choose_region(self):
         client_rect = self._client_rect_getter()

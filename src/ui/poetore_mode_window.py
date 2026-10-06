@@ -1119,6 +1119,7 @@ class PoetoreModeWindow(QMainWindow):
                 ).get("region"),
                 ocr_server=shared,
                 scan_coordinator=shared,
+                game_language=self._screen_reading_game_language(),
             )
             controller.status.connect(self._show_expedition_status)
             controller.failed.connect(self._show_expedition_error)
@@ -1131,10 +1132,21 @@ class PoetoreModeWindow(QMainWindow):
             return False
         return self._ensure_expedition_reward_controller().request_scan()
 
+    def _screen_reading_game_language(self):
+        from src.poetore.game_language import JAPANESE, screen_reading_game_language
+
+        # Heist reward reading (PoE1) only supports the Japanese client.
+        if self.poe_version != POE2:
+            return JAPANESE
+        return screen_reading_game_language(self.config)
+
     def _ensure_screen_reading_coordinator(self):
         if self._screen_reading_coordinator is None:
+            from src.poetore.game_language import ocr_language_tag
             from src.poetore.screen_reading import ScreenReadingCoordinator
-            self._screen_reading_coordinator = ScreenReadingCoordinator()
+            self._screen_reading_coordinator = ScreenReadingCoordinator(
+                language_tag=ocr_language_tag(self._screen_reading_game_language()),
+            )
         return self._screen_reading_coordinator
 
     def _ensure_heist_curio_controller(self):
@@ -1184,6 +1196,7 @@ class PoetoreModeWindow(QMainWindow):
                 ocr_server=shared,
                 scan_coordinator=shared,
                 trace_factory=lambda: start_search_trace("desecration_tier_scan"),
+                game_language=self._screen_reading_game_language(),
             )
             controller.status.connect(self._show_desecration_status)
             controller.failed.connect(self._show_desecration_error)
@@ -1305,7 +1318,9 @@ class PoetoreModeWindow(QMainWindow):
             self.suppressed_desecration_hotkey.stop()
         self._start_hotkeys()
 
-    def _save_screen_reading_settings(self, feature_key, feature_config, action, hotkey, enabled):
+    def _save_screen_reading_settings(
+        self, feature_key, feature_config, action, hotkey, enabled, game_language=None,
+    ):
         configured_hotkeys = self.config.get("hotkeys", {})
         configured_hotkeys = configured_hotkeys if isinstance(configured_hotkeys, dict) else {}
         active_hotkeys = {
@@ -1335,13 +1350,18 @@ class PoetoreModeWindow(QMainWindow):
         poetore = self.config.get("poetore", {})
         poetore = dict(poetore) if isinstance(poetore, dict) else {}
         poetore[feature_key] = dict(feature_config)
-        poetore["screen_reading"] = {"enabled": bool(enabled)}
+        from src.poetore.game_language import normalize_game_language, screen_reading_game_language
+
+        previous_language = screen_reading_game_language(self.config)
+        language = normalize_game_language(game_language or previous_language)
+        poetore["screen_reading"] = {"enabled": bool(enabled), "game_language": language}
         hotkeys = dict(configured_hotkeys)
         hotkeys[action] = hotkey
         self.config["poetore"] = poetore
         self.config["hotkeys"] = hotkeys
         ConfigManager.save_config(self.config)
-        if not enabled:
+        if not enabled or language != previous_language:
+            # OCR helpers and tier caches are created for one client language.
             self._shutdown_screen_reading()
         self._restart_hotkeys()
         return True
@@ -1468,6 +1488,7 @@ class PoetoreModeWindow(QMainWindow):
             expedition_config=expedition_config,
             hotkey=hotkeys.get("expedition_reward_ocr", "alt+e"),
             screen_reading_enabled=self._screen_reading_enabled(),
+            game_language=self._screen_reading_game_language(),
         )
         if not dialog.exec():
             return
@@ -1475,6 +1496,7 @@ class PoetoreModeWindow(QMainWindow):
         if not PoetoreModeWindow._save_screen_reading_settings(self,
             "expedition_reward_overlay", expedition_config,
             "expedition_reward_ocr", expedition_hotkey, enabled,
+            game_language=getattr(dialog, "game_language", lambda: None)(),
         ):
             return
         if enabled and expedition_config.get("region"):
@@ -1496,6 +1518,7 @@ class PoetoreModeWindow(QMainWindow):
             hotkey=hotkeys.get("desecration_tier_ocr", "alt+r"),
             screen_reading_enabled=self._screen_reading_enabled(),
             ocr_pack_controller=pack_controller,
+            game_language=self._screen_reading_game_language(),
         )
         pack_controller.ensure_started()
         if not dialog.exec():
@@ -1504,6 +1527,7 @@ class PoetoreModeWindow(QMainWindow):
         if not PoetoreModeWindow._save_screen_reading_settings(self,
             "desecration_tier_overlay", feature_config,
             "desecration_tier_ocr", hotkey, enabled,
+            game_language=getattr(dialog, "game_language", lambda: None)(),
         ):
             return
         if enabled and feature_config.get("inventory_open_region"):

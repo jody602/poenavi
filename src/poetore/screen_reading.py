@@ -10,8 +10,9 @@ from src.poetore.expedition_ocr_probe import WindowsOcrServer
 class ScreenReadingCoordinator:
     """Own one OCR helper and allow only one feature scan at a time."""
 
-    def __init__(self, ocr_server=None):
-        self.ocr = ocr_server or WindowsOcrServer()
+    def __init__(self, ocr_server=None, language_tag: str = "ja-JP"):
+        self.language_tag = language_tag
+        self.ocr = ocr_server or WindowsOcrServer(language_tag)
         self._lock = threading.Lock()
         self._owner: str | None = None
 

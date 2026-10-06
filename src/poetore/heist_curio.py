@@ -985,7 +985,7 @@ class HeistCurioController(QObject):
 
             self._high_accuracy_overlay = HighAccuracyOcrStatusOverlay()
         lines = [
-            "Standard reading could not reliably confirm the reward",
+            "Could not confirm the reward",
             (
                 "Preparing high-accuracy OCR…"
                 if cold_start
@@ -993,7 +993,7 @@ class HeistCurioController(QObject):
             ),
         ]
         if cold_start:
-            lines.append("The first run takes about 10–15 seconds")
+            lines.append("First run takes 10–15 seconds")
         self._high_accuracy_overlay.show_status(client_rect, capture_rect, lines)
 
     def _hide_high_accuracy_status(self) -> None:

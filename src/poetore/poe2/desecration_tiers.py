@@ -64,6 +64,32 @@ def tier_data() -> dict:
     return json.loads(DATA_PATH.read_text(encoding="utf-8"))
 
 
+# Language of the modifier text read from the game client ("ja" or "en").
+_text_language = "ja"
+
+
+def text_language() -> str:
+    return _text_language
+
+
+def set_text_language(language: str) -> None:
+    """Match OCR text against the given client language's modifier templates."""
+    global _text_language
+    language = "en" if str(language).casefold() == "en" else "ja"
+    if language == _text_language:
+        return
+    _text_language = language
+    # Every cache below depends on the template language.
+    _matching_index.cache_clear()
+    _resolve_desecration_choices_fuzzy_layout_cached.cache_clear()
+    _resolve_desecration_choices_fuzzy_cached.cache_clear()
+
+
+def _part_template(part: dict) -> str:
+    texts = part["text"]
+    return str(texts.get(_text_language) or texts["ja"])
+
+
 @lru_cache(maxsize=4096)
 def _visible_template(template: str) -> str:
     return re.sub(r"\s*\((?:Local|ローカル)\)\s*$", "", template, flags=re.IGNORECASE)
@@ -91,7 +117,7 @@ def _entry_range_labels(
         ranges = part.get("ranges")
         if ranges is None:
             return ()
-        template = _visible_template(str(part["text"]["ja"]))
+        template = _visible_template(_part_template(part))
         suffixes = [
             "%" if tail.lstrip().startswith("%") else ""
             for tail in template.split("#")[1:]
@@ -127,7 +153,7 @@ def _affix_options(
     """Keep indistinguishable Prefix/Suffix rows linked to their own tiers."""
     signatures = {
         tuple(sorted(
-            _visible_template(str(part["text"]["ja"]))
+            _visible_template(_part_template(part))
             for part in entry.get("parts", ())
         ))
         for entry, _tier in matches
@@ -175,7 +201,7 @@ def _match_part(part: dict, line: str) -> bool:
     ranges = part.get("ranges")
     if ranges is None:
         return False
-    match = _line_pattern(str(part["text"]["ja"])).fullmatch(line.strip())
+    match = _line_pattern(_part_template(part)).fullmatch(line.strip())
     if not match or len(match.groups()) != len(ranges):
         return False
     values = [float(value) for value in match.groups()]
@@ -290,7 +316,7 @@ def _part_analysis(
     if ranges is None:
         return None
     skeleton = _numeric_skeleton(
-        str(part["text"]["ja"]), observed, ranges,
+        _part_template(part), observed, ranges,
         allow_fixed_mismatch=allow_fixed_mismatch,
     )
     if skeleton is None:
@@ -345,7 +371,7 @@ def _fixed_number_rescue_score(entry: dict, lines: tuple[str, ...]) -> float | N
             if ranges is None:
                 break
             skeleton = _numeric_skeleton(
-                str(part["text"]["ja"]), line, ranges,
+                _part_template(part), line, ranges,
                 allow_fixed_mismatch=True,
             )
             if skeleton is None:
@@ -390,7 +416,7 @@ def _short_text_score(entry: dict, lines: tuple[str, ...]) -> float | None:
             ranges = part.get("ranges")
             if ranges is None:
                 break
-            skeleton = _numeric_skeleton(str(part["text"]["ja"]), line, ranges)
+            skeleton = _numeric_skeleton(_part_template(part), line, ranges)
             if skeleton is None:
                 break
             expected, actual, _mismatches = skeleton
@@ -462,7 +488,7 @@ def _matching_index() -> dict[tuple[int, int], tuple[_IndexedEntry, ...]]:
     for entry in payload["entries"]:
         parts = tuple(entry.get("parts", ()))
         number_count = sum(
-            len(_template_number_tokens(str(part["text"]["ja"])))
+            len(_template_number_tokens(_part_template(part)))
             for part in parts
         )
         profiles: dict[str, list[tuple[str, int]]] = {}

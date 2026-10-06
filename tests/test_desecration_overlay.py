@@ -67,9 +67,9 @@ def test_high_accuracy_status_is_non_focus_and_uses_agreed_wording():
     client = QRect(0, 0, 800, 760)
     capture = QRect(70, 390, 620, 290)
     overlay.show_status(client, capture, (
-        'Standard reading could not confirm some values',
+        'Some values could not be read',
         'Preparing high-accuracy OCR…',
-        'The first run takes about 10–15 seconds',
+        'First run takes 10–15 seconds',
     ))
 
     assert overlay.windowFlags() & Qt.WindowDoesNotAcceptFocus
@@ -77,9 +77,9 @@ def test_high_accuracy_status_is_non_focus_and_uses_agreed_wording():
     assert overlay.testAttribute(Qt.WA_ShowWithoutActivating)
     assert overlay.testAttribute(Qt.WA_TransparentForMouseEvents)
     assert overlay.message.splitlines() == [
-        'Standard reading could not confirm some values',
+        'Some values could not be read',
         'Preparing high-accuracy OCR…',
-        'The first run takes about 10–15 seconds',
+        'First run takes 10–15 seconds',
     ]
     assert isinstance(overlay._message, OutlinedLabel)
     assert overlay._message.font().pixelSize() == 16
@@ -571,9 +571,9 @@ def test_ndl_status_is_immediate_when_cold_and_delayed_when_warm():
     controller._ndl_status_overlay.show_status.assert_called_once()
     cold_lines = controller._ndl_status_overlay.show_status.call_args.args[2]
     assert cold_lines == [
-        'Standard reading could not confirm some values',
+        'Some values could not be read',
         'Preparing high-accuracy OCR…',
-        'The first run takes about 10–15 seconds',
+        'First run takes 10–15 seconds',
     ]
     controller._end_ndl_status(4, 1)
 
@@ -589,7 +589,7 @@ def test_ndl_status_is_immediate_when_cold_and_delayed_when_warm():
     controller._show_delayed_ndl_status()
     warm_lines = controller._ndl_status_overlay.show_status.call_args.args[2]
     assert warm_lines == [
-        'Standard reading could not confirm some values',
+        'Some values could not be read',
         'Rechecking with high-accuracy OCR…',
     ]
     controller._end_ndl_status(4, 3)

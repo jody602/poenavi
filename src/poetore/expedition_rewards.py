@@ -36,6 +36,13 @@ from src.poetore.expedition_ocr_probe import (
     prepare_retry_row_images,
     reward_text_candidates,
 )
+from src.poetore.game_language import (
+    ENGLISH,
+    GAME_LANGUAGE_LABELS,
+    JAPANESE,
+    normalize_game_language,
+    ocr_language_tag,
+)
 from src.poetore.official_exchange import resolve_reference_prices
 from src.poetore.window_position import path_of_exile_client_rect
 from src.utils.poe_version_data import POE2
@@ -55,6 +62,9 @@ EXPEDITION_DIAGNOSTIC_FLAG = "expedition-diagnostics.flag"
 RANDOM_CURRENCY_REWARD_ID = "poenavi:special:random-currency"
 SPECIAL_REWARD_ALIASES = {
     "ランダムなカレンシー": RANDOM_CURRENCY_REWARD_ID,
+}
+SPECIAL_REWARD_ALIASES_EN = {
+    "Random Currency": RANDOM_CURRENCY_REWARD_ID,
 }
 RANDOM_CURRENCY_MESSAGES = (
     "Price: depends on your luck",
@@ -113,38 +123,43 @@ class ExpeditionPriceResolution:
     ninja_requested_names: tuple[str, ...] = ()
 
 
-def load_reward_aliases(path: Path | None = None) -> dict[str, str]:
+def _reward_aliases(loaded: dict, language: str) -> tuple[dict[str, str], dict[str, str]]:
+    """Map on-screen reward names (in the client language) to English trade names."""
+    source_key = "en" if language == ENGLISH else "ja"
+    special = SPECIAL_REWARD_ALIASES_EN if language == ENGLISH else SPECIAL_REWARD_ALIASES
+    aliases = {
+        str(row[source_key]): str(row["en"])
+        for row in loaded.get("items", ())
+        if row.get("ja") and row.get("en")
+    }
+    aliases.update(special)
+    return aliases, special
+
+
+def load_reward_aliases(path: Path | None = None, language: str = JAPANESE) -> dict[str, str]:
     source = path or (
         Path(__file__).resolve().parents[2]
         / "data" / "poetore" / "poe2" / "expedition_ocr_items.json"
     )
     loaded = json.loads(source.read_text(encoding="utf-8"))
-    aliases = {
-        str(row["ja"]): str(row["en"])
-        for row in loaded.get("items", ())
-        if row.get("ja") and row.get("en")
-    }
-    aliases.update(SPECIAL_REWARD_ALIASES)
-    return aliases
+    return _reward_aliases(loaded, normalize_game_language(language))[0]
 
 
-def load_reward_alias_bundle(path: Path | None = None) -> tuple[dict[str, str], str]:
+def load_reward_alias_bundle(
+    path: Path | None = None, language: str = JAPANESE,
+) -> tuple[dict[str, str], str]:
     source = path or (
         Path(__file__).resolve().parents[2]
         / "data" / "poetore" / "poe2" / "expedition_ocr_items.json"
     )
     content = source.read_bytes()
     loaded = json.loads(content.decode("utf-8"))
-    aliases = {
-        str(row["ja"]): str(row["en"])
-        for row in loaded.get("items", ())
-        if row.get("ja") and row.get("en")
-    }
-    aliases.update(SPECIAL_REWARD_ALIASES)
+    language = normalize_game_language(language)
+    aliases, special = _reward_aliases(loaded, language)
     special_bytes = json.dumps(
-        SPECIAL_REWARD_ALIASES, ensure_ascii=False, sort_keys=True,
+        special, ensure_ascii=False, sort_keys=True,
     ).encode("utf-8")
-    return aliases, sha256(content + special_bytes).hexdigest()
+    return aliases, sha256(content + special_bytes + language.encode()).hexdigest()
 
 
 class SafeRewardNameResolver:
@@ -590,15 +605,16 @@ class ExpeditionRewardController(QObject):
 
     def __init__(
         self, league_getter, parent=None, *, region_getter=None, diagnostics_enabled=None,
-        ocr_server=None, scan_coordinator=None,
+        ocr_server=None, scan_coordinator=None, game_language=JAPANESE,
     ):
         super().__init__(parent)
         self._league_getter = league_getter
         self._region_getter = region_getter or (lambda: None)
         self._overlay = ExpeditionPriceOverlay()
-        aliases, dictionary_version = load_reward_alias_bundle()
+        self._game_language = normalize_game_language(game_language)
+        aliases, dictionary_version = load_reward_alias_bundle(language=self._game_language)
         self._name_resolver = SafeRewardNameResolver(aliases, dictionary_version)
-        self._ocr = ocr_server or WindowsOcrServer()
+        self._ocr = ocr_server or WindowsOcrServer(ocr_language_tag(self._game_language))
         self._owns_ocr = ocr_server is None
         self._scan_coordinator = scan_coordinator
         self._scan_owner = "expedition"
@@ -741,12 +757,15 @@ class ExpeditionRewardController(QObject):
             all_crops = [
                 crop for frame in prepared for crop in frame.images
             ]
+            ocr_label = (
+                f"Windows {GAME_LANGUAGE_LABELS[self._game_language]} OCR startup"
+            )
             try:
                 self._ocr.start()
             except Exception as exc:
-                self._trace(f"❌ 4. Windows Japanese OCR startup: {exc}")
+                self._trace(f"❌ 4. {ocr_label}: {exc}")
                 raise
-            self._trace("✅ 4. Windows Japanese OCR startup: ja-JP available")
+            self._trace(f"✅ 4. {ocr_label}: {ocr_language_tag(self._game_language)} available")
             raw_texts = self._ocr.recognize(all_crops)
             non_empty_count = sum(bool(text.strip()) for text in raw_texts)
             self._trace(

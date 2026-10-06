@@ -29,8 +29,10 @@ from src.ui.dialog_theme import (
     apply_dialog_theme,
     build_dialog_stylesheet,
 )
+from src.poetore.game_language import DEFAULT_GAME_LANGUAGE, normalize_game_language
 from src.ui.expedition_settings_dialog import (
     ClickableImageLabel,
+    build_game_language_combo,
     ExpeditionRegionSelector,
     RegionPreview,
     valid_normalized_region,
@@ -65,6 +67,7 @@ class DesecrationSettingsDialog(QDialog):
         client_rect_getter=path_of_exile_client_rect,
         selector_class=DesecrationRegionSelector,
         ocr_pack_controller=None,
+        game_language=DEFAULT_GAME_LANGUAGE,
     ):
         super().__init__(parent)
         self._config = dict(desecration_config or {})
@@ -136,6 +139,8 @@ class DesecrationSettingsDialog(QDialog):
         )
         self.hotkey_widget.key_button.setStyleSheet("")
         form.addRow("Capture shortcut:", self.hotkey_widget)
+        self.game_language_combo = build_game_language_combo(game_language)
+        form.addRow("Game client language:", self.game_language_combo)
         basic.addLayout(form)
         content.addWidget(basic_group)
 
@@ -278,6 +283,9 @@ class DesecrationSettingsDialog(QDialog):
             else:
                 config[key] = dict(region)
         return config, self.hotkey_widget.key_text, self.enabled_checkbox.isChecked()
+
+    def game_language(self) -> str:
+        return normalize_game_language(self.game_language_combo.currentData())
 
     def _choose_region(self, key):
         client_rect = self._client_rect_getter()

@@ -117,11 +117,15 @@ def _candidate_key(text: str) -> str:
     text = normalize_text(text)
     text = re.sub(r"^(?:スキルレベル\s*\d+|スキル|サポート)\s*[:：]\s*", "", text)
     text = re.sub(r"\s*\(レベル\s*\d+\)\s*$", "", text)
+    # English clients may show the level before or after the name
+    # ("Level 19 Uncut Skill Gem" / "Uncut Skill Gem (Level 19)"); the level
+    # itself is compared separately by _level_number.
+    text = re.sub(r"\blevel\s*\d+\b", "", text)
     return text.replace(" ", "")
 
 
 def _level_number(text: str) -> int | None:
-    match = re.search(r"レベル(\d+)", normalize_text(text).replace(" ", ""))
+    match = re.search(r"(?:レベル|level)(\d+)", normalize_text(text).replace(" ", ""))
     return int(match.group(1)) if match else None
 
 
