@@ -124,10 +124,10 @@ def test_mini_navi_topmost_setting_uses_three_modes_and_poe_only_default(
 def test_general_group_titles_use_shared_left_aligned_style(qapp):
     dialog = SettingsDialog(current_config={})
     general_group_titles = {
-        "PoE ログファイル",
-        "起動設定",
-        "ホットキー",
-        "ウィンドウ設定（本体）",
+        'PoE Log File',
+        'Launch Settings',
+        "Hotkeys",
+        'Window Settings (main)',
     }
     groups = {
         group.title(): group
@@ -146,25 +146,25 @@ def test_general_group_titles_use_shared_left_aligned_style(qapp):
 
 def test_poe_version_and_app_mode_are_in_one_startup_group(qapp):
     dialog = SettingsDialog(current_config={})
-    groups = [group for group in dialog.findChildren(QGroupBox) if group.title() == "起動設定"]
+    groups = [group for group in dialog.findChildren(QGroupBox) if group.title() == 'Launch Settings']
     labels = [label.text() for label in groups[0].findChildren(QLabel)]
     assert len(groups) == 1
-    assert "PoEバージョン" in labels
-    assert "起動モード" in labels
+    assert 'PoE Version' in labels
+    assert "Launch Mode" in labels
     dialog.close()
 
 
 def test_poENavi_startup_controls_do_not_show_poetore_autostart(qapp):
     dialog = SettingsDialog(current_config={})
     assert [radio.text() for radio in dialog.app_mode_radios.values()] == [
-        "ぽえなび", "ぽえとれ"
+        'PoENavi', 'PoETore'
     ]
-    assert dialog.skip_startup_selector_checkbox.text() == "次回からこの設定で直接起動"
+    assert dialog.skip_startup_selector_checkbox.text() == 'Launch directly with these settings next time'
     layout = dialog.skip_startup_selector_checkbox.parentWidget().layout()
     direct_index = layout.indexOf(dialog.skip_startup_selector_checkbox)
     assert layout.itemAt(direct_index + 1).widget() is dialog.startup_change_note
     assert dialog.startup_change_note.text() == (
-        "PoEバージョン・起動モードの変更は、次回起動時から適用されます。"
+        'Changes to the PoE version and launch mode take effect on the next launch.'
     )
     assert layout.count() == direct_index + 2
     assert not hasattr(dialog, "windows_autostart_poetore_checkbox")
@@ -236,8 +236,8 @@ def test_general_settings_save_note_is_at_bottom(qapp):
     note = dialog.findChild(QLabel, "generalSettingsSaveNote")
     layout = note.parentWidget().layout()
 
-    assert "変更は保存後すぐ反映されます" in note.text()
-    assert "保存後に再起動を確認します" in note.text()
+    assert "Changes take effect as soon as you save" in note.text()
+    assert "asked to restart after saving" in note.text()
     assert layout.indexOf(note) == layout.count() - 2
     assert layout.itemAt(layout.count() - 1).spacerItem() is not None
     dialog.close()
@@ -281,9 +281,9 @@ def test_voicevox_is_off_by_default_and_visible_only_for_poe2(monkeypatch, qapp)
     assert dialog.voicevox_post_phoneme_spin.singleStep() == 0.01
     assert dialog.voicevox_post_phoneme_spin.decimals() == 2
     labels = {label.text() for label in dialog.voicevox_group.findChildren(QLabel)}
-    assert "読点の無音時間の長さ:" in labels
+    assert 'Pause length at commas:' in labels
     assert "読点等の無音時間の長さ:" not in labels
-    assert "文末の無音時間の長さ:" in labels
+    assert 'Pause length at sentence end:' in labels
     assert dialog.voicevox_volume_spin.singleStep() == 0.1
     assert dialog.voicevox_volume_spin.decimals() == 1
     assert dialog.get_settings()["voicevox"] == {

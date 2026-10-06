@@ -13,18 +13,18 @@ class Act8HarbourBridgeStandardFlagsTest(unittest.TestCase):
     def test_editors_label_flag_guide_as_standard_route_only(self):
         self.assertEqual(
             _flag_guide_header("act8_area13"),
-            "🚩 フラグ別ガイド（通常ルート、かつ以下のフラグ成立時）",
+            '🚩 Flag-specific guide (standard route, when the flags below are set)',
         )
         self.assertEqual(
             _mini_navi_flag_section_title("act8_area13", FLAG_KEY),
-            f"通常ルート、かつフラグ成立時: {FLAG_KEY}",
+            f"Standard route, when flag is set: {FLAG_KEY}",
         )
 
     def test_other_zone_flag_labels_are_unchanged(self):
-        self.assertEqual(_flag_guide_header("act2_area7"), "🚩 フラグ別ガイド")
+        self.assertEqual(_flag_guide_header("act2_area7"), '🚩 Flag-specific guide')
         self.assertEqual(
             _mini_navi_flag_section_title("act2_area7", "some_flag"),
-            "フラグ別: some_flag",
+            "By flag: some_flag",
         )
 
     def test_standard_route_has_both_temples_flag_frame(self):

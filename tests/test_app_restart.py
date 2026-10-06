@@ -53,7 +53,7 @@ def test_changed_mode_restarts_after_ok():
         assert confirm_mode_switch_restart(None, config) is True
 
     assert question.call_args.args[1] == "poetore"
-    assert "選択した設定へ切り替わります" in question.call_args.args[2]
+    assert "the selected settings will take effect" in question.call_args.args[2]
     restart.assert_called_once_with()
 
 
@@ -75,7 +75,7 @@ def test_changed_mode_with_selector_explains_mode_will_be_selected_again():
     ):
         assert confirm_mode_switch_restart(None, config) is False
 
-    assert "もう一度選択します" in question.call_args.args[2]
+    assert "you will choose the launch settings again" in question.call_args.args[2]
     restart.assert_not_called()
 
 
@@ -101,8 +101,8 @@ def test_changed_poe_version_prompts_even_when_mode_is_unchanged():
         ) is False
 
     message = question.call_args.args[2]
-    assert "PoE版：PoE1 → PoE2" in message
-    assert "今すぐ再起動しますか" in message
+    assert "PoE version: PoE1 → PoE2" in message
+    assert "Restart now" in message
     restart.assert_not_called()
 
 

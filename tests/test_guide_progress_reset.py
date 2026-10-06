@@ -25,23 +25,23 @@ class GuideProgressResetTest(unittest.TestCase):
             guide_progress_reset_callback=callback,
         )
         tabs = dialog.findChild(QTabWidget)
-        self.assertEqual(tabs.tabText(tabs.count() - 2), "その他")
+        self.assertEqual(tabs.tabText(tabs.count() - 2), "Other")
 
         description = dialog.findChild(QLabel, "guideProgressResetDescription")
         self.assertEqual(
             description.text(),
-            "ガイド進行制御に用いるフラグ等の状態は、新しいキャラクターの開始時に"
-            "自動で検知して、初期状態にするため、通常は操作不要です。\n"
-            "にもかかわらず、フラグ等の状態が前のキャラクターから残っていると思われる場合は、"
-            "以下のボタンを押して初期状態に戻してください。タイマーの記録やぽえなびの設定は"
-            "変更されません。\n\n"
-            "なお、Act 6以降を攻略中の場合、リセット後にぽえなび本体のガイドタイル右側に"
-            "表示されている「Act 1-5」のトグルをクリックして「Act 6-10」表示へ"
-            "切り替えてください。",
+            'Flags and other state used to track guide progress are detected and reset '
+            "automatically when you start a new character, so you normally don't need to do anything.\n"
+            'If flags or other state still seem to carry over from a previous character, '
+            'press the button below to reset them. Timer records and PoENavi settings '
+            "are not changed.\n\n"
+            'If you are in Act 6 or later, after resetting, click the "Act 1-5" toggle '
+            'on the right of the guide tile in the main PoENavi window to switch to '
+            '"Act 6-10".',
         )
 
         button = dialog.findChild(QPushButton, "guideProgressResetButton")
-        self.assertEqual(button.text(), "ガイド進行を初期状態に戻す")
+        self.assertEqual(button.text(), 'Reset guide progress')
         with (
             patch.object(QMessageBox, "question", return_value=QMessageBox.Yes),
             patch.object(QMessageBox, "information") as information,
@@ -60,10 +60,10 @@ class GuideProgressResetTest(unittest.TestCase):
         tabs = dialog.findChild(QTabWidget)
         tab_names = [tabs.tabText(index) for index in range(tabs.count())]
 
-        self.assertNotIn("Regex短縮設定", tab_names)
-        self.assertEqual(tab_names[-2:], ["その他", "アプリ情報"])
+        self.assertNotIn('Regex Short Terms', tab_names)
+        self.assertEqual(tab_names[-2:], ["Other", 'About'])
         description = dialog.findChild(QLabel, "guideProgressResetDescription")
-        self.assertNotIn("なお、Act 6以降", description.text())
+        self.assertNotIn("If you are in Act 6 or later", description.text())
 
         button = dialog.findChild(QPushButton, "guideProgressResetButton")
         with (
@@ -76,16 +76,16 @@ class GuideProgressResetTest(unittest.TestCase):
     def test_switching_version_updates_version_specific_tabs_and_description(self):
         dialog = SettingsDialog(current_config={"poe_version": POE1})
         tabs = dialog.findChild(QTabWidget)
-        self.assertIn("Regex短縮設定", [tabs.tabText(i) for i in range(tabs.count())])
+        self.assertIn('Regex Short Terms', [tabs.tabText(i) for i in range(tabs.count())])
 
         dialog.poe_version_radios[POE2].setChecked(True)
-        self.assertNotIn("Regex短縮設定", [tabs.tabText(i) for i in range(tabs.count())])
+        self.assertNotIn('Regex Short Terms', [tabs.tabText(i) for i in range(tabs.count())])
         description = dialog.findChild(QLabel, "guideProgressResetDescription")
-        self.assertNotIn("なお、Act 6以降", description.text())
+        self.assertNotIn("If you are in Act 6 or later", description.text())
 
         dialog.poe_version_radios[POE1].setChecked(True)
-        self.assertIn("Regex短縮設定", [tabs.tabText(i) for i in range(tabs.count())])
-        self.assertIn("なお、Act 6以降", description.text())
+        self.assertIn('Regex Short Terms', [tabs.tabText(i) for i in range(tabs.count())])
+        self.assertIn("If you are in Act 6 or later", description.text())
 
     def test_manual_reset_clears_guide_state_without_touching_timer(self):
         window = MainWindow.__new__(MainWindow)
@@ -385,10 +385,10 @@ class GuideProgressResetTest(unittest.TestCase):
 
         self.assertEqual(
             FakeMessageBox.shown_text,
-            "保存された進行状況と異なる進行状況を検知しました。\n"
-            "新キャラクターに合わせるため、ガイド進行をリセットしますか？",
+            'Detected progress that differs from the saved progress.\n'
+            'Reset guide progress for a new character?',
         )
-        self.assertIn("前回最後に確認したエリア：西の森", FakeMessageBox.shown_info)
+        self.assertIn("Last area seen previously: 西の森", FakeMessageBox.shown_info)
         window._reset_guide_progress_from_settings.assert_called_once_with()
         self.assertEqual(window._last_log_zone, "黄昏の岸辺")
         window._save_progress_flags.assert_called_once_with()
@@ -524,7 +524,7 @@ class GuideProgressResetTest(unittest.TestCase):
                 window, (POE2, "オガムの農地", result)
             )
 
-        self.assertIn("その後のログ：「川岸」への入場を検知", FakeMessageBox.shown_info)
+        self.assertIn('Later log: entered "The Riverbank"', FakeMessageBox.shown_info)
         window._reset_guide_progress_from_settings.assert_not_called()
         self.assertEqual(window._last_log_zone, "川岸")
         window._save_progress_flags.assert_called_once_with()

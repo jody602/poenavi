@@ -119,22 +119,22 @@ def test_hideout_notification_controls_load_and_save_seconds_and_volume():
         dialog.hideout_sound_combo.itemText(index)
         for index in range(dialog.hideout_sound_combo.count())
     ] == [
-        "標準音1",
-        "標準音2",
-        "標準音3",
-        "標準音4",
-        "標準音5",
-        "カスタム音：声.mp3",
+        'Standard sound 1',
+        'Standard sound 2',
+        'Standard sound 3',
+        'Standard sound 4',
+        'Standard sound 5',
+        "Custom sound: 声.mp3",
     ]
-    assert dialog.hideout_sound_combo.currentText() == "カスタム音：声.mp3"
+    assert dialog.hideout_sound_combo.currentText() == "Custom sound: 声.mp3"
     assert dialog.hideout_custom_sound_name.text() == "声.mp3"
     assert dialog.hideout_log_path_edit.text() == r"C:\PoE\logs\Client.txt"
     assert dialog.hideout_volume_label.text() == "75"
     assert dialog.hideout_note.text().splitlines() == [
-        "集中モード中、隠れ家に設定時間滞在すると通知音でお知らせします。",
-        "通知音は、同梱音から選択できます。",
-        "選択ボタンから任意のWAVまたはMP3ファイルにも変更可能です。",
-        "音量50が音本来の大きさで、50より上は増幅します。",
+        "In focus mode, plays an alert sound when you stay in your hideout for the set time.",
+        "You can choose from the bundled sounds.",
+        "You can also pick any WAV or MP3 file with the Choose button.",
+        'Volume 50 is the original loudness; above 50 amplifies it.',
     ]
     settings = dialog.get_settings()["poetore"]["hideout_notification"]
     assert settings == {
@@ -183,7 +183,7 @@ def test_hideout_notification_duration_is_bounded_to_ten_seconds():
     assert dialog.hideout_seconds_spin.value() == 10
     settings = dialog.get_settings()["poetore"]["hideout_notification"]
     assert settings["duration_seconds"] == 10
-    assert dialog.hideout_volume_label.text() == "50（標準）"
+    assert dialog.hideout_volume_label.text() == "50 (default)"
     dialog.close()
 
 
@@ -301,7 +301,7 @@ def test_poetore_settings_contains_common_trade_and_window_controls():
     assert not hasattr(dialog, "log_path_edits")
     assert not hasattr(dialog, "timer_size_combo")
     labels = [label.text() for label in dialog.findChildren(QLabel)]
-    assert "修道院へ移動（/monastery）:" in labels
+    assert 'Go to monastery (/monastery):' in labels
     assert all("（仮）修道院" not in label for label in labels)
     assert dialog.app_mode_radios["poetore"].isChecked()
     assert not dialog.skip_startup_selector_checkbox.isChecked()
@@ -315,7 +315,7 @@ def test_poetore_settings_contains_common_trade_and_window_controls():
     assert settings["hotkeys"]["poetore_auto_hide"] == "ctrl+d"
     assert settings["stash_tab_scroll_enabled"] is True
     assert dialog.stash_tab_scroll_cb.text() == (
-        "Ctrl＋マウスホイールでスタッシュタブを切り替える"
+        'Switch stash tabs with Ctrl + mouse wheel'
     )
     dialog.stash_tab_scroll_cb.setChecked(False)
     assert dialog.get_settings()["stash_tab_scroll_enabled"] is False
@@ -337,28 +337,28 @@ def test_poetore_settings_contains_common_trade_and_window_controls():
     assert settings["snap_to_right_edge"] is True
     assert not dialog.capture_error_notification_cb.isChecked()
     assert dialog.capture_error_notification_cb.text() == (
-        "アイテムを取得できなかったときに通知する"
+        'Notify when an item could not be read'
     )
     groups = [group.title() for group in dialog.findChildren(QGroupBox)]
-    assert groups.index("検索時のエラー処理") == (
-        groups.index("共通・ぽえとれホットキー") + 1
+    assert groups.index('Search Error Handling') == (
+        groups.index('Shared and PoETore Hotkeys') + 1
     )
     tabs = dialog.findChild(QTabWidget)
     assert [tabs.tabText(index) for index in range(tabs.count())] == [
-        "基本設定",
-        "任意コマンド設定",
-        "アプリ情報",
+        'General',
+        'Custom Commands',
+        'About',
     ]
-    assert dialog.windowTitle() == "設定"
+    assert dialog.windowTitle() == 'Settings'
     assert "subcontrol-position: top left" in dialog.styleSheet()
     assert [radio.text() for radio in dialog.app_mode_radios.values()] == [
-        "ぽえなび", "ぽえとれ"
+        'PoENavi', 'PoETore'
     ]
-    assert dialog.skip_startup_selector_checkbox.text() == "次回からこの設定で直接起動"
+    assert dialog.skip_startup_selector_checkbox.text() == 'Launch directly with these settings next time'
     private_note = dialog.findChild(QLabel, "privateLeagueNote")
     assert (
         private_note.text()
-        == "プライベートリーグで使う場合は、リーグ名を直接手打ちで入力してください。"
+        == 'For a private league, type the league name directly.'
     )
     dialog.close()
 
@@ -455,13 +455,13 @@ def test_poetore_settings_league_choices_match_trade_window_and_allow_manual_inp
         TradeLeague("Hardcore Allflame", True),
     ))
 
-    assert dialog.league_combo.itemText(0) == "自動（現行SC: Allflame）"
+    assert dialog.league_combo.itemText(0) == "Auto (current SC: Allflame)"
     assert [
         dialog.league_combo.itemData(index)
         for index in range(dialog.league_combo.count())
     ] == ["auto", "Standard", "Allflame", "Hardcore Allflame"]
-    assert dialog.league_refresh_button.text() == "再取得"
-    assert dialog.league_refresh_button.toolTip() == "公式サイトからリーグ一覧を再取得"
+    assert dialog.league_refresh_button.text() == 'Refresh'
+    assert dialog.league_refresh_button.toolTip() == 'Re-fetch the league list from the official site'
     assert dialog.league_refresh_button.isEnabled()
 
     dialog.league_combo.setEditText("My Private League")
@@ -479,7 +479,7 @@ def test_poe2_league_selection_uses_same_ui_but_separate_setting():
         TradeLeague("Runes of Aldur"), TradeLeague("HC Runes of Aldur", True),
         TradeLeague("Standard"),
     ))
-    assert dialog.league_combo.itemText(0) == "自動（現行SC: Runes of Aldur）"
+    assert dialog.league_combo.itemText(0) == "Auto (current SC: Runes of Aldur)"
     assert [dialog.league_combo.itemData(i) for i in range(dialog.league_combo.count())] == [
         "auto", "Runes of Aldur", "HC Runes of Aldur", "Standard",
     ]
@@ -513,9 +513,9 @@ def test_poe2_settings_refresh_button_forces_a_fresh_league_request(monkeypatch)
     dialog.league_refresh_button.click()
 
     assert requested == [True]
-    assert dialog.league_combo.itemText(0) == "自動（現行SC: Fresh League）"
+    assert dialog.league_combo.itemText(0) == "Auto (current SC: Fresh League)"
     assert dialog.league_refresh_button.isEnabled()
-    assert dialog.league_refresh_button.text() == "再取得"
+    assert dialog.league_refresh_button.text() == 'Refresh'
     dialog.close()
 
 
@@ -556,11 +556,11 @@ def test_poetore_fixed_startup_mode_selects_the_fixed_app():
 def test_poetore_poe_version_and_app_mode_are_in_one_startup_group():
     QApplication.instance() or QApplication([])
     dialog = PoetoreSettingsDialog(current_config={"poe_version": "poe2"})
-    groups = [group for group in dialog.findChildren(QGroupBox) if group.title() == "起動設定"]
+    groups = [group for group in dialog.findChildren(QGroupBox) if group.title() == 'Launch Settings']
     labels = [label.text() for label in groups[0].findChildren(QLabel)]
     assert len(groups) == 1
-    assert "PoEバージョン" in labels
-    assert "起動モード" in labels
+    assert 'PoE Version' in labels
+    assert "Launch Mode" in labels
     assert "QRadioButton" in dialog.styleSheet()
     assert all(radio.text() in {"PoE1", "PoE2"} for radio in dialog.poe_version_radios.values())
     dialog.close()
@@ -573,19 +573,19 @@ def test_poetore_windows_autostart_has_blank_line_and_saves_setting():
     })
 
     checkbox = dialog.windows_autostart_poetore_checkbox
-    assert checkbox.text() == "Windowsログイン時にぽえとれを自動起動"
+    assert checkbox.text() == 'Start PoETore automatically when you sign in to Windows'
     assert checkbox.isChecked()
     layout = dialog.skip_startup_selector_checkbox.parentWidget().layout()
     direct_index = layout.indexOf(dialog.skip_startup_selector_checkbox)
     assert layout.itemAt(direct_index + 1).widget() is dialog.startup_change_note
     assert dialog.startup_change_note.text() == (
-        "PoEバージョン・起動モードの変更は、次回起動時から適用されます。"
+        'Changes to the PoE version and launch mode take effect on the next launch.'
     )
     assert layout.itemAt(direct_index + 2).spacerItem().sizeHint().height() == 13
     assert layout.itemAt(direct_index + 3).widget() is checkbox
     assert layout.itemAt(direct_index + 4).widget() is dialog.windows_autostart_note
     assert dialog.windows_autostart_note.text() == (
-        "有効にすると、次回のWindowsログイン時からぽえとれを自動起動します。"
+        'When enabled, PoETore starts automatically from your next Windows sign-in.'
     )
     checkbox.setChecked(False)
     assert dialog.get_settings()["startup"]["windows_autostart_poetore"] is False
@@ -665,7 +665,7 @@ def test_poetore_settings_saves_result_font_size():
     assert [
         dialog.result_font_size_combo.itemText(index)
         for index in range(dialog.result_font_size_combo.count())
-    ] == ["小", "中", "大"]
+    ] == ['Small', 'Medium', 'Large']
 
     dialog.result_font_size_combo.setCurrentIndex(
         dialog.result_font_size_combo.findData("large")
@@ -673,7 +673,7 @@ def test_poetore_settings_saves_result_font_size():
 
     assert dialog.get_settings()["poetore"]["result_font_size"] == "large"
     note = dialog.findChild(QLabel, "resultFontSizeNote")
-    assert "ボタンや入力欄" in note.text()
+    assert "Buttons, input fields" in note.text()
     dialog.close()
 
 
@@ -682,16 +682,16 @@ def test_poetore_settings_describes_obs_result_window_behavior():
     dialog = PoetoreSettingsDialog(current_config={"poetore": {}})
 
     assert dialog.obs_streaming_enabled_cb.text() == (
-        "検索結果ウィンドウをOBS配信用にする"
+        'Use the results window for OBS streaming'
     )
     assert dialog.obs_title_bar_opacity_slider.minimum() == 0
     assert dialog.obs_title_bar_opacity_slider.maximum() == 100
     assert dialog.obs_title_bar_opacity_slider.value() == 100
     note = dialog.findChild(QLabel, "obsStreamingNote")
     assert note.text() == (
-        "待機中はタイトルバーだけを表示し、検索すると検索結果を当該タイトルバーの下に"
-        "展開します。OBSでは「ぽえとれ - 検索結果ウィンドウ」として認識されます。\n"
-        "待機中のタイトルバーは透過率を変更できます。"
+        'While idle, only the title bar is shown; when you search, results expand below '
+        'that title bar. OBS sees it as "PoETore - Search Results".\n'
+        'You can change the transparency of the idle title bar.'
     )
     dialog.close()
 
@@ -737,7 +737,7 @@ def test_poetore_settings_can_reset_both_saved_result_positions():
     dialog.reset_result_positions_button.click()
 
     assert "result_positions" not in dialog.get_settings()["poetore"]
-    assert dialog.result_positions_reset_note.text() == "保存時にリセットします"
+    assert dialog.result_positions_reset_note.text() == 'Will reset on save'
     assert not dialog.reset_result_positions_button.isEnabled()
     dialog.close()
 

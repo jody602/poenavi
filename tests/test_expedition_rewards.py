@@ -62,7 +62,7 @@ def test_expedition_diagnostic_report_is_screenshot_ready():
 
     assert "ゲーム画面検出" in report
     assert "Windows日本語OCR起動" in report
-    assert "スクリーンショットして送ってください" in report
+    assert "Please take a screenshot" in report
 
 
 def test_controller_emits_diagnostic_report_on_failure():
@@ -89,8 +89,8 @@ def test_controller_emits_diagnostic_report_on_failure():
         assert not controller.request_scan()
 
     assert len(reports) == 1
-    assert "❌ 1. ゲーム画面検出" in reports[0]
-    assert "Path of Exileのゲーム画面が見つかりませんでした" in reports[0]
+    assert "❌ 1. Game window detection" in reports[0]
+    assert "Could not find the Path of Exile game window" in reports[0]
 
 
 def test_controller_closes_ocr_helper_when_application_quits():
@@ -139,7 +139,7 @@ def test_controller_rejects_scan_until_read_region_is_configured():
         assert not controller.request_scan()
 
     assert failures == [
-        "読取範囲が未設定です。設定の「エクスペ報酬チェック」から範囲を指定してください。"
+        'No capture area is set. Set one under "Expedition reward check" in Settings.'
     ]
 
 
@@ -150,10 +150,10 @@ def test_load_reward_aliases_and_format_prices(tmp_path):
         "高貴": "Exalted",
         "ランダムなカレンシー": RANDOM_CURRENCY_REWARD_ID,
     }
-    assert format_exalted_unit_price(0.004) == "<0.01 高貴/個"
-    assert format_exalted_unit_price(0.85) == "0.85 高貴/個"
-    assert format_exalted_unit_price(5.25) == "5.2 高貴/個"
-    assert format_exalted_unit_price(12.4) == "12 高貴/個"
+    assert format_exalted_unit_price(0.004) == "<0.01 ex each"
+    assert format_exalted_unit_price(0.85) == "0.85 ex each"
+    assert format_exalted_unit_price(5.25) == "5.2 ex each"
+    assert format_exalted_unit_price(12.4) == "12 ex each"
     assert EXPEDITION_PRICE_FONT_SIZE == 14
 
 
@@ -171,16 +171,16 @@ def test_expedition_price_colors_only_highest_row_green():
 
 def test_random_currency_messages_match_the_approved_copy():
     assert RANDOM_CURRENCY_MESSAGES == (
-        "価格：あなたの運次第",
-        "夢を買う5個",
-        "あなたの運：Priceless",
-        "ここでミラーをひとつまみ",
-        "当たりが出るとは言ってない",
-        "返品・交換はできません",
-        "結果には個人差があります",
-        "欲望に従え",
-        "期待値よりロマン",
-        "カランドラの鏡５個　と思いたい",
+        'Price: depends on your luck',
+        'Buying 5 dreams',
+        'Your luck: Priceless',
+        'A pinch of Mirror here',
+        "Never said you'd hit",
+        'No returns or exchanges',
+        'Results may vary',
+        'Follow your greed',
+        'Romance over EV',
+        '5 Mirrors of Kalandra, hopefully',
     )
 
 
@@ -205,7 +205,7 @@ def test_random_currency_is_not_priced_or_highlighted_and_has_no_icon():
     assert priceable_reward_identities([special, priced]) == [priced]
     with patch(
         "src.poetore.expedition_rewards.random.choice",
-        return_value="期待値よりロマン",
+        return_value='Romance over EV',
     ) as choose:
         rows = build_reward_display_rows(
             [special, priced],
@@ -218,10 +218,10 @@ def test_random_currency_is_not_priced_or_highlighted_and_has_no_icon():
     choose.assert_called_once_with(RANDOM_CURRENCY_MESSAGES)
     assert rows == [
         RewardPriceRow(
-            25, 65, "期待値よりロマン", None,
+            25, 65, 'Romance over EV', None,
             highlighted=False, show_currency_icon=False,
         ),
-        RewardPriceRow(85, 125, "5 高貴/個", 5, highlighted=True),
+        RewardPriceRow(85, 125, "5 ex each", 5, highlighted=True),
     ]
 
 
@@ -237,7 +237,7 @@ def test_random_currency_can_be_displayed_without_any_price_data():
 
     with patch(
         "src.poetore.expedition_rewards.random.choice",
-        return_value="価格：あなたの運次第",
+        return_value='Price: depends on your luck',
     ) as choose:
         rows = build_reward_display_rows(
             special_rows,
@@ -248,7 +248,7 @@ def test_random_currency_can_be_displayed_without_any_price_data():
         )
 
     choose.assert_called_once_with(RANDOM_CURRENCY_MESSAGES)
-    assert [row.text for row in rows] == ["価格：あなたの運次第"] * 2
+    assert [row.text for row in rows] == ['Price: depends on your luck'] * 2
     assert all(row.unit_price is None for row in rows)
     assert all(not row.highlighted for row in rows)
     assert all(not row.show_currency_icon for row in rows)
@@ -265,7 +265,7 @@ def test_expedition_display_uses_resolved_official_exalted_price():
         vertical_offset=0, vertical_scale=1,
     )
 
-    assert rows == [RewardPriceRow(10, 30, "1 高貴/個", 1, highlighted=True)]
+    assert rows == [RewardPriceRow(10, 30, "1 ex each", 1, highlighted=True)]
 
 
 def test_expedition_prices_skip_ninja_when_all_visible_rewards_are_official():
@@ -372,7 +372,7 @@ def test_expedition_price_overlay_renders_individual_translucent_plate(qapp):
     overlay._source_width = 420
     overlay._source_height = 120
     overlay._panel_width = 120
-    overlay._rows = [RewardPriceRow(40, 60, "5.5 高貴/個", 5.5)]
+    overlay._rows = [RewardPriceRow(40, 60, "5.5 ex each", 5.5)]
     image = QImage(overlay.size(), QImage.Format.Format_ARGB32_Premultiplied)
     image.fill(Qt.transparent)
 
@@ -716,4 +716,4 @@ def test_controller_hides_only_after_two_consecutive_structure_misses():
     controller._check_panel()
 
     overlay.hide.assert_called_once_with()
-    assert statuses == ["エクスペディション報酬画面を閉じたため表示を消しました。"]
+    assert statuses == ['The Expedition reward screen was closed, so the overlay was cleared.']

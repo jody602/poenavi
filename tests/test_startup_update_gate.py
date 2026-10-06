@@ -56,6 +56,6 @@ def test_manual_check_reports_latest_version():
 
     information.assert_called_once_with(
         None,
-        "アップデート",
-        "最新バージョンです。",
+        'Update',
+        'You are on the latest version.',
     )

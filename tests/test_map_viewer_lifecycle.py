@@ -27,8 +27,8 @@ def test_map_image_notice_is_only_shown_for_poe2():
     assert poe1_dialog.notice_label.isHidden()
     assert not poe2_dialog.notice_label.isHidden()
     assert poe2_dialog.notice_label.text() == (
-        "リーグ毎でPoE2はマップ構造自体が大きく変わり、掲載画像が現行リーグと異なる場合があるため、"
-        "参考情報としてご利用ください。"
+        "PoE2 map layouts can change significantly each league, so these images may differ from the "
+        "current league. Use them for reference only."
     )
     poe1_dialog.close()
     poe2_dialog.close()

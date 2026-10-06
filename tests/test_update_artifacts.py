@@ -84,7 +84,7 @@ def test_validate_update_archive_rejects_ambiguous_mixed_layout(tmp_path):
             "PoENavi/PoENaviUpdater.exe",
         ],
     )
-    with pytest.raises(ValueError, match="配置が不正"):
+    with pytest.raises(ValueError, match="Invalid update ZIP layout"):
         validate_update_archive(archive)
 
 
@@ -99,7 +99,7 @@ def test_validate_update_archive_rejects_too_many_entries(tmp_path):
         ],
     )
 
-    with pytest.raises(ValueError, match="ファイル数"):
+    with pytest.raises(ValueError, match="too many files"):
         validate_update_archive(archive, max_entries=2)
 
 
@@ -113,7 +113,7 @@ def test_validate_update_archive_rejects_single_oversized_file(tmp_path):
         ],
     )
 
-    with pytest.raises(ValueError, match="ファイルがサイズ上限"):
+    with pytest.raises(ValueError, match="exceeds the size limit"):
         validate_update_archive(archive, max_single_file_size=6)
 
 
@@ -127,7 +127,7 @@ def test_validate_update_archive_rejects_oversized_total(tmp_path):
         ],
     )
 
-    with pytest.raises(ValueError, match="展開後サイズ"):
+    with pytest.raises(ValueError, match="Extracted size"):
         validate_update_archive(archive, max_total_size=10)
 
 
@@ -137,7 +137,7 @@ def test_validate_update_archive_rejects_extreme_compression_ratio(tmp_path):
         bundle.writestr("PoENavi/PoENavi.exe", b"A" * 10_000)
         bundle.writestr("PoENavi/PoENaviUpdater.exe", b"updater")
 
-    with pytest.raises(ValueError, match="異常な圧縮率"):
+    with pytest.raises(ValueError, match="abnormal compression ratio"):
         validate_update_archive(
             archive,
             min_ratio_check_size=1,

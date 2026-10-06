@@ -390,7 +390,7 @@ def test_toggle_lap_hides_lap_content_in_a_detached_timer(monkeypatch):
 
     assert not window.lap_expanded
     assert window.lap_content.isHidden()
-    assert window.lap_toggle_btn.text() == "▶ ラップタイム"
+    assert window.lap_toggle_btn.text() == '▶ Lap Times'
 
 
 def test_detached_panel_applies_main_window_settings():
@@ -432,7 +432,7 @@ def test_register_detachable_panel_places_button_on_title_row():
     assert header_layout.indexOf(panel_controls) < header_layout.indexOf(record["minimize_button"])
     assert header_layout.indexOf(record["detach_button"]) >= 0
     assert header_layout.indexOf(record["minimize_button"]) < header_layout.indexOf(record["detach_button"])
-    assert record["minimize_button"].text() == "─ 最小化"
+    assert record["minimize_button"].text() == '─ Minimize'
     assert header_layout.contentsMargins().right() == 10
     assert record["content"].layout().count() == 2
 

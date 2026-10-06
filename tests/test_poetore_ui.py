@@ -35,12 +35,12 @@ def test_obs_streaming_mode_keeps_one_window_and_collapses_instead_of_closing(qa
         obs_window_id = int(window.winId())
 
         assert window.isVisible()
-        assert window.windowTitle() == "ぽえとれ - 検索結果ウィンドウ"
+        assert window.windowTitle() == 'PoETore - Search Results'
         assert window.windowType() == Qt.Window
         assert window.height() < expanded_height
         assert window.height() == 30
         assert window.windowOpacity() == pytest.approx(0.35, abs=0.005)
-        assert window._title_bar._obs_title_label.text() == "ぽえとれ検索ウィンドウ"
+        assert window._title_bar._obs_title_label.text() == 'PoETore search window'
         assert window._title_bar._obs_title_label.isVisible()
         assert window._title_bar._expanded_controls.isHidden()
         assert window._obs_content.isHidden()
@@ -242,10 +242,10 @@ def test_poetore_window_always_accepts_mouse_input(qapp):
             window.trade_currency_combo.itemText(index)
             for index in range(window.trade_currency_combo.count())
         ] == [
-            "すべての通貨",
-            "カオスオーブのみ",
-            "神のオーブのみ",
-            "カオスまたは神のオーブ",
+            'Any currency',
+            'Chaos Orb only',
+            'Divine Orb only',
+            'Chaos or Divine Orb',
         ]
         assert not hasattr(window, "disclaimer_label")
         assert window.trade_league_combo.currentData() == "auto"
@@ -254,8 +254,8 @@ def test_poetore_window_always_accepts_mouse_input(qapp):
         assert window.minimumWidth() == 610
         assert window.height() == 1039
         assert window.price_list.minimumHeight() == 434
-        assert window.trade_url_button.text() == "公式トレード  ↗"
-        assert window.trade_url_button.toolTip() == "日本語公式Tradeをブラウザで開く"
+        assert window.trade_url_button.text() == 'Official Trade  ↗'
+        assert window.trade_url_button.toolTip() == 'Open the Japanese official trade site in your browser'
         assert all(button.text() != "貼り付け" for button in window.findChildren(QPushButton))
     finally:
         window.close()
@@ -390,10 +390,10 @@ def test_capture_error_dialog_uses_readable_dark_theme(qapp):
 
         assert dialog.icon() == QMessageBox.Icon.Warning
         assert dialog.text() == (
-            "アイテムを取得できませんでした。\n"
-            "PoEがアクティブでない可能性があります。\n"
-            "PoEを前面にしてアイテムへカーソルを合わせ、\n"
-            "もう一度 Alt + D を押してください。"
+            'Could not get the item.\n'
+            'PoE may not be the active window.\n'
+            'Bring PoE to the front, hover over the item,\n'
+            "and press Alt + D again."
         )
         assert "background-color: #111111" in style
         assert "color: #E6ECEA" in style
@@ -415,7 +415,7 @@ def test_capture_error_dialog_uses_configured_interactive_hotkey(qapp):
         dialog = window._build_capture_error_dialog()
 
         assert dialog.text().endswith(
-            "もう一度 Ctrl + Shift + P を押してください。"
+            "and press Ctrl + Shift + P again."
         )
     finally:
         window.close()
@@ -662,8 +662,8 @@ def test_poetore_disclaimer_is_in_app_information(qapp):
     dialog = SettingsDialog(current_config={})
     try:
         text = dialog.app_disclaimer_label.text()
-        assert text.startswith("ぽえなびは無料の非公式ツール")
-        assert "提携・承認関係はありません" in text
+        assert text.startswith("PoENavi is a free, unofficial tool")
+        assert "not affiliated with or endorsed by" in text
         assert dialog.app_disclaimer_label.wordWrap()
         assert all(label.text() != "ぽえとれについて" for label in dialog.findChildren(QLabel))
     finally:
@@ -806,7 +806,7 @@ def test_only_poe2_rare_equipment_defers_hotkey_initial_search(
 
         if deferred:
             search.assert_not_called()
-            assert window.price_status.text() == "検索条件を確認して「検索」を押してください。"
+            assert window.price_status.text() == 'Check the conditions and press "Search".'
             assert window.price_button.isEnabled()
             assert window.price_list.topLevelItemCount() == 0
             assert window._last_price_result is None
@@ -1107,13 +1107,13 @@ def test_poetore_title_bar_keeps_close_button(qapp):
         assert window._title_bar._expanded_controls.parentWidget().objectName() == "poetoreTitleBar"
         assert window.trade_league_combo.width() == 278
         assert window.league_popup_button.text() == "▼"
-        assert window.league_popup_button.toolTip() == "リーグ一覧を開く"
-        assert window.league_refresh_button.text() == "再取得"
-        assert window.league_refresh_button.toolTip() == "公式サイトからリーグ一覧を再取得"
+        assert window.league_popup_button.toolTip() == 'Open league list'
+        assert window.league_refresh_button.text() == 'Refresh'
+        assert window.league_refresh_button.toolTip() == 'Re-fetch the league list from the official site'
         assert window.league_refresh_button.parentWidget() is window._title_bar._expanded_controls
         close_buttons = [
             button for button in window.findChildren(QPushButton)
-            if button.toolTip() == "閉じる" and button.text() == "×"
+            if button.toolTip() == 'Close' and button.text() == "×"
         ]
         assert len(close_buttons) == 1
         window.show()
@@ -1251,7 +1251,7 @@ def test_complex_query_error_is_localized_for_normal_item(qapp):
             4,
         )
         assert window.price_status.text() == (
-            "検索条件が多すぎます。条件を減らして、もう一度検索してください。"
+            'Too many search conditions. Remove some conditions and search again.'
         )
     finally:
         window.close()
@@ -1270,7 +1270,7 @@ def test_complex_query_error_is_localized_for_mercenary_warrant(qapp):
             5,
         )
         assert window.price_status.text() == (
-            "検索条件が多すぎます。条件を減らして、もう一度検索してください。"
+            'Too many search conditions. Remove some conditions and search again.'
         )
     finally:
         window.close()
@@ -1518,7 +1518,7 @@ def test_filter_kind_column_is_japanese_and_marks_foulborn_generation(qapp):
         assert [
             window.mod_filter_tree.topLevelItem(index).text(1)
             for index in range(window.mod_filter_tree.topLevelItemCount())
-        ] == ["明示", "ファウルボーン", "疑似", "マップ"]
+        ] == ['Explicit', 'Foulborn', 'Pseudo', 'Map']
     finally:
         window.close()
 
@@ -1539,7 +1539,7 @@ def test_filter_kind_column_marks_essence_and_infamous_generations(qapp):
         assert [
             window.mod_filter_tree.topLevelItem(index).text(1)
             for index in range(window.mod_filter_tree.topLevelItemCount())
-        ] == ["エッセンス", "悪名高い"]
+        ] == ['Essence', 'Notorious']
     finally:
         window.close()
 
@@ -1548,12 +1548,12 @@ def test_filter_kind_column_marks_awakened_source_generations(qapp):
     window = PoetoreWindow()
     try:
         generations = (
-            ("corrupted", "コラプト"),
-            ("eldritch", "エルドリッチ"),
-            ("synthesised", "シンセシス"),
-            ("delve", "デルブ"),
-            ("incursion", "インカージョン"),
-            ("shaper", "シェイパー"),
+            ("corrupted", 'Corrupted'),
+            ("eldritch", 'Eldritch'),
+            ("synthesised", 'Synthesis'),
+            ("delve", 'Delve'),
+            ("incursion", 'Incursion'),
+            ("shaper", 'Shaper'),
         )
         window._populate_stat_filters(tuple(
             TradeStatFilter(
@@ -1613,7 +1613,7 @@ def test_reported_infamous_helmet_resolves_and_is_labelled_in_real_panel(qapp):
             row for row in rows
             if row.text(3) == "憤怒の固有効果による喪失が20%遅くなる"
         )
-        assert infamous.text(1) == "悪名高い"
+        assert infamous.text(1) == 'Notorious'
         assert window.mod_warning.isHidden()
     finally:
         window.close()
@@ -1698,17 +1698,17 @@ def test_foulborn_catalyst_quality_shows_only_on_affected_mod_in_real_panel(qapp
             for index in range(window.mod_filter_tree.topLevelItemCount())
         }
         assert rows["グローバル防御力が25(10-30)%増加する"].text(1) == (
-            "ファウルボーン／カタリスト"
+            "Foulborn/Catalyst"
         )
         defence_minimum = window.mod_filter_tree.itemWidget(
             rows["グローバル防御力が25(10-30)%増加する"], 4,
         ).findChild(QLineEdit)
         assert defence_minimum.text() == "27"
         assert rows["グローバルクリティカルダメージ倍率 +22(10-30)%"].text(1) == (
-            "ファウルボーン"
+            'Foulborn'
         )
-        assert rows["全ての能力値 +13(10-30)"].text(1) == "明示"
-        assert rows["全ての元素耐性 +22(10-30)%"].text(1) == "明示"
+        assert rows["全ての能力値 +13(10-30)"].text(1) == 'Explicit'
+        assert rows["全ての元素耐性 +22(10-30)%"].text(1) == 'Explicit'
     finally:
         window.close()
 
@@ -1766,7 +1766,7 @@ def test_japanese_vestigial_unique_shows_enabled_implicit_in_real_panel(qapp):
         checkbox = window.mod_filter_tree.itemWidget(
             scorch, 0,
         ).findChild(QCheckBox, "modFilterCheckbox")
-        assert scorch.text(1) == "痕跡"
+        assert scorch.text(1) == 'Scourge'
         assert checkbox.isChecked()
         assert not window.mod_warning.isVisible()
     finally:
@@ -1806,7 +1806,7 @@ def test_foulborn_fixed_replacement_mod_is_enabled_in_real_panel(qapp):
             accuracy, 0
         ).findChild(QCheckBox, "modFilterCheckbox")
 
-        assert accuracy.text(1) == "ファウルボーン"
+        assert accuracy.text(1) == 'Foulborn'
         assert checkbox.isChecked()
         selected = window._selected_stat_filters()
         assert selected[rows.index(accuracy)].min_value == 3
@@ -1972,7 +1972,7 @@ def test_poetore_uses_wide_poena_theme_and_hides_debug_parse_area(qapp):
         assert not window._debug_parse_area.isVisible()
         assert window.mod_filter_tree.columnCount() == 6
         assert window.mod_filter_tree.header().isHidden()
-        assert window.mod_filter_tree.headerItem().text(2) == "ティア"
+        assert window.mod_filter_tree.headerItem().text(2) == 'Tier'
         assert "論理" not in [
             window.mod_filter_tree.headerItem().text(index)
             for index in range(window.mod_filter_tree.columnCount())
@@ -1996,7 +1996,7 @@ def test_poetore_uses_wide_poena_theme_and_hides_debug_parse_area(qapp):
         assert window.listed_within_combo.objectName() == "filterControl"
         assert window.trade_url_button.objectName() == "filterActionButton"
         assert all(
-            label.text() != "ぽえとれ"
+            label.text() != 'PoETore'
             for label in window.findChildren(QLabel)
         )
         muted_controls = (
@@ -2038,9 +2038,9 @@ Item Level: 83
         assert window.item_name_label.text() == "Spine Bow"
         assert window.item_name_label.isHidden()
         assert window.base_scope_toggle.itemText(0) == "Spine Bow"
-        assert window.base_scope_toggle.itemText(1) == "すべての弓"
-        assert window.weapon_property_label.text() == "武器性能・検索Mod"
-        assert window.weapon_dps_label.text() == "pDPS：137.7（品質20%換算）"
+        assert window.base_scope_toggle.itemText(1) == "All Bow"
+        assert window.weapon_property_label.text() == 'Weapon stats and search mods'
+        assert window.weapon_dps_label.text() == "pDPS: 137.7 (at 20% quality)"
         assert not window.weapon_dps_label.isHidden()
         filter_ids = {
             window.mod_filter_tree.topLevelItem(index).data(0, Qt.UserRole)
@@ -2099,7 +2099,7 @@ def test_weapon_header_shows_total_pdps_and_edps_but_hides_summary_for_non_weapo
 """)
         window.parse_current_text()
         assert window.weapon_dps_label.text() == (
-            "合計DPS：270.0（pDPS 225.0 / eDPS 45.0、pDPSは品質20%換算）"
+            "Total DPS: 270.0 (pDPS 225.0 / eDPS 45.0、pDPS at 20% quality)"
         )
         assert not window.weapon_dps_label.isHidden()
 
@@ -2114,7 +2114,7 @@ Attacks per Second: 1.50
 Item Level: 84
 """)
         window._update_item_header(elemental)
-        assert window.weapon_dps_label.text() == "eDPS：135.0"
+        assert window.weapon_dps_label.text() == "eDPS: 135.0"
         assert not window.weapon_dps_label.isHidden()
 
         armour = parse_item_text("""Item Class: Body Armours
@@ -2143,9 +2143,9 @@ def test_poetore_league_choices_include_sc_hc_and_persist(qapp):
             TradeLeague("Mirage"),
             TradeLeague("Hardcore Mirage", hardcore=True),
         ))
-        assert window.trade_league_combo.itemText(0) == "自動（現行SC: Mirage）"
+        assert window.trade_league_combo.itemText(0) == "Auto (current SC: Mirage)"
         assert window.trade_league_combo.currentData() == "Hardcore Mirage"
-        assert "（HC）" in window.trade_league_combo.currentText()
+        assert ' (HC)' in window.trade_league_combo.currentText()
 
         window.trade_league_combo.setCurrentIndex(0)
         assert config["poetore"]["league"] == "auto"
@@ -2182,9 +2182,9 @@ def test_poe2_title_bar_refresh_button_forces_a_fresh_league_request(qapp, monke
         window.league_refresh_button.click()
 
         assert requested == [True]
-        assert window.trade_league_combo.itemText(0) == "自動（現行SC: Fresh League）"
+        assert window.trade_league_combo.itemText(0) == "Auto (current SC: Fresh League)"
         assert window.league_refresh_button.isEnabled()
-        assert window.league_refresh_button.text() == "再取得"
+        assert window.league_refresh_button.text() == 'Refresh'
     finally:
         window.close()
 
@@ -2193,7 +2193,7 @@ def test_poe2_window_starts_with_current_leagues_and_reported_mageblood_is_resol
     config = {"poe_version": "poe2", "poetore": {"league_poe2": "auto"}}
     window = PoetoreWindow(app_config=config)
     try:
-        assert window.trade_league_combo.itemText(0) == "自動（現行SC: Forbidden Rites）"
+        assert window.trade_league_combo.itemText(0) == "Auto (current SC: Forbidden Rites)"
         assert [
             window.trade_league_combo.itemData(index)
             for index in range(window.trade_league_combo.count())
@@ -2330,8 +2330,8 @@ def test_poetore_search_range_is_persisted(qapp):
     window = PoetoreWindow(app_config=config, save_config=saved)
     try:
         assert window.search_range_combo.currentData() == 20
-        assert window.search_range_combo.currentText() == "Mod数値：-20%まで許容"
-        assert "読取値100・-10%まで許容 → 最小値90で検索" in (
+        assert window.search_range_combo.currentText() == "Mod values: -20% tolerance"
+        assert "read value 100 with -10% tolerance → search with minimum 90" in (
             window.search_range_combo.toolTip()
         )
         window.search_range_combo.setCurrentIndex(
@@ -2414,14 +2414,14 @@ def test_search_range_change_keeps_checkboxes_but_recalculates_edited_values(qap
 def test_hidden_candidates_and_pseudo_sources_can_be_toggled(qapp):
     window = PoetoreWindow()
     try:
-        assert window.mod_sources_toggle.text() == "計算元Modを表示"
-        assert "価格比較に影響しないため" in window.hidden_mods_toggle.toolTip()
+        assert window.mod_sources_toggle.text() == 'Show sources'
+        assert "don't affect price comparison" in window.hidden_mods_toggle.toolTip()
         assert "影響しにくい" not in window.hidden_mods_toggle.toolTip()
         assert "Pseudo" not in window.mod_sources_toggle.toolTip()
-        assert "複数の数値をまとめた検索条件" in (
+        assert "combine several values" in (
             window.mod_sources_toggle.toolTip()
         )
-        assert "計算に使われた元のMod文章" in (
+        assert "original mod text used in the calculation" in (
             window.mod_sources_toggle.toolTip()
         )
         window._populate_stat_filters((
@@ -2461,10 +2461,10 @@ def test_hidden_candidates_and_pseudo_sources_can_be_toggled(qapp):
         assert not hidden.isHidden()
 
         window.mod_sources_toggle.setChecked(True)
-        assert window.mod_sources_toggle.text() == "計算元Modを隠す"
+        assert window.mod_sources_toggle.text() == 'Hide sources'
         assert normal.isExpanded()
         window.mod_sources_toggle.setChecked(False)
-        assert window.mod_sources_toggle.text() == "計算元Modを表示"
+        assert window.mod_sources_toggle.text() == 'Show sources'
         assert not normal.isExpanded()
     finally:
         window.close()
@@ -2646,7 +2646,7 @@ def test_search_keeps_checked_hidden_unique_mutation_visible(qapp):
 
         assert search.called
         assert not window.hidden_mods_toggle.isChecked()
-        assert window.hidden_mods_toggle.text() == "隠し候補を表示"
+        assert window.hidden_mods_toggle.text() == 'Show hidden'
         assert not window.mod_filter_tree.topLevelItem(0).isHidden()
         assert not window.mod_filter_tree.topLevelItem(1).isHidden()
         sent = search.call_args.kwargs["stat_filters"]
@@ -2685,7 +2685,7 @@ def test_price_result_is_rendered_in_japanese(qapp):
         window.trade_status_combo.findData("available")
     )
     window._parsed_item = ParsedItem(
-        "剣", "レア", "Doom Sever", "Reaver Sword", "weapon", item_level=86,
+        'Sword', "レア", "Doom Sever", "Reaver Sword", "weapon", item_level=86,
     )
     window.item_level_tag.show()
     window._set_item_level_filter_enabled(True)
@@ -2697,13 +2697,13 @@ def test_price_result_is_rendered_in_japanese(qapp):
                      "2026-07-22T09:22:00Z", 87),
     )))
     assert "Mirage" in window.price_status.text()
-    assert "候補42件" in window.price_status.text()
-    assert window.price_status.text() == "Mirage: 候補42件 / 取得2件"
+    assert "42 candidates" in window.price_status.text()
+    assert window.price_status.text() == "Mirage: 42 candidates / 2 fetched"
     assert "中央値" not in window.price_status.text()
     assert "安値例" not in window.price_status.text()
     assert window.price_list.topLevelItemCount() == 2
     assert [window.price_list.headerItem().text(i) for i in range(4)] == [
-        "価格", "ilvl", "出品日時", "取引方式",
+        'Price', "ilvl", 'Listed', 'Trade type',
     ]
     first_price = window.price_list.itemWidget(
         window.price_list.topLevelItem(0), 0,
@@ -2713,8 +2713,8 @@ def test_price_result_is_rendered_in_japanese(qapp):
     chaos_icon = first_price.findChild(QLabel, "priceCurrencyIcon-chaos")
     assert chaos_icon is not None and not chaos_icon.pixmap().isNull()
     assert window.price_list.topLevelItem(0).text(1) == "86"
-    assert window.price_list.topLevelItem(0).text(2).endswith("前")
-    assert window.price_list.topLevelItem(0).text(3) == "対面"
+    assert window.price_list.topLevelItem(0).text(2).endswith("ago")
+    assert window.price_list.topLevelItem(0).text(3) == 'In person'
     header = window.price_list.header()
     assert header.sectionResizeMode(0) == QHeaderView.ResizeToContents
     assert header.sectionResizeMode(1) == QHeaderView.ResizeToContents
@@ -2731,7 +2731,7 @@ def test_price_result_is_rendered_in_japanese(qapp):
             PriceListing(4, "chaos"), PriceListing(6, "chaos"),
         ), cached=True,
     ))
-    assert window.price_status.text() == "Mirage: 候補42件 / 取得2件 / キャッシュ"
+    assert window.price_status.text() == "Mirage: 42 candidates / 2 fetched / cached"
     window.close()
 
 
@@ -2807,18 +2807,18 @@ def test_poe2_augment_estimates_render_compactly_below_results(qapp):
             ),
         }, 7)
         assert window.virtual_augment_cost_label.text() == (
-            "仮挿入オーグメントの参考費用　9.2 ex"
+            "Reference cost of inserted augments 9.2 ex"
         )
-        assert "カレンシー交換の直近価格を優先" in (
+        assert "latest Currency Exchange prices" in (
             window.virtual_augment_cost_label.toolTip()
         )
         assert window.installed_augment_recovery_value.text() == (
-            "装着済みオーグメントの回収参考価値　11 ex"
+            "Reference value of recovering socketed augments 11 ex"
         )
         assert window.installed_augment_recovery_comparison.text() == (
-            "出品最安 6 ex より +5 ex（素材 13 − 抽出 2）"
+            "+5 ex vs cheapest listing 6 ex (materials 13 − extraction 2)"
         )
-        assert "カレンシー交換の直近価格を優先" in (
+        assert "latest Currency Exchange prices" in (
             window.installed_augment_recovery_panel.toolTip()
         )
         assert not window.installed_augment_recovery_hint.isHidden()
@@ -2990,7 +2990,7 @@ def test_poe2_augment_recovery_hides_hint_when_listing_is_better(qapp):
             ),
         }, 3)
         assert window.installed_augment_recovery_comparison.text() == (
-            "出品最安 10 ex より −4 ex（素材 8 − 抽出 2）"
+            "−4 ex vs cheapest listing 10 ex (materials 8 − extraction 2)"
         )
         assert window.installed_augment_recovery_hint.isHidden()
         assert not window.installed_augment_recovery_panel.isHidden()
@@ -3009,7 +3009,7 @@ def test_partial_price_result_is_shown_without_finishing_search(qapp):
     try:
         window._search_partially_completed(result, 7)
 
-        assert "取得中" in window.price_status.text()
+        assert "Fetching" in window.price_status.text()
         assert window.price_list.topLevelItemCount() == 1
         assert not window.price_button.isEnabled()
         assert not window.trade_url_button.isEnabled()
@@ -3031,14 +3031,14 @@ def test_next_ten_button_is_shown_only_for_poe2_results(qapp):
 
         assert poe1.additional_results_button.isHidden()
         assert not poe2.additional_results_button.isHidden()
-        assert poe2.additional_results_button.text() == "次の10件を取得"
-        assert poe2.price_status.text() == "Standard: 候補30件 / 取得10件"
+        assert poe2.additional_results_button.text() == 'Load next 10'
+        assert poe2.price_status.text() == "Standard: 30 candidates / 10 fetched"
 
         poe2._additional_results_completed(replace(
             result, next_result_ids=(), fetched_count=20,
         ), poe2._search_generation)
         assert poe2.additional_results_button.isHidden()
-        assert poe2.price_status.text() == "Standard: 候補30件 / 取得20件"
+        assert poe2.price_status.text() == "Standard: 30 candidates / 20 fetched"
     finally:
         poe1.close()
         poe2.close()
@@ -3046,8 +3046,8 @@ def test_next_ten_button_is_shown_only_for_poe2_results(qapp):
 
 def test_relative_listing_time_is_shown_without_online_status(qapp):
     now = datetime(2026, 7, 22, 9, 24, tzinfo=timezone.utc)
-    assert PoetoreWindow._relative_listing_time("2026-07-22T09:21:00Z", now) == "3分前"
-    assert PoetoreWindow._relative_listing_time("2026-07-22T07:24:00+00:00", now) == "2時間前"
+    assert PoetoreWindow._relative_listing_time("2026-07-22T09:21:00Z", now) == "3m ago"
+    assert PoetoreWindow._relative_listing_time("2026-07-22T07:24:00+00:00", now) == "2h ago"
     assert PoetoreWindow._relative_listing_time("", now) == "-"
 
 
@@ -3063,13 +3063,13 @@ def test_price_result_shows_pricing_method_in_rightmost_column(qapp):
             PriceListing(0, "", pricing_method="unpriced"),
         )))
         last_column = window.price_list.columnCount() - 1
-        assert window.price_list.headerItem().text(last_column) == "取引方式"
+        assert window.price_list.headerItem().text(last_column) == 'Trade type'
         assert [
             window.price_list.topLevelItem(index).text(last_column)
             for index in range(3)
-        ] == ["対面", "インスタント", "値段なし"]
-        assert window.price_list.topLevelItem(2).text(0) == "値段なし"
-        assert window.price_status.text() == "Mirage: 候補3件 / 取得3件"
+        ] == ['In person', 'Instant', 'No price']
+        assert window.price_list.topLevelItem(2).text(0) == 'No price'
+        assert window.price_status.text() == "Mirage: 3 candidates / 3 fetched"
     finally:
         window.close()
 
@@ -3096,7 +3096,7 @@ def test_price_result_uses_currency_icons_and_keeps_text_fallback(qapp):
         assert window.price_list.itemWidget(window.price_list.topLevelItem(2), 0) is None
         assert window.price_list.topLevelItem(2).text(0) == "2 mirror"
         assert window.price_list.itemWidget(window.price_list.topLevelItem(3), 0) is None
-        assert window.price_list.topLevelItem(3).text(0) == "値段なし"
+        assert window.price_list.topLevelItem(3).text(0) == 'No price'
     finally:
         window.close()
 
@@ -3158,7 +3158,7 @@ def test_gem_result_adds_gem_level_and_quality_columns(qapp):
             PriceListing(2, "chaos", indexed="2026-07-22T09:21:00Z", gem_level=20, quality=23),
         )))
         assert [window.price_list.headerItem().text(i) for i in range(5)] == [
-            "価格", "ジェムLv", "品質", "出品日時", "取引方式",
+            'Price', 'Gem Lv', "品質", 'Listed', 'Trade type',
         ]
         assert window.price_list.topLevelItem(0).text(1) == "20"
         assert window.price_list.topLevelItem(0).text(2) == "23"
@@ -3175,8 +3175,8 @@ def test_japanese_trade_url_button_opens_result_url(qapp):
         ))
         assert window.trade_url_button.isEnabled()
         assert window.price_status.text() == (
-            "Standard: 検索候補0件 / キャッシュ。"
-            "価格付き出品は取得できませんでした。"
+            "Standard: 0 candidates / cached. "
+            'Could not get any priced listings.'
         )
         with patch("src.poetore.ui.QDesktopServices.openUrl") as opened:
             window._open_trade_url()
@@ -3209,7 +3209,7 @@ Arc
         assert [
             window.price_list.headerItem().text(index)
             for index in range(window.price_list.columnCount())
-        ] == ["価格", "ジェムLv", "品質", "出品日時", "取引方式"]
+        ] == ['Price', 'Gem Lv', "品質", 'Listed', 'Trade type']
 
         weapon = parse_item_text("""アイテムクラス: ワンド
 レアリティ: レア
@@ -3231,7 +3231,7 @@ Imbued Wand
         assert [
             window.price_list.headerItem().text(index)
             for index in range(window.price_list.columnCount())
-        ] == ["価格", "ilvl", "出品日時", "取引方式"]
+        ] == ['Price', "ilvl", 'Listed', 'Trade type']
     finally:
         window.close()
 
@@ -3250,7 +3250,7 @@ def test_price_result_hides_redundant_pricing_method_column(qapp, trade_status):
         assert [
             window.price_list.headerItem().text(index)
             for index in range(window.price_list.columnCount())
-        ] == ["価格", "出品日時"]
+        ] == ['Price', 'Listed']
     finally:
         window.close()
 
@@ -3610,13 +3610,13 @@ def test_mod_filter_ui_keeps_diagnostics_internal_and_tooltip_simple(qapp):
 
 
 @pytest.mark.parametrize(("provenance", "label"), [
-    ("crafted", "クラフト"),
-    ("fractured", "フラクチャー"),
-    ("desecrated", "冒涜"),
-    ("catalyst", "カタリスト"),
-    ("volatile", "ヴォラタイル・ヴァール"),
-    ("reflecting", "リフレクティング・ミスト"),
-    ("corrupted", "コラプト"),
+    ("crafted", 'Crafted'),
+    ("fractured", 'Fractured'),
+    ("desecrated", 'Desecrated'),
+    ("catalyst", 'Catalyst'),
+    ("volatile", 'Volatile Vaal'),
+    ("reflecting", 'Reflecting Mist'),
+    ("corrupted", 'Corrupted'),
 ])
 def test_mod_filter_ui_shows_provenance_in_kind_column(qapp, provenance, label):
     window = PoetoreWindow()
@@ -3659,7 +3659,7 @@ def test_poe2_finished_filter_keeps_special_origin_visible_after_normalization(q
             row for row in rows
             if row.data(_MOD_COLUMN_CHECK, Qt.UserRole) == normalized.stat_id
         )
-        assert row.text(_MOD_COLUMN_KIND) == "フラクチャー"
+        assert row.text(_MOD_COLUMN_KIND) == 'Fractured'
         assert window.mod_filter_tree.itemWidget(row, _MOD_COLUMN_TEXT) is None
         selected = next(
             row for row in window._selected_stat_filters()
@@ -3691,7 +3691,7 @@ def test_poe2_filter_ui_shows_affixes_and_property_first(qapp):
             window.mod_filter_tree.topLevelItem(index).text(_MOD_COLUMN_KIND)
             for index in range(window.mod_filter_tree.topLevelItemCount())
         ]
-        assert labels == ["アイテム特性", "プレフィックス", "サフィックス", "特殊"]
+        assert labels == ['Item property', 'Prefix', 'Suffix', 'Special']
     finally:
         window.close()
 
@@ -3705,7 +3705,7 @@ def test_mod_filter_ui_lists_merged_special_origins_in_kind_column(qapp):
         )
         window._populate_stat_filters((source,))
         row = window.mod_filter_tree.topLevelItem(0)
-        assert row.text(_MOD_COLUMN_KIND) == "クラフト／フラクチャー"
+        assert row.text(_MOD_COLUMN_KIND) == "Crafted/Fractured"
     finally:
         window.close()
 
@@ -3725,7 +3725,7 @@ def test_poe2_mod_kind_column_is_capped_and_full_label_has_tooltip(qapp):
         assert window.mod_filter_tree.columnWidth(_MOD_COLUMN_KIND) <= (
             window._scaled_display_value(104)
         )
-        assert row.toolTip(_MOD_COLUMN_KIND) == "クラフト／フラクチャー"
+        assert row.toolTip(_MOD_COLUMN_KIND) == "Crafted/Fractured"
         assert row.toolTip(_MOD_COLUMN_TEXT) == source.text
     finally:
         window.close()
@@ -3964,7 +3964,7 @@ def test_mod_filter_ui_shows_multiple_awakened_tier_tags_on_property(qapp):
         )
         window._populate_stat_filters((source,))
         row = window.mod_filter_tree.topLevelItem(0)
-        assert row.text(1) == "アイテム特性"
+        assert row.text(1) == 'Item property'
         assert row.text(2) == ""
         tier_widget = window.mod_filter_tree.itemWidget(row, 2)
         assert tier_widget is not None
@@ -4065,15 +4065,15 @@ def test_mod_conditions_can_be_collapsed_without_losing_values(qapp):
         editor.setText("95")
 
         window.show()
-        assert window.mod_conditions_toggle.text() == "mod条件をたたむ∧"
+        assert window.mod_conditions_toggle.text() == 'Collapse ∧'
         window.mod_conditions_toggle.click()
         assert window.mod_filter_tree.isHidden()
-        assert window.mod_conditions_toggle.text() == "mod条件をひらく∨"
+        assert window.mod_conditions_toggle.text() == 'Expand ∨'
         assert window._selected_stat_filters()[0].min_value == 95
 
         window.mod_conditions_toggle.click()
         assert not window.mod_filter_tree.isHidden()
-        assert window.mod_conditions_toggle.text() == "mod条件をたたむ∧"
+        assert window.mod_conditions_toggle.text() == 'Collapse ∧'
     finally:
         window.close()
 
@@ -4092,7 +4092,7 @@ def test_mod_conditions_default_is_reset_for_each_new_item(qapp):
 
         assert window.mod_filter_tree.topLevelItemCount() == 0
         assert window.mod_filter_tree.isHidden()
-        assert window.mod_conditions_toggle.text() == "mod条件をひらく∨"
+        assert window.mod_conditions_toggle.text() == 'Expand ∨'
 
         window.mod_conditions_toggle.click()
         assert not window.mod_filter_tree.isHidden()
@@ -4114,7 +4114,7 @@ def test_mod_conditions_default_is_reset_for_each_new_item(qapp):
 
         assert window.mod_filter_tree.topLevelItemCount() > 0
         assert not window.mod_filter_tree.isHidden()
-        assert window.mod_conditions_toggle.text() == "mod条件をたたむ∧"
+        assert window.mod_conditions_toggle.text() == 'Collapse ∧'
     finally:
         window.close()
 
@@ -4218,9 +4218,9 @@ def test_mod_condition_checks_toggle_all_without_changing_item_level(qapp):
         window.item_level_edit.setText("84")
         window._set_item_level_filter_enabled(True)
 
-        assert window.clear_mod_conditions_button.text() == "一覧のチェックを全て解除"
+        assert window.clear_mod_conditions_button.text() == 'Uncheck all'
         assert window.clear_mod_conditions_button.toolTip() == (
-            "上の条件一覧のみ。ilvlなどの基本条件は変更しません"
+            'Only the condition list above; basic conditions like ilvl are not changed'
         )
         window.show()
         qapp.processEvents()
@@ -4239,14 +4239,14 @@ def test_mod_condition_checks_toggle_all_without_changing_item_level(qapp):
         window.clear_mod_conditions_button.click()
 
         assert [row.enabled for row in window._selected_stat_filters()] == [False, False]
-        assert window.clear_mod_conditions_button.text() == "一覧のチェックを全て選択"
+        assert window.clear_mod_conditions_button.text() == 'Check all'
         assert window._selected_item_level() == 84
         assert window._item_level_filter_enabled
 
         window.clear_mod_conditions_button.click()
 
         assert [row.enabled for row in window._selected_stat_filters()] == [True, True]
-        assert window.clear_mod_conditions_button.text() == "一覧のチェックを全て解除"
+        assert window.clear_mod_conditions_button.text() == 'Uncheck all'
     finally:
         window.close()
 
@@ -4261,14 +4261,14 @@ def test_mod_condition_toggle_shows_clear_when_partially_checked(qapp):
         window._populate_stat_filters(filters)
 
         assert [row.enabled for row in window._selected_stat_filters()] == [True, False]
-        assert window.clear_mod_conditions_button.text() == "一覧のチェックを全て解除"
+        assert window.clear_mod_conditions_button.text() == 'Uncheck all'
 
         checkboxes = window._mod_condition_checkboxes()
         checkboxes[0].setChecked(False)
-        assert window.clear_mod_conditions_button.text() == "一覧のチェックを全て選択"
+        assert window.clear_mod_conditions_button.text() == 'Check all'
 
         checkboxes[1].setChecked(True)
-        assert window.clear_mod_conditions_button.text() == "一覧のチェックを全て解除"
+        assert window.clear_mod_conditions_button.text() == 'Uncheck all'
     finally:
         window.close()
 
@@ -4287,7 +4287,7 @@ Unknown Experimental Modifier 123
 """)
         window.parse_current_text()
         assert not window.mod_warning.isHidden()
-        assert "メタデータ未解決 1件" in window.mod_warning.text()
+        assert "Unresolved metadata: 1" in window.mod_warning.text()
         assert "Unknown Experimental Modifier 123" in window.mod_warning.text()
     finally:
         window.close()
@@ -4652,7 +4652,7 @@ Contract: Underbelly
         assert not window.heist_job_chip.isHidden()
         assert window.heist_job_chip.values() == (1.0, None)
         assert window.heist_job_chip.isActive()
-        assert "Job Lv（工作）" in window.heist_job_chip.toggle.text()
+        assert "Job Lv (Engineering)" in window.heist_job_chip.toggle.text()
         assert window.area_level_chip.values() == (49.0, None)
         assert window.mod_warning.isHidden()
         rows = [
@@ -4721,7 +4721,7 @@ def test_japanese_contract_required_deception_is_visible_in_job_chip(qapp):
 
         assert not window.heist_job_chip.isHidden()
         assert window.heist_job_chip.values() == (1.0, None)
-        assert "Job Lv（欺瞞）" in window.heist_job_chip.toggle.text()
+        assert "Job Lv (Deception)" in window.heist_job_chip.toggle.text()
         selected = window._selected_special_chip_filters()
         deception = next(row for row in selected if row.stat_id == "property.heist_deception")
         assert deception.min_value == 1.0
@@ -4774,7 +4774,7 @@ def test_inscribed_ultimatum_shows_unsupported_condition_notice(qapp):
         window.parse_current_text()
         assert not window.search_scope_notice.isHidden()
         assert window.search_scope_notice.text() == (
-            "⚠ チャレンジタイプ・報酬種類・必要なアイテム・報酬などの条件を使った検索には対応しておりません。"
+            '⚠ Searching by challenge type, reward type, required items, or rewards is not supported.'
         )
         assert window.mod_filter_tree.topLevelItemCount() == 0
 
@@ -4850,7 +4850,7 @@ def test_unidentified_unique_candidates_can_be_selected(qapp):
         buttons[1].click()
         assert buttons[1].isChecked()
         assert not buttons[0].isChecked()
-        assert "2種類" in window.price_status.text()
+        assert "2 " in window.price_status.text()
     finally:
         window.close()
 
@@ -4914,13 +4914,13 @@ def test_unidentified_unique_candidate_selection_recalculates_disenchant_dust(qa
             assert not window.disenchant_dust_panel.isHidden()
             assert window.disenchant_dust_value.text() == "551.2K"
             assert window.disenchant_dust_panel.toolTip() == (
-                "解呪ダスト（推定）：551,218"
+                "Disenchant dust (est.): 551,218"
             )
 
             window.unique_name_group.buttons()[1].click()
             assert window.disenchant_dust_value.text() == "153.3K"
             assert window.disenchant_dust_panel.toolTip() == (
-                "解呪ダスト（推定）：153,349"
+                "Disenchant dust (est.): 153,349"
             )
     finally:
         window.close()
@@ -4941,7 +4941,7 @@ Item Level: 85
         assert not window.disenchant_dust_panel.isHidden()
         assert window.disenchant_dust_value.text() == "2.23M"
         assert window.disenchant_dust_panel.toolTip() == (
-            "解呪ダスト（推定）：2,227,900"
+            "Disenchant dust (est.): 2,227,900"
         )
         assert window.weapon_property_header.indexOf(window.disenchant_dust_panel) >= 0
     finally:
@@ -4967,10 +4967,10 @@ def test_identified_japanese_unique_uses_resolved_identity_for_compact_dust(qapp
         window.parse_current_text()
 
         assert not window.disenchant_dust_panel.isHidden()
-        assert window.disenchant_dust_label.text() == "ダスト"
+        assert window.disenchant_dust_label.text() == 'Dust'
         assert window.disenchant_dust_value.text() == "119.7K"
         assert window.disenchant_dust_panel.toolTip() == (
-            "解呪ダスト（推定）：119,700"
+            "Disenchant dust (est.): 119,700"
         )
     finally:
         window.close()
@@ -5086,7 +5086,7 @@ def test_unique_variant_discriminator_can_be_selected(qapp):
         assert window.unique_variant_combo.isVisible() or not window.unique_variant_combo.isHidden()
         assert window.unique_variant_combo.count() == 2
         assert window.unique_variant_combo.itemData(1) == "legacy"
-        assert "2種類" in window.price_status.text()
+        assert "2 " in window.price_status.text()
     finally:
         window.close()
 
@@ -5129,14 +5129,14 @@ def test_split_filter_is_an_awakened_style_cycle_button(qapp):
     try:
         toggle = window.split_combo
         assert toggle.property("active") is True
-        assert toggle.currentText() == "スプリット品含む"
+        assert toggle.currentText() == 'Include split'
         assert toggle.currentData() is True
         toggle.click()
-        assert toggle.currentText() == "非スプリット"
+        assert toggle.currentText() == 'Non-split'
         assert toggle.currentData() is False
         assert toggle.property("active") is True
         toggle.click()
-        assert toggle.currentText() == "スプリット品含む"
+        assert toggle.currentText() == 'Include split'
     finally:
         window.close()
 
@@ -5145,12 +5145,12 @@ def test_item_state_cycle_buttons_use_clear_search_condition_labels(qapp):
     window = PoetoreWindow()
     try:
         expected_labels = {
-            "unidentified_chip": ("未鑑定のみ", "未鑑定を含む"),
-            "veiled_chip": ("同一Veiled Modあり", "Veiled指定なし"),
-            "foil_chip": ("Foil Unique", "通常Unique"),
-            "mirrored_combo": ("ミラー品含む", "ミラー品を除外"),
-            "sanctified_combo": ("聖別品のみ", "非聖別品のみ", "聖別品含む"),
-            "split_combo": ("スプリット品含む", "非スプリット"),
+            "unidentified_chip": ('Unidentified only', 'Include unidentified'),
+            "veiled_chip": ('Same veiled mod', 'Any veiled'),
+            "foil_chip": ("Foil Unique", 'Normal unique'),
+            "mirrored_combo": ('Include mirrored', 'Exclude mirrored'),
+            "sanctified_combo": ('Sanctified only', 'Non-sanctified only', 'Include sanctified'),
+            "split_combo": ('Include split', 'Non-split'),
         }
         for name, labels in expected_labels.items():
             toggle = getattr(window, name)
@@ -5164,17 +5164,17 @@ def test_corruption_filter_is_a_three_state_cycle_button(qapp):
     try:
         toggle = window.corrupted_combo
         assert toggle.count() == 3
-        assert toggle.currentText() == "非コラプトのみ"
+        assert toggle.currentText() == 'Non-corrupted only'
         assert toggle.currentData() is False
         toggle.click()
-        assert toggle.currentText() == "コラプト品含む"
+        assert toggle.currentText() == 'Include corrupted'
         assert toggle.currentData() is True
         toggle.click()
-        assert toggle.currentText() == "コラプトのみ"
+        assert toggle.currentText() == 'Corrupted only'
         assert toggle.currentData() == "only"
         assert toggle.property("alert") is True
         toggle.click()
-        assert toggle.currentText() == "非コラプトのみ"
+        assert toggle.currentText() == 'Non-corrupted only'
         assert toggle.property("alert") is False
     finally:
         window.close()
@@ -5200,7 +5200,7 @@ Item Level: 85
         assert not isinstance(window.trade_preset_combo, QComboBox)
 
         window.trade_preset_combo.setCurrentIndex(1)
-        assert "ベースアイテム" in window.price_status.text()
+        assert 'base item' in window.price_status.text()
 
         low_level = parse_item_text(high_level.raw_text.replace("Item Level: 85", "Item Level: 70"))
         window._configure_trade_presets(low_level)
@@ -5233,12 +5233,12 @@ def test_dedicated_exact_preset_is_labeled_as_dedicated_search_and_restores_fini
         window._configure_trade_presets(exact_item)
         assert window.trade_preset_combo.count() == 1
         assert window.trade_preset_combo.currentData() == "finished"
-        assert window.trade_preset_combo.currentText() == "専用検索"
-        assert window.trade_preset_combo._buttons[0].text() == "専用検索"
+        assert window.trade_preset_combo.currentText() == 'Dedicated search'
+        assert window.trade_preset_combo._buttons[0].text() == 'Dedicated search'
         assert window.trade_preset_combo.isHidden()
         assert not window.trade_preset_placeholder.isHidden()
         window._trade_preset_changed()
-        assert "専用条件" in window.price_status.text()
+        assert "dedicated conditions" in window.price_status.text()
 
         craftable_item = parse_item_text("""Item Class: Rings
 Rarity: Rare
@@ -5251,8 +5251,8 @@ Item Level: 85
 """)
         window._parsed_item = craftable_item
         window._configure_trade_presets(craftable_item)
-        assert window.trade_preset_combo.currentText() == "完成品"
-        assert window.trade_preset_combo.itemText(1) == "ベースアイテム"
+        assert window.trade_preset_combo.currentText() == 'Finished item'
+        assert window.trade_preset_combo.itemText(1) == 'Base item'
         assert window.trade_preset_combo.count() == 2
         assert not window.trade_preset_combo.isHidden()
         assert window.trade_preset_placeholder.isHidden()
@@ -5282,8 +5282,8 @@ Superior Imbued Wand
 
         assert window.trade_preset_combo.count() == 1
         assert window.trade_preset_combo.currentData() == "finished"
-        assert window.trade_preset_combo.currentText() == "ベースアイテム"
-        assert window.trade_preset_combo._buttons[0].text() == "ベースアイテム"
+        assert window.trade_preset_combo.currentText() == 'Base item'
+        assert window.trade_preset_combo._buttons[0].text() == 'Base item'
         assert window.trade_preset_combo.isHidden()
         assert not window.trade_preset_placeholder.isHidden()
     finally:
@@ -5371,15 +5371,15 @@ Item Level: 75
         window._configure_trade_presets(item)
 
         assert window.trade_preset_combo.count() == 2
-        assert window.rarity_condition_chip.text() == "非ユニーク"
+        assert window.rarity_condition_chip.text() == 'Non-unique'
         assert not window.rarity_condition_chip.isHidden()
         assert window.magic_rarity_toggle.isHidden()
 
         window.trade_preset_combo.setCurrentIndex(1)
         assert window.rarity_condition_chip.isHidden()
         assert not window.magic_rarity_toggle.isHidden()
-        assert window.magic_rarity_toggle.itemText(0) == "非ユニーク"
-        assert window.magic_rarity_toggle.currentText() == "マジック完全一致"
+        assert window.magic_rarity_toggle.itemText(0) == 'Non-unique'
+        assert window.magic_rarity_toggle.currentText() == 'Magic exact'
 
         window.magic_rarity_toggle.setCurrentIndex(0)
         assert window.magic_rarity_toggle.currentData() is False
@@ -5390,7 +5390,7 @@ Item Level: 75
 def test_poe2_fixed_rarity_condition_labels_match_trade2(qapp):
     window = PoetoreWindow(app_config={"poe_version": POE2})
     try:
-        for rarity, expected in (("Rare", "非ユニーク"), ("Unique", "ユニーク")):
+        for rarity, expected in (("Rare", 'Non-unique'), ("Unique", "Unique")):
             item = ParsedItem(
                 "Rings", rarity, "Test", "Ruby Ring", "ring",
                 item_level=75, raw_text=f"{rarity} ring",
@@ -5579,24 +5579,24 @@ def test_poe2_trade_currency_shortens_only_exalted_divine_label(qapp):
             window.trade_currency_combo.itemText(index)
             for index in range(window.trade_currency_combo.count())
         ] == [
-            "すべての通貨",
-            "高貴なオーブのみ",
-            "神のオーブのみ",
-            "カオスオーブのみ",
-            "高貴または神",
+            'Any currency',
+            'Exalted Orb only',
+            'Divine Orb only',
+            'Chaos Orb only',
+            'Exalted/Divine',
         ]
 
         chaos = window.trade_currency_combo.findData("chaos")
         assert chaos >= 0
         window.trade_currency_combo.setCurrentIndex(chaos)
         assert window.trade_currency_combo.toolTip() == (
-            "カオスオーブ建ての出品のみ"
+            'Only listings priced in Chaos Orbs'
         )
 
         combined = window.trade_currency_combo.findData("exalted_divine")
         window.trade_currency_combo.setCurrentIndex(combined)
         assert window.trade_currency_combo.toolTip() == (
-            "高貴なオーブまたは神のオーブ建ての出品"
+            'Listings priced in Exalted or Divine Orbs'
         )
 
         window._fit_compact_action_widths()
@@ -5606,13 +5606,13 @@ def test_poe2_trade_currency_shortens_only_exalted_divine_label(qapp):
             _DISPLAY_SIZE_PROFILES[window._result_font_size]["mod_value_font"]
         )
         compact_metrics = QFontMetrics(compact_font)
-        assert combined_width == compact_metrics.horizontalAdvance("高貴または神") + 12
+        assert combined_width == compact_metrics.horizontalAdvance('Exalted/Divine') + 12
         window.trade_currency_combo.setCurrentIndex(
             window.trade_currency_combo.findData("exalted")
         )
         window._fit_compact_action_widths()
         exalted_width = window.trade_currency_combo.width()
-        assert exalted_width == compact_metrics.horizontalAdvance("高貴なオーブのみ") + 12
+        assert exalted_width == compact_metrics.horizontalAdvance('Exalted Orb only') + 12
         assert window.trade_currency_combo.view().minimumWidth() >= exalted_width
         assert combined_width < window.trade_status_combo.width()
         assert combined_width < exalted_width
@@ -5694,12 +5694,12 @@ Item Level: 94
 Split
 """)
         window._configure_item_state_filters(item)
-        assert window.corrupted_combo.itemText(0) == "コラプトのみ"
-        assert window.corrupted_combo.itemText(1) == "非コラプトのみ"
-        assert window.corrupted_combo.itemText(2) == "コラプト品含む"
+        assert window.corrupted_combo.itemText(0) == 'Corrupted only'
+        assert window.corrupted_combo.itemText(1) == 'Non-corrupted only'
+        assert window.corrupted_combo.itemText(2) == 'Include corrupted'
         assert window.corrupted_combo.currentData() is False
-        assert window.split_combo.itemText(0) == "スプリット品含む"
-        assert window.split_combo.itemText(1) == "非スプリット"
+        assert window.split_combo.itemText(0) == 'Include split'
+        assert window.split_combo.itemText(1) == 'Non-split'
         assert window.split_combo.currentData() is True
         assert not window.split_combo.isHidden()
         assert not isinstance(window.corrupted_combo, QComboBox)
@@ -5810,10 +5810,10 @@ Mirrored
 """)
         window._configure_item_state_filters(mirrored)
         assert not window.mirrored_combo.isHidden()
-        assert window.mirrored_combo.currentText() == "ミラー品含む"
+        assert window.mirrored_combo.currentText() == 'Include mirrored'
         assert window.mirrored_combo.currentData() is True
         window.mirrored_combo.click()
-        assert window.mirrored_combo.currentText() == "ミラー品を除外"
+        assert window.mirrored_combo.currentText() == 'Exclude mirrored'
         assert window.mirrored_combo.currentData() is False
 
         plain = replace(mirrored, raw_text="plain", flags=())
@@ -5841,17 +5841,17 @@ def test_poe2_sanctified_chip_is_three_state_without_warning_color(qapp):
 
         toggle = window.sanctified_combo
         assert not toggle.isHidden()
-        assert toggle.currentText() == "聖別品のみ"
+        assert toggle.currentText() == 'Sanctified only'
         assert toggle.currentData() == "only"
         assert toggle.property("alert") is False
 
         toggle.click()
-        assert toggle.currentText() == "非聖別品のみ"
+        assert toggle.currentText() == 'Non-sanctified only'
         assert toggle.currentData() is False
         assert toggle.property("alert") is False
 
         toggle.click()
-        assert toggle.currentText() == "聖別品含む"
+        assert toggle.currentText() == 'Include sanctified'
         assert toggle.currentData() is True
         assert toggle.property("alert") is False
 
@@ -5893,7 +5893,7 @@ Penumbra Ring
         assert by_id["explicit.stat_1368271171"].min_value == 48.0
         assert window.mod_warning.isHidden()
         assert not window.mirrored_combo.isHidden()
-        assert window.mirrored_combo.currentText() == "ミラー品含む"
+        assert window.mirrored_combo.currentText() == 'Include mirrored'
     finally:
         window.close()
 
@@ -6078,7 +6078,7 @@ Map (Tier 16)
         window._trade_base_type = "Nightmare Map"
         window._configure_special_filter_chips(nightmare_map)
         assert not window.nightmare_map_chip.isHidden()
-        assert window.nightmare_map_chip.text() == "ナイトメア"
+        assert window.nightmare_map_chip.text() == 'Nightmare'
         assert not window.nightmare_map_chip.isEnabled()
         assert window.map_tier_chip.isHidden()
         assert "property.map_tier" not in {
@@ -6173,8 +6173,8 @@ Valdo Map
         assert window.completion_reward_chip.isHidden()
         assert not window.search_scope_notice.isHidden()
         assert window.search_scope_notice.text() == (
-            "⚠ Valdo Mapの報酬条件を使った検索は初版では対応していません。"
-            "報酬を除く条件で検索します。"
+            '⚠ Searching by Valdo Map reward is not supported in this version. '
+            'Searching without the reward condition.'
         )
         assert "property.map_completion_reward" not in {
             row.stat_id for row in window._selected_special_chip_filters()
@@ -6223,7 +6223,7 @@ Judgement Staff
             for button in window.unique_name_group.buttons()
         ] == ["The First", "The Second"]
         assert window.price_button.isEnabled()
-        assert "候補を選んで" in window.price_status.text()
+        assert "Choose one" in window.price_status.text()
     finally:
         window.close()
 
@@ -6349,7 +6349,7 @@ Item Level: 86
         assert window.item_level_edit.validator().top() == 100
         assert window.item_level_tag.parentWidget() is window.filter_chip_container
         assert window._selected_item_level() is None
-        assert window.item_level_toggle.text() == "☐ ilvl："
+        assert window.item_level_toggle.text() == '☐ ilvl: '
 
         window.item_level_edit.setText("84")
         window.item_level_toggle.click()
@@ -6357,12 +6357,12 @@ Item Level: 86
         window.item_level_toggle.click()
         assert window._selected_item_level_range() == (None, None)
         assert window.item_level_tag.property("active") is False
-        assert window.item_level_toggle.text() == "☐ ilvl："
+        assert window.item_level_toggle.text() == '☐ ilvl: '
         assert window.item_level_edit.font().strikeOut()
         window.item_level_toggle.click()
         assert window._selected_item_level_range() == (84, None)
         assert window.item_level_tag.property("active") is True
-        assert window.item_level_toggle.text() == "☑ ilvl："
+        assert window.item_level_toggle.text() == '☑ ilvl: '
         assert not window.item_level_edit.font().strikeOut()
 
         window.item_level_toggle.click()
@@ -6495,10 +6495,10 @@ def test_cross_category_transitions_clear_chips_notice_and_restore_preset(qapp):
     window = PoetoreWindow()
     try:
         samples = (
-            ("""Item Class: Skill Gems\nRarity: Gem\nArc\n--------\nLevel: 20\nQuality: +20%\n""", "専用検索"),
-            ("""アイテムクラス: マップ\nレアリティ: レア\nTest\nMap (Tier 16)\n--------\nアイテムレベル: 85\n""", "専用検索"),
-            ("""Item Class: Two Hand Swords\nRarity: Rare\nTest\nReaver Sword\n--------\nItem Level: 85\n""", "完成品"),
-            ("""アイテムクラス: その他マップアイテム\nレアリティ: カレンシー\nアルティメイタムの刻印\n""", "専用検索"),
+            ("""Item Class: Skill Gems\nRarity: Gem\nArc\n--------\nLevel: 20\nQuality: +20%\n""", 'Dedicated search'),
+            ("""アイテムクラス: マップ\nレアリティ: レア\nTest\nMap (Tier 16)\n--------\nアイテムレベル: 85\n""", 'Dedicated search'),
+            ("""Item Class: Two Hand Swords\nRarity: Rare\nTest\nReaver Sword\n--------\nItem Level: 85\n""", 'Finished item'),
+            ("""アイテムクラス: その他マップアイテム\nレアリティ: カレンシー\nアルティメイタムの刻印\n""", 'Dedicated search'),
         )
         with patch("src.poetore.ui.resolve_trade_stat_filters", return_value=()):
             for text, preset_label in samples:
@@ -6514,7 +6514,7 @@ def test_cross_category_transitions_clear_chips_notice_and_restore_preset(qapp):
         with patch("src.poetore.ui.resolve_trade_stat_filters", return_value=()):
             window.parse_current_text()
         assert window.search_scope_notice.isHidden()
-        assert window.trade_preset_combo.currentText() == "完成品"
+        assert window.trade_preset_combo.currentText() == 'Finished item'
         assert window.map_tier_chip.isHidden()
     finally:
         window.close()
@@ -6578,7 +6578,7 @@ def test_poe_ninja_price_panel_renders_price_trend_and_link(qapp):
         assert not window.poe_ninja_currency_icon.pixmap().isNull()
         assert window.poe_ninja_currency_icon.toolTip() == "Divine Orb"
         assert window.poe_ninja_price_multiplier.text() == "×"
-        assert "7日推移" in window.poe_ninja_trend_label.text()
+        assert "7-day trend" in window.poe_ninja_trend_label.text()
         assert window.poe_ninja_trend_chart._points == (0, 1, 2, 3, 4, 5, 6)
         assert window._last_poe_ninja_url == "https://poe.ninja/example"
 
@@ -6656,10 +6656,10 @@ def test_poe2_exchange_item_skips_trade2_and_uses_exalted_price_icon(qapp):
         trade_search.assert_not_called()
         assert window._parsed_item.category == "uncut_gem"
         assert window.search_scope_notice.text() == (
-            "ℹ 「カレンシー交換」の対象品です。通常トレード出品検索は行わず、"
-            "カレンシー交換の直近価格を優先して表示します。"
+            'ℹ This item is traded on Currency Exchange. Instead of a normal trade listing search, '
+            'the latest Currency Exchange price is shown.'
         )
-        assert "カレンシー交換の直近価格を優先" in window.price_status.text()
+        assert "latest Currency Exchange price is shown" in window.price_status.text()
 
         key = ("uncut",)
         window._poe_ninja_item_key = key
@@ -6691,8 +6691,8 @@ def test_poe2_fragment_exchange_item_skips_trade2(qapp):
             window.search_current_item()
         trade_search.assert_not_called()
         assert window._parsed_item.category == "map_fragment"
-        assert "通常トレード出品検索は行わず" in window.search_scope_notice.text()
-        assert "カレンシー交換の直近価格を優先" in window.price_status.text()
+        assert "Instead of a normal trade listing search" in window.search_scope_notice.text()
+        assert "latest Currency Exchange price is shown" in window.price_status.text()
     finally:
         window.close()
 
@@ -6711,7 +6711,7 @@ def test_poe2_logbook_uses_exchange_price_without_trade2_filters(qapp):
         assert window._parsed_item.base_type == "Expedition Logbook"
         assert window.logbook_area_container.isHidden()
         assert window.mod_filter_tree.topLevelItemCount() == 0
-        assert "「カレンシー交換」の対象品" in window.search_scope_notice.text()
+        assert "traded on Currency Exchange" in window.search_scope_notice.text()
         assert not window.trade_url_button.isEnabled()
     finally:
         window.close()
@@ -6736,8 +6736,8 @@ def test_poe2_vorana_saga_uses_expedition_exchange_price(qapp):
         trade_search.assert_not_called()
         assert window._parsed_item.category == "currency"
         assert window._parsed_item.base_type == "Vorana's Saga"
-        assert "「カレンシー交換」の対象品" in window.search_scope_notice.text()
-        assert "カレンシー交換の直近価格を優先" in window.price_status.text()
+        assert "traded on Currency Exchange" in window.search_scope_notice.text()
+        assert "latest Currency Exchange price is shown" in window.price_status.text()
         assert not window.trade_url_button.isEnabled()
     finally:
         window.close()
@@ -6763,7 +6763,7 @@ Shift+クリックでスタックから取り出す。""")
         trade_search.assert_not_called()
         assert window._parsed_item.item_class == "お告げ"
         assert window._parsed_item.base_type == "Omen of Sanctification"
-        assert "カレンシー交換の直近価格を優先" in window.price_status.text()
+        assert "latest Currency Exchange price is shown" in window.price_status.text()
         assert not window.trade_url_button.isEnabled()
     finally:
         window.close()
@@ -6791,7 +6791,7 @@ def test_poe2_augments_are_exchange_price_items(
         trade_search.assert_not_called()
         assert window._parsed_item.category == category
         assert window._parsed_item.base_type == base_type
-        assert "カレンシー交換の直近価格を優先" in window.price_status.text()
+        assert "latest Currency Exchange price is shown" in window.price_status.text()
         assert not window.trade_url_button.isEnabled()
     finally:
         window.close()
@@ -6864,7 +6864,7 @@ def test_related_items_panel_renders_materials_and_rewards(qapp):
         )
         assert window.related_items_tree.topLevelItem(1).child(0).text(1) == "12 chaos"
         assert window.related_items_tree.topLevelItem(1).child(0).toolTip(1) == (
-            "poe.ninja 参考価格"
+            'poe.ninja reference price'
         )
         assert window.related_items_tree.minimumHeight() == 210
         assert window.related_items_tree.maximumHeight() == 210
@@ -6900,7 +6900,7 @@ def test_related_items_panel_labels_official_exchange_price(qapp):
 
         child = window.related_items_tree.topLevelItem(0).child(0)
         assert child.text(1) == "14 chaos"
-        assert child.toolTip(1) == "カレンシー交換 直近価格"
+        assert child.toolTip(1) == 'Currency Exchange latest price'
     finally:
         window.close()
 
@@ -6971,7 +6971,7 @@ def test_poe2_divine_rate_button_builds_exalted_conversion_menu(qapp):
         assert not window.divine_rate_button.isHidden()
         assert window.divine_rate_button.text() == "⇄ 365"
         assert window.divine_rate_button.toolTip() == (
-            "Divine OrbのExalted換算早見表（poe.ninja参考価格）"
+            "Divine Orb Exalted conversion table (poe.ninja reference price)"
         )
         assert [action.text() for action in window.divine_rate_menu.actions()] == [
             "0.1 div  →  36 ex",
@@ -6999,7 +6999,7 @@ def test_divine_rate_button_labels_official_exchange_rate(qapp):
 
         assert window.divine_rate_button.text() == "⇄ 492"
         assert window.divine_rate_button.toolTip() == (
-            "Divine OrbのExalted換算早見表（公式Currency Exchangeの直近価格）"
+            "Divine Orb Exalted conversion table (Latest official Currency Exchange price)"
         )
     finally:
         window.close()
@@ -7154,7 +7154,7 @@ def test_gem_level_chip_uses_read_level_and_can_be_toggled_and_edited(qapp):
         assert not window.gem_level_tag.isHidden()
         assert window.gem_level_edit.text() == "3"
         assert window._selected_gem_level() == 3
-        assert window.gem_level_toggle.text() == "☑ ジェムLv："
+        assert window.gem_level_toggle.text() == '☑ Gem Lv: '
 
         window.gem_level_toggle.click()
         assert window._selected_gem_level() is None
@@ -7185,7 +7185,7 @@ def test_gem_quality_chip_uses_read_quality_and_can_be_toggled_and_edited(qapp):
         assert not window.gem_quality_tag.isHidden()
         assert window.gem_quality_edit.text() == "16"
         assert window._selected_quality() == 16
-        assert window.gem_quality_toggle.text() == "☑ 品質："
+        assert window.gem_quality_toggle.text() == '☑ Quality: '
 
         window.gem_quality_toggle.click()
         assert window._selected_quality() is None
@@ -7303,7 +7303,7 @@ def test_poe2_runemastered_chip_defaults_on_and_switches_trade_type(qapp):
 
         assert not window.runemastered_tag.isHidden()
         assert window.runemastered_chip.isChecked()
-        assert window.runemastered_chip.text() == "☑ ルーンマスター"
+        assert window.runemastered_chip.text() == '☑ Runemaster'
         assert window.runemastered_tag.parentWidget() is window.filter_chip_container
         chips = [chip for _name, chip in window._filter_chips]
         assert chips.index(window.runemastered_tag) == chips.index(window.gem_quality_tag) + 1
@@ -7315,13 +7315,13 @@ def test_poe2_runemastered_chip_defaults_on_and_switches_trade_type(qapp):
         assert build_poe2_search_query(selected)["query"]["name"] == "Yriel's Fostering"
 
         window.runemastered_chip.setChecked(False)
-        assert window.runemastered_chip.text() == "☐ ルーンマスター"
+        assert window.runemastered_chip.text() == '☐ Runemaster'
         assert window.runemastered_tag.property("active") is False
         selected = window._poe2_search_item(item)
         query = build_poe2_search_query(selected)["query"]
         assert query["type"] == "Strider Vest"
         assert query["name"] == "Yriel's Fostering"
-        assert window.price_status.text() == "通常版のベースを検索します。"
+        assert window.price_status.text() == 'Searches the normal base.'
 
         # 検索直前の再解析でも、同じアイテムならユーザー選択を維持する。
         window._update_item_header(item)
@@ -7471,7 +7471,7 @@ def test_poe2_weapon_parse_shows_dps_summary_in_header(qapp):
         window.input_edit.setPlainText(text)
         window.parse_current_text()
 
-        assert window.weapon_dps_label.text() == "pDPS：241.3（品質20%換算）"
+        assert window.weapon_dps_label.text() == "pDPS: 241.3 (at 20% quality)"
         assert not window.weapon_dps_label.isHidden()
     finally:
         window.close()
@@ -7579,7 +7579,7 @@ def test_poe2_wombgift_hiveblood_cost_does_not_show_metadata_warning(qapp):
         assert not window.item_level_tag.isHidden()
         assert window.item_level_edit.text() == "80"
         assert window._selected_item_level_range() == (80, None)
-        assert window.item_level_toggle.text() == "☑ ilvl："
+        assert window.item_level_toggle.text() == '☑ ilvl: '
     finally:
         window.close()
 
@@ -7651,7 +7651,7 @@ def test_poe2_weapon_header_uses_individual_elemental_damage_properties(qapp):
         window.parse_current_text()
 
         assert window.weapon_dps_label.text() == (
-            "合計DPS：117.1（pDPS 78.7 / eDPS 38.4、pDPSは品質20%換算）"
+            "Total DPS: 117.1 (pDPS 78.7 / eDPS 38.4、pDPS at 20% quality)"
         )
         rows = {
             window.mod_filter_tree.topLevelItem(index).data(0, Qt.UserRole)
@@ -7680,7 +7680,7 @@ def test_poe2_weapon_quality_20_is_visible_but_initially_disabled(qapp):
         assert not window.gem_quality_tag.isHidden()
         assert window.gem_quality_edit.text() == "20"
         assert window._selected_quality() is None
-        assert window.gem_quality_toggle.text() == "☐ 品質："
+        assert window.gem_quality_toggle.text() == '☐ Quality: '
         assert flat.min_value == 28.0
         assert flat.read_value == 32.0
 
@@ -8066,7 +8066,7 @@ Item Level: 84
 Corrupted
 """)
         window._configure_item_state_filters(item)
-        assert window.corrupted_combo.currentText() == "コラプトのみ"
+        assert window.corrupted_combo.currentText() == 'Corrupted only'
         assert window.corrupted_combo.currentData() == "only"
         assert window.corrupted_combo.property("alert") is True
     finally:
@@ -8102,7 +8102,7 @@ def test_poe2_double_corrupted_gem_defaults_to_corrupted_only_and_searches_it(qa
 
         assert "corrupted" in window._parsed_item.flags
         assert not window.corrupted_combo.isHidden()
-        assert window.corrupted_combo.currentText() == "コラプトのみ"
+        assert window.corrupted_combo.currentText() == 'Corrupted only'
         assert window.corrupted_combo.currentData() == "only"
 
         result = PriceResult("Standard", "qid", 0, ())
@@ -8234,7 +8234,7 @@ Item Level: 94
         assert window.item_name_label.isHidden()
         assert not window.base_scope_toggle.isHidden()
         assert window.base_scope_toggle.itemText(0) == "Sacred Chainmail"
-        assert window.base_scope_toggle.itemText(1) == "すべての鎧"
+        assert window.base_scope_toggle.itemText(1) == "All Body Armour"
         assert window.base_scope_toggle.currentData() is True
 
         window.base_scope_toggle.setCurrentIndex(1)
@@ -8273,11 +8273,11 @@ def test_header_removes_affixes_only_for_nonunique_equipment(qapp):
         assert window.item_name_label.isHidden()
         assert not window.base_scope_toggle.isHidden()
         assert window.base_scope_toggle.itemText(0) == "アメジストの指輪"
-        assert window.base_scope_toggle.itemText(1) == "すべての指輪"
+        assert window.base_scope_toggle.itemText(1) == "All Ring"
 
         for item_class, base_type, expected in (
-            ("Amulets", "Gold Amulet", "すべてのアミュレット"),
-            ("Belts", "Leather Belt", "すべてのベルト"),
+            ("Amulets", "Gold Amulet", "All Amulet"),
+            ("Belts", "Leather Belt", "All Belt"),
         ):
             accessory = replace(
                 ring, item_class=item_class, name=base_type, base_type=base_type,
@@ -8309,7 +8309,7 @@ def test_header_shows_rare_waystone_base_instead_of_affix_name(qapp):
     try:
         window._update_item_header(item)
 
-        assert window.item_name_label.text() == "ウェイストーン (ティア15)"
+        assert window.item_name_label.text() == "Waystone (Tier15)"
         assert "先祖の突撃" not in window.item_name_label.text()
     finally:
         window.close()
@@ -8328,7 +8328,7 @@ def test_poe2_nonunique_equipment_scope_uses_japanese_base_name(qapp):
 
         assert item.base_type == "Soaring Spear"
         assert window.base_scope_toggle.itemText(0) == "飛翔のスピア"
-        assert window.base_scope_toggle.itemText(1) == "すべてのスピア"
+        assert window.base_scope_toggle.itemText(1) == "All スピア"
 
         flying = replace(item, base_type="Flying Spear", raw_text="flying-spear")
         window._update_item_header(flying)
@@ -8402,7 +8402,7 @@ def test_nonunique_jewels_use_category_search_but_cluster_and_unique_stay_exact(
         window._update_item_header(abyss)
         assert not window.base_scope_toggle.isHidden()
         assert window.base_scope_toggle.itemText(0) == "Ghastly Eye Jewel"
-        assert window.base_scope_toggle.itemText(1) == "すべてのアビスジュエル"
+        assert window.base_scope_toggle.itemText(1) == 'All abyss jewels'
         assert window.base_scope_toggle.currentData() is False
         assert window._searches_exact_base_type(abyss) is False
 
@@ -8535,10 +8535,10 @@ def test_flask_instilling_enchantment_is_hidden_from_search_conditions(qapp):
 
 
 @pytest.mark.parametrize("metadata,name,expected", [
-    ({}, "Fireball", "Variant：通常ジェム"),
-    ({"vaal": True}, "Vaal Fireball", "Variant：ヴァールジェム"),
-    ({}, "Awakened Added Fire Damage Support", "Variant：覚醒ジェム"),
-    ({"transfigured": True}, "Fireball of Pelting", "Variant：変容ジェム"),
+    ({}, "Fireball", "Variant: Normal gem"),
+    ({"vaal": True}, "Vaal Fireball", "Variant: Vaal gem"),
+    ({}, "Awakened Added Fire Damage Support", "Variant: Awakened gem"),
+    ({"transfigured": True}, "Fireball of Pelting", "Variant: Transfigured gem"),
 ])
 def test_gem_variant_is_shown_as_japanese_readonly_chip(qapp, metadata, name, expected):
     window = PoetoreWindow()
@@ -8578,7 +8578,7 @@ Vaal Molten Strike
 
         assert window._parsed_item.base_type == "Vaal Molten Strike"
         assert window.item_name_label.text() == "ヴァールモルテンストライク"
-        assert window.gem_variant_chip.text() == "Variant：ヴァールジェム"
+        assert window.gem_variant_chip.text() == "Variant: Vaal gem"
     finally:
         window.close()
 
@@ -8615,7 +8615,7 @@ def test_japanese_vaal_gem_copy_is_parsed_and_shown_as_vaal_grace(qapp):
 
         assert window._parsed_item.base_type == "Vaal Grace"
         assert window.item_name_label.text() == "ヴァールグレース"
-        assert window.gem_variant_chip.text() == "Variant：ヴァールジェム"
+        assert window.gem_variant_chip.text() == "Variant: Vaal gem"
     finally:
         window.close()
 
@@ -8657,7 +8657,7 @@ Shift+クリックでスタックから取り出す。
 
         assert window._parsed_item.modifiers == ()
         assert window.mod_warning.isHidden()
-        assert "カレンシー交換" in window.search_scope_notice.text()
+        assert "Currency Exchange" in window.search_scope_notice.text()
     finally:
         window.close()
 
@@ -8710,9 +8710,9 @@ def test_poe2_waystone_item_rarity_is_visible_and_tablet_copy_has_no_warning(qap
 @pytest.mark.parametrize(
     ("rarity_label", "expected_rarity", "expected_text"),
     (
-        ("ノーマル", "normal", "ノーマル限定"),
-        ("マジック", "magic", "マジック限定"),
-        ("レア", "rare", "レア限定"),
+        ("ノーマル", "normal", 'Normal only'),
+        ("マジック", "magic", 'Magic only'),
+        ("レア", "rare", 'Rare only'),
     ),
 )
 def test_poe2_nonunique_tablet_toggles_detected_rarity_and_nonunique(
@@ -8748,7 +8748,7 @@ def test_poe2_nonunique_tablet_toggles_detected_rarity_and_nonunique(
         assert window.tablet_rarity_combo.currentText() == expected_text
         window.tablet_rarity_combo.click()
         assert window.tablet_rarity_combo.currentData() == "nonunique"
-        assert window.tablet_rarity_combo.currentText() == "非ユニーク"
+        assert window.tablet_rarity_combo.currentText() == 'Non-unique'
         window.parse_current_text()
         assert window.tablet_rarity_combo.currentData() == "nonunique"
         assert window.rarity_condition_chip.isHidden()
@@ -8947,15 +8947,15 @@ def test_reference_price_panel_prefers_official_price_and_keeps_ninja_context(qa
         window._poe_ninja_item_key = key
         window._show_reference_price(key, ninja, official)
 
-        assert window.poe_ninja_price_label.text() == "カレンシー交換 直近価格"
+        assert window.poe_ninja_price_label.text() == 'Currency Exchange latest price'
         assert (
-            "公式Currency Exchangeで直近24時間以内に取引が成立した"
-            "最新1時間の平均価格"
+            'Average price over the latest hour in which trades completed '
+            'on the official Currency Exchange within the past 24 hours'
             in window.poe_ninja_price_label.toolTip()
         )
         assert window.poe_ninja_price_value.text() == "1.2"
         assert window.poe_ninja_currency_icon.toolTip() == "Divine Orb"
-        assert "poe.ninja 7日推移" in window.poe_ninja_trend_label.text()
+        assert 'poe.ninja 7-day trend' in window.poe_ninja_trend_label.text()
         assert window.poe_ninja_trend_chart._points == (0, 2, 4)
         assert window._last_poe_ninja_url == "https://poe.ninja/example"
         assert not window.poe_ninja_open_button.isHidden()
@@ -9000,8 +9000,8 @@ def test_reference_price_panel_labels_ninja_fallback_as_reference(qapp):
     try:
         window._poe_ninja_item_key = key
         window._show_reference_price(key, ninja, official)
-        assert window.poe_ninja_price_label.text() == "poe.ninja 参考価格"
-        assert "直近価格が未確定" in window.poe_ninja_price_label.toolTip()
+        assert window.poe_ninja_price_label.text() == 'poe.ninja reference price'
+        assert "isn't settled yet" in window.poe_ninja_price_label.toolTip()
         assert window.poe_ninja_price_value.text() == "42"
         assert window.poe_ninja_currency_icon.toolTip() == "Chaos Orb"
     finally:
@@ -9017,8 +9017,8 @@ def test_reference_price_panel_labels_syncing_exchange_item_as_reference(qapp):
     try:
         window._poe_ninja_item_key = key
         window._show_reference_price(key, ninja, None, official_expected=True)
-        assert window.poe_ninja_price_label.text() == "poe.ninja 参考価格"
-        assert "カレンシー交換の直近価格が未確定" in (
+        assert window.poe_ninja_price_label.text() == 'poe.ninja reference price'
+        assert "latest Currency Exchange price isn't settled yet" in (
             window.poe_ninja_price_label.toolTip()
         )
     finally:
@@ -9034,8 +9034,8 @@ def test_reference_price_panel_keeps_legacy_ninja_label_for_non_exchange_item(qa
     try:
         window._poe_ninja_item_key = key
         window._show_reference_price(key, ninja, None)
-        assert window.poe_ninja_price_label.text() == "poe.ninja 参考価格"
-        assert "Currency Exchange対象外" in (
+        assert window.poe_ninja_price_label.text() == 'poe.ninja reference price'
+        assert "Not traded on Currency Exchange" in (
             window.poe_ninja_price_label.toolTip()
         )
         assert window.poe_ninja_price_value.text() == "200"
@@ -9058,7 +9058,7 @@ def test_reference_price_panel_can_show_official_price_without_ninja(qapp):
         window._poe_ninja_item_key = key
         window._show_reference_price(key, None, official)
         assert not window.poe_ninja_price_panel.isHidden()
-        assert window.poe_ninja_price_label.text() == "カレンシー交換 直近価格"
+        assert window.poe_ninja_price_label.text() == 'Currency Exchange latest price'
         assert window.poe_ninja_price_value.text() == "0.5"
         assert window.poe_ninja_currency_icon.toolTip() == "Divine Orb"
         assert window.poe_ninja_trend_chart._points == ()
@@ -9095,7 +9095,7 @@ def test_primary_price_queue_reaches_official_display_for_poe1_exchange_item(
             patch.object(window, "_record_official_exchange_shadow", return_value=official),
         ):
             window._queue_poe_ninja_price(item)
-        assert window.poe_ninja_price_label.text() == "カレンシー交換 直近価格"
+        assert window.poe_ninja_price_label.text() == 'Currency Exchange latest price'
         assert window.poe_ninja_price_value.text() == "1"
         assert window.poe_ninja_currency_icon.toolTip() == "Chaos Orb"
     finally:
@@ -9178,7 +9178,7 @@ def test_primary_price_queue_uses_official_when_ninja_lookup_fails(qapp, monkeyp
             patch.object(window, "_record_official_exchange_shadow", return_value=official),
         ):
             window._queue_poe_ninja_price(item)
-        assert window.poe_ninja_price_label.text() == "カレンシー交換 直近価格"
+        assert window.poe_ninja_price_label.text() == 'Currency Exchange latest price'
         assert window.poe_ninja_price_value.text() == "29"
         assert window.poe_ninja_open_button.isHidden()
     finally:

@@ -149,8 +149,8 @@ def test_available_no_trade_unconfirmed_and_unavailable_are_distinct(qapp, tmp_p
             for index in range(4)
         ]
         assert values == [
-            "1 ＝ 2.5", "取引データなし", "価格未確定",
-            "最新データを取得できません",
+            "1 = 2.5", 'No trade data', 'Price pending',
+            'Cannot fetch latest data',
         ]
         assert all(
             panel.findChild(QLabel, f"customRateValue{index}").alignment()
@@ -174,7 +174,7 @@ def test_base_currency_quote_keeps_fractional_direct_rate(qapp, tmp_path):
         service=FakeService({(DIVINE_ORB_ID, CHAOS_ORB_ID): result}),
     )
     try:
-        assert panel.findChild(QLabel, "customRateValue0").text() == "1 ＝ 372.5"
+        assert panel.findChild(QLabel, "customRateValue0").text() == "1 = 372.5"
     finally:
         panel.stop()
         panel.close()
@@ -199,20 +199,20 @@ def test_refresh_is_nonblocking_and_manual_result_text_is_specific(qapp, tmp_pat
         previous_row = panel.row_widgets[0]
         panel.refresh(manual=True)
         assert not previous_row.isVisible()
-        assert panel.status_label.text() == "最新データを確認中…"
+        assert panel.status_label.text() == 'Checking for latest data…'
         loading_value = panel.row_widgets[0].findChild(QLabel, "customRateValue0")
-        assert loading_value.text() == "最新データ取得中…"
-        assert loading_value.toolTip() == "最新データ取得中…"
+        assert loading_value.text() == 'Fetching latest data…'
+        assert loading_value.toolTip() == 'Fetching latest data…'
         assert "font-size: 12px" in loading_value.styleSheet()
         assert loading_value.sizeHint().width() <= loading_value.width()
         assert not panel.refresh_button.isEnabled()
         callback = service.queued[-1][3]
         callback(SyncCheckResult("no_new_data", POE1, "League", 720))
         qapp.processEvents()
-        assert panel.status_label.text() == "新しい公式データはまだありません"
+        assert panel.status_label.text() == 'No new official data yet'
         failed_value = panel.row_widgets[0].findChild(QLabel, "customRateValue0")
-        assert failed_value.text() == "最新データを取得できません"
-        assert failed_value.toolTip() == "最新データを取得できません"
+        assert failed_value.text() == 'Cannot fetch latest data'
+        assert failed_value.toolTip() == 'Cannot fetch latest data'
         assert panel.refresh_button.isEnabled()
         assert panel.check_timer.interval() == RATE_CHECK_INTERVAL_MSEC
     finally:
@@ -224,7 +224,7 @@ def test_official_hourly_explanation_is_exact(qapp, tmp_path):
     panel, *_ = make_panel(qapp, tmp_path)
     try:
         assert panel.title_label.toolTip() == OFFICIAL_DATA_TOOLTIP
-        assert panel.refresh_button.text() == "最新データ確認"
+        assert panel.refresh_button.text() == 'Check Latest Data'
     finally:
         panel.stop()
         panel.close()

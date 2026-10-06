@@ -19,7 +19,7 @@ def test_desecration_settings_uses_poetore_dialog_theme_and_footer_roles(qtbot):
     assert dialog.property("dialogTheme") == "poetore"
     assert dialog.property("dialogAccent") == "#65FFCA"
     assert dialog.title_label.property("uiRole") == "title"
-    assert dialog.title_label.text() == "アビス冒涜Modティアチェック設定"
+    assert dialog.title_label.text() == 'Abyss Desecrated Mod Tier Check Settings'
     assert dialog.cancel_button.property("buttonRole") == "secondary"
     assert dialog.save_button.property("buttonRole") == "primary"
     assert dialog.footer_layout.itemAt(1).widget() is dialog.cancel_button
@@ -61,7 +61,7 @@ def test_desecration_settings_defaults_to_alt_r_and_keeps_open_region_optional(q
     assert enabled is True
     assert "inventory_open_region" not in config
     assert (
-        "読取ショートカットは無効"
+        "capture shortcut disabled"
         in dialog._section_widgets["inventory_open_region"][0].text()
     )
 
@@ -109,10 +109,10 @@ def test_desecration_settings_groups_required_flow_before_optional_display(qtbot
 
     groups = dialog.findChildren(QGroupBox)
     assert [group.title() for group in groups] == [
-        "1. 基本設定",
-        "2. 高精度OCR",
-        "3. 読取範囲",
-        "4. 表示設定",
+        '1. Basic Settings',
+        '2. High-Accuracy OCR',
+        '3. Capture Area',
+        '4. Display Settings',
     ]
     assert dialog.findChild(QScrollArea, "desecrationSettingsScroll") is not None
 
@@ -138,7 +138,7 @@ def test_desecration_settings_shows_pack_download_progress_and_ready_state(qtbot
 
     controller.status = PackStatus("ready")
     controller.status_changed.emit(controller.status)
-    assert "利用できます" in dialog.ocr_pack_status.text()
+    assert "is available" in dialog.ocr_pack_status.text()
     assert not dialog.ocr_pack_progress.isVisible()
 
 
@@ -147,7 +147,7 @@ def test_desecration_settings_shows_retry_only_after_pack_error(qtbot):
     dialog = DesecrationSettingsDialog(ocr_pack_controller=controller)
     qtbot.addWidget(dialog)
 
-    assert "通常の読み取り機能は引き続き利用できます" in dialog.ocr_pack_status.text()
+    assert 'Standard reading still works' in dialog.ocr_pack_status.text()
     assert not dialog.ocr_pack_retry.isHidden()
     dialog.ocr_pack_retry.click()
     assert controller.retry_count == 1
@@ -168,16 +168,16 @@ def test_desecration_settings_explains_required_and_closed_regions(qtbot):
     closed_note = dialog.findChild(QLabel, "desecrationClosedRegionNote")
     instruction = dialog.findChild(QLabel, "desecrationRegionInstruction")
     warning = dialog.findChild(QLabel, "screenSizeRegionWarning")
-    assert required.text() == "（必須）"
+    assert required.text() == ' (required)'
     assert required.property("state") == "warning"
     assert "#F6C85F" in dialog.styleSheet()
-    assert closed_note.text() == "※インベントリを閉じると位置がずれて読取に失敗するため"
+    assert closed_note.text() == '* Closing the inventory shifts the position and causes reading to fail'
     assert instruction.text().endswith(
-        "読取時は「インベントリを開いた状態」を先に確認し、読取に失敗した場合は"
-        "「閉じた状態」を確認します。"
+        'When reading, the "inventory open" area is tried first; if that fails, '
+        'the "inventory closed" area is tried.'
     )
     assert warning.text() == (
-        "PoE2のウィンドウサイズを変更した場合、位置が変わるため再設定が必要です。"
+        'If you change the PoE2 window size, positions shift and you will need to set this again.'
     )
 
 
@@ -186,7 +186,7 @@ def test_desecration_settings_warns_that_screen_reading_must_be_enabled(qtbot):
     qtbot.addWidget(dialog)
 
     hint = dialog.findChild(QLabel, "screenReadingEnableRequiredHint")
-    assert hint.text() == "※使用するにはチェックをONにしてください"
+    assert hint.text() == '* Check this box to use the feature'
     assert hint.property("state") == "warning"
     assert "#F6C85F" in dialog.styleSheet()
     assert "font-weight: 600" in dialog.styleSheet()

@@ -37,8 +37,8 @@ def test_settings_hides_act1_editor_buttons_even_in_dev_mode(monkeypatch, qapp):
 
     tooltips = [button.toolTip() for button in dialog.findChildren(QPushButton)]
 
-    assert "公式ガイドを編集" not in tooltips
-    assert "みになびを編集" not in tooltips
+    assert 'Edit the official guide' not in tooltips
+    assert 'Edit MiniNavi text' not in tooltips
     dialog.close()
 
 
@@ -48,8 +48,8 @@ def test_settings_hides_official_editor_buttons_in_normal_mode(monkeypatch, qapp
     dialog = SettingsDialog(current_config={"poe_version": POE1})
 
     tooltips = [button.toolTip() for button in dialog.findChildren(QPushButton)]
-    assert "公式ガイドを編集" not in tooltips
-    assert "みになびを編集" not in tooltips
+    assert 'Edit the official guide' not in tooltips
+    assert 'Edit MiniNavi text' not in tooltips
     dialog.close()
 
 
@@ -59,11 +59,11 @@ def test_settings_shows_poe2_guide_editor_in_dev_mode(monkeypatch, qapp):
 
     tooltips = [button.toolTip() for button in dialog.findChildren(QPushButton)]
     texts = [button.text() for button in dialog.findChildren(QPushButton)]
-    assert "公式ガイドを編集" in tooltips
-    assert "ガイド編集" in texts
+    assert 'Edit the official guide' in tooltips
+    assert 'Edit Guide' in texts
     assert "要約版ガイドを編集" not in tooltips
-    assert "みになびを編集" in tooltips
-    assert "みになび編集" in texts
+    assert 'Edit MiniNavi text' in tooltips
+    assert 'Edit MiniNavi' in texts
     dialog.close()
 
 
@@ -115,11 +115,11 @@ def test_settings_hides_poe2_guide_editors_outside_dev_mode(monkeypatch, qapp):
 
     tooltips = [button.toolTip() for button in dialog.findChildren(QPushButton)]
     texts = [button.text() for button in dialog.findChildren(QPushButton)]
-    assert "公式ガイドを編集" not in tooltips
-    assert "ガイド編集" not in texts
+    assert 'Edit the official guide' not in tooltips
+    assert 'Edit Guide' not in texts
     assert "詳細版ガイドを編集" not in tooltips
     assert "要約版ガイドを編集" not in tooltips
-    assert "みになびを編集" not in tooltips
+    assert 'Edit MiniNavi text' not in tooltips
     dialog.close()
 
 
@@ -159,8 +159,8 @@ def test_poe2_mini_navi_editor_updates_default_and_flag_sections(monkeypatch, qa
     dialog._open_mini_navi_editor(name_edit, "poe2_act1_area02")
 
     entry = dialog.guide_data["poe2_act1_area02"]
-    assert entry["default"]["mini_navi"]["text"] == "通常時"
-    assert entry["flags"]["boss_done"]["mini_navi"]["text"] == "フラグ進行後: boss_done"
+    assert entry["default"]["mini_navi"]["text"] == 'Default'
+    assert entry["flags"]["boss_done"]["mini_navi"]["text"] == "After flag: boss_done"
     assert len(captured["sections"]) == 2
     assert captured["show_direction"] is False
     dialog.close()
@@ -178,8 +178,8 @@ def test_settings_hides_requested_act10_guide_editor(monkeypatch, qapp):
     tooltips = [button.toolTip() for button in dialog.findChildren(QPushButton)]
     texts = [button.text() for button in dialog.findChildren(QPushButton)]
 
-    assert "公式ガイドを編集" not in tooltips
-    assert "みになびを編集" not in tooltips
+    assert 'Edit the official guide' not in tooltips
+    assert 'Edit MiniNavi text' not in tooltips
     assert "公式ガイド" not in texts
     assert "みになび" not in texts
     dialog.close()

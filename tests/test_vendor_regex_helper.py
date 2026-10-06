@@ -42,7 +42,7 @@ class VendorRegexHelperTest(unittest.TestCase):
     def test_or_weapon_base_is_merged_into_the_same_or_group(self):
         dialog = self.make_dialog("")
         dialog.option_checkboxes = [
-            (DummyCheckBox(True), "動ス", "共通"),
+            (DummyCheckBox(True), "動ス", 'Common'),
             (DummyCheckBox(True), "弓$", dialog.WEAPON_BASE_OR_CATEGORY),
         ]
 
@@ -54,7 +54,7 @@ class VendorRegexHelperTest(unittest.TestCase):
     def test_and_weapon_base_stays_adjacent_to_mod_conditions(self):
         dialog = self.make_dialog("")
         dialog.option_checkboxes = [
-            (DummyCheckBox(True), "動ス", "共通"),
+            (DummyCheckBox(True), "動ス", 'Common'),
             (DummyCheckBox(True), "弓$", dialog.WEAPON_BASE_AND_CATEGORY),
         ]
 
@@ -67,7 +67,7 @@ class VendorRegexHelperTest(unittest.TestCase):
     def test_and_and_or_weapon_bases_can_coexist(self):
         dialog = self.make_dialog("")
         dialog.option_checkboxes = [
-            (DummyCheckBox(True), "動ス", "共通"),
+            (DummyCheckBox(True), "動ス", 'Common'),
             (DummyCheckBox(True), "弓$", dialog.WEAPON_BASE_AND_CATEGORY),
             (DummyCheckBox(True), "ロスボウ$", dialog.WEAPON_BASE_OR_CATEGORY),
         ]

@@ -109,17 +109,17 @@ class AppModeTest(unittest.TestCase):
         self.assertEqual(checkboxes, [dialog.skip_selector_checkbox])
         self.assertEqual(
             dialog.skip_selector_checkbox.text(),
-            "次回からこの設定で直接起動",
+            'Launch directly with these settings next time',
         )
         labels = [label.text() for label in dialog.findChildren(QLabel)]
         self.assertIn(
-            "※デフォルトでは起動時に毎回確認します。以下のチェックボックスをONにすると固定にもできます。設定画面からも変更可能です。",
+            '* By default you are asked every time the app starts. Check the box below to always use this choice. You can also change it in Settings.',
             labels,
         )
         notice = next(
             label
             for label in dialog.findChildren(QLabel)
-            if label.text().startswith("※デフォルトでは")
+            if label.text().startswith("* By default")
         )
         self.assertIn("font-size: 13px", notice.styleSheet())
         self.assertIn("font-size: 13px", dialog.skip_selector_checkbox.styleSheet())
@@ -315,9 +315,9 @@ class AppModeTest(unittest.TestCase):
 
         information.assert_called_once_with(
             None,
-            "ぽえなびは起動済みです",
-            "ぽえなびはすでに起動しています。\n"
-            "起動中の画面を前面に表示します。",
+            'PoENavi is already running',
+            'PoENavi is already running.\n'
+            'Bringing the running window to the front.',
         )
         load_config.assert_not_called()
         app.exec.assert_not_called()
@@ -325,7 +325,7 @@ class AppModeTest(unittest.TestCase):
     def test_mode_selection_dialog_uses_act_support_label(self):
         dialog = StartupSelectionDialog()
 
-        self.assertEqual(dialog.poenavi_card.text(), "ぽえなび\nAct攻略支援")
+        self.assertEqual(dialog.poenavi_card.text(), "PoENavi\nAct leveling guide")
         self.assertNotIn("レベリング・進行支援", dialog.poenavi_card.text())
 
 

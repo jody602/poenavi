@@ -945,7 +945,7 @@ class _PoetoreTitleBar(QWidget):
         window.divine_rate_button = QPushButton("⇄ …", self._expanded_controls)
         window.divine_rate_button.setObjectName("divineRateButton")
         quote_name = "Exalted" if window.poe_version == POE2 else "Chaos"
-        window.divine_rate_button.setToolTip(f"Divine Orb {quote_name}conversion table")
+        window.divine_rate_button.setToolTip(f"Divine Orb {quote_name} conversion table")
         window.divine_rate_button.setEnabled(False)
         window.divine_rate_button.hide()
         window.divine_rate_menu = QMenu(window.divine_rate_button)
@@ -1323,7 +1323,7 @@ class PoetoreWindow(QWidget):
             self.trade_currency_combo.addItem("Divine Orb only", "divine")
             self.trade_currency_combo.addItem("Chaos Orb only", "chaos")
             self.trade_currency_combo.addItem(
-                "Exalted or Divine", "exalted_divine"
+                "Exalted/Divine", "exalted_divine"
             )
         else:
             self.trade_currency_combo.addItem("Chaos Orb only", "chaos")
@@ -1900,7 +1900,7 @@ class PoetoreWindow(QWidget):
         ):
             recovery_layout.addWidget(label)
         self.installed_augment_recovery_panel.setToolTip(
-            "An estimate comparing against the cheapest listing, using the latest Currency Exchange prices "
+            "An estimate using the latest Currency Exchange prices "
             "for the source gear's socketed materials and extraction orbs (poe.ninja prices when unavailable),"
             " compared with the cheapest listing."
         )
@@ -4035,7 +4035,7 @@ class PoetoreWindow(QWidget):
         )
         quote_name = "Exalted" if self.poe_version == POE2 else "Chaos"
         self.divine_rate_button.setToolTip(
-            f"Divine Orb {quote_name}Conversion table ({source_label})"
+            f"Divine Orb {quote_name} conversion table ({source_label})"
         )
 
     def _hide_divine_rate(self, key=None):
@@ -6109,7 +6109,7 @@ class PoetoreWindow(QWidget):
         self.unique_name_container.show()
         self.unique_name_scroll.show()
         self._set_price_status(
-            f"There are{len(candidates)} unidentified uniques with this base. Choose one and press \"Search price\"."
+            f"There are {len(candidates)} unidentified uniques with this base. Choose one and press \"Search price\"."
         )
 
     def _unique_icon_downloaded(self, reply: QNetworkReply):
@@ -6137,7 +6137,7 @@ class PoetoreWindow(QWidget):
         self.unique_variant_label.show()
         self.unique_variant_combo.show()
         self._set_price_status(
-            f"This unique has{len(variants)} variants. Choose one and search again."
+            f"This unique has {len(variants)} variants. Choose one and search again."
         )
 
     def _selected_stat_filters(self) -> tuple[TradeStatFilter, ...]:
@@ -6545,15 +6545,15 @@ class PoetoreWindow(QWidget):
         cache_note = " / cached" if result.cached else ""
         if not result.listings:
             self._set_price_status(
-                f"{result.league}: candidates{result.total} more{cache_note}。"
+                f"{result.league}: {result.total} candidates{cache_note}. "
                 "Could not get any priced listings."
             )
             return
         progress_note = "Fetching / " if partial else ""
         fetched_count = result.fetched_count or len(result.listings)
         self._set_price_status(
-            f"{result.league}: {progress_note}Candidates {result.total} / "
-            f" fetched{fetched_count} more{cache_note}",
+            f"{result.league}: {progress_note}{result.total} candidates / "
+            f"{fetched_count} fetched{cache_note}",
             compact=not partial,
         )
         item = getattr(self, "_parsed_item", None)
@@ -6821,8 +6821,8 @@ class PoetoreWindow(QWidget):
                 f"{compact_exalted(recovery.recovery_exalted)} ex"
             )
             self.installed_augment_recovery_comparison.setText(
-                f"Cheapest listing {compact_exalted(recovery.cheapest_listing_exalted)} ex vs "
-                f"{sign}{compact_exalted(abs(difference))} ex"
+                f"{sign}{compact_exalted(abs(difference))} ex vs cheapest listing "
+                f"{compact_exalted(recovery.cheapest_listing_exalted)} ex"
                 f" (materials {compact_exalted(recovery.materials_exalted)} − "
                 f"extraction {compact_exalted(recovery.extraction_exalted)})"
             )

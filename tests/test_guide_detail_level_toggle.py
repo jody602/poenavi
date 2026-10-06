@@ -24,7 +24,7 @@ class GuideDetailLevelToggleTest(unittest.TestCase):
 
         window._refresh_mini_navi_toggle()
 
-        window.mini_navi_toggle_btn.setText.assert_called_with("みになびをON")
+        window.mini_navi_toggle_btn.setText.assert_called_with('MiniNavi ON')
         window.mini_navi_toggle_btn.setVisible.assert_called_once_with(True)
 
     def test_mini_navi_toggle_is_visible_in_poe1_when_guide_expanded(self):
@@ -36,7 +36,7 @@ class GuideDetailLevelToggleTest(unittest.TestCase):
 
         window._refresh_mini_navi_toggle()
 
-        window.mini_navi_toggle_btn.setText.assert_called_with("みになびをON")
+        window.mini_navi_toggle_btn.setText.assert_called_with('MiniNavi ON')
         window.mini_navi_toggle_btn.setVisible.assert_called_once_with(True)
 
     def test_switching_to_poe2_keeps_mini_navi_and_recreates_old_poe1_poetore(self):
@@ -264,10 +264,10 @@ class GuideDetailLevelToggleTest(unittest.TestCase):
             window.poe_version = poe_version
             for locked in (True, False):
                 window.config = {"mini_guide_overlay": {"enabled": True, "locked": locked}}
-                self.assertEqual(window._mini_navi_toggle_text(), "みになびをOFF")
+                self.assertEqual(window._mini_navi_toggle_text(), 'MiniNavi OFF')
 
                 window.config["mini_guide_overlay"]["enabled"] = False
-                self.assertEqual(window._mini_navi_toggle_text(), "みになびをON")
+                self.assertEqual(window._mini_navi_toggle_text(), 'MiniNavi ON')
 
     def test_mini_navi_main_toggle_does_not_change_lock_state(self):
         for locked in (True, False):
@@ -328,7 +328,7 @@ class GuideDetailLevelToggleTest(unittest.TestCase):
 
         overlay.update_content.assert_called_once_with(
             {
-                "text": "エリアに入場すると攻略ガイドが表示されます",
+                "text": 'The guide appears when you enter an area',
                 "direction": "none",
             },
             muted=True,

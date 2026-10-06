@@ -167,7 +167,7 @@ def test_chart_scope_defaults_do_not_add_a_numeric_preset(qapp):
         assert window.chart_area_chip.isChecked()
         assert window.chart_area_chip.text() == "錨海域"
         assert window.trade_preset_combo.currentData() == PRESET_FINISHED
-        assert window.trade_preset_combo.currentText() == "専用検索"
+        assert window.trade_preset_combo.currentText() == 'Dedicated search'
         assert window.trade_preset_combo.isHidden()
 
         regular = parse_item_text(chart_text(
@@ -178,7 +178,7 @@ def test_chart_scope_defaults_do_not_add_a_numeric_preset(qapp):
         assert window.base_scope_toggle.currentData() is False
         assert window.chart_area_chip.isChecked()
         assert window.trade_preset_combo.currentData() == PRESET_FINISHED
-        assert window.trade_preset_combo.currentText() == "専用検索"
+        assert window.trade_preset_combo.currentText() == 'Dedicated search'
         assert window.trade_preset_combo.isHidden()
     finally:
         window.close()
@@ -205,7 +205,7 @@ def test_chart_area_chip_click_switches_from_area_to_all_charts(qapp):
 
         assert not window.chart_area_chip.isChecked()
         assert not window._searches_exact_chart_area(item)
-        assert window.price_status.text() == "すべての海図を検索します。"
+        assert window.price_status.text() == 'Searches all charts.'
         query = build_search_query(
             item, window._trade_base_type, resolve_trade_stat_filters(item),
             exact_base_type=window._searches_exact_base_type(item),
@@ -231,7 +231,7 @@ def test_chart_clear_all_removes_mod_conditions_but_keeps_scope(qapp, monkeypatc
         window.parse_current_text()
         window._trade_base_type = "Anchorfield Chart"
         assert window.trade_preset_combo.currentData() == PRESET_FINISHED
-        assert window.trade_preset_combo.currentText() == "専用検索"
+        assert window.trade_preset_combo.currentText() == 'Dedicated search'
         filters = window._selected_stat_filters()
         assert {row.stat_id for row in filters} >= {
             "property.map_quantity", "property.map_rarity",
@@ -242,7 +242,7 @@ def test_chart_clear_all_removes_mod_conditions_but_keeps_scope(qapp, monkeypatc
         cleared = window._selected_stat_filters()
         assert cleared
         assert all(not row.enabled for row in cleared)
-        assert window.clear_mod_conditions_button.text() == "一覧のチェックを全て選択"
+        assert window.clear_mod_conditions_button.text() == 'Check all'
         query = build_search_query(
             item, window._trade_base_type, cleared,
             exact_base_type=window._searches_exact_base_type(item),
@@ -260,6 +260,6 @@ def test_chart_clear_all_removes_mod_conditions_but_keeps_scope(qapp, monkeypatc
         assert window._searches_exact_chart_area(item)
         window.chart_area_chip.setChecked(False)
         assert not window._searches_exact_chart_area(item)
-        assert window.price_status.text() == "すべての海図を検索します。"
+        assert window.price_status.text() == 'Searches all charts.'
     finally:
         window.close()

@@ -29,13 +29,13 @@ class MiniNaviAreaNoteBadgeTest(unittest.TestCase):
     def test_badge_is_visible_when_current_area_has_note(self):
         overlay = self.make_overlay()
         overlay.update_content(
-            {"text": "みになび本文", "direction": "none"},
+            {"text": 'MiniNavi text', "direction": "none"},
             zone_id="act1_area1",
             has_area_note=True,
         )
 
         self.assertTrue(overlay.area_note_badge.isVisible())
-        self.assertEqual(overlay.area_note_badge.text(), "エリアメモあり")
+        self.assertEqual(overlay.area_note_badge.text(), 'Has area notes')
         self.assertIn("padding-right: 54px", overlay.area_note_badge.styleSheet())
         overlay.close()
 

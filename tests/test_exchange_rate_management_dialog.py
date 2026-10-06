@@ -232,8 +232,8 @@ def test_search_clear_button_clears_input(qapp, tmp_path):
 def test_pair_editor_uses_two_labeled_cards_and_footer(qapp, tmp_path):
     dialog, *_ = make_dialog(qapp, tmp_path)
     try:
-        assert dialog.item_card_title.text() == "価格を確認するアイテム"
-        assert dialog.currency_card_title.text() == "通貨"
+        assert dialog.item_card_title.text() == 'Item to price'
+        assert dialog.currency_card_title.text() == 'Currency'
         assert dialog.exchange_symbol.text() == "⇔"
         assert dialog.item_card.isAncestorOf(dialog.search_edit)
         assert all(
@@ -244,7 +244,7 @@ def test_pair_editor_uses_two_labeled_cards_and_footer(qapp, tmp_path):
         assert (
             dialog.preview_label.geometry().top() > dialog.item_card.geometry().bottom()
         )
-        assert dialog.preview_label.text() == "アイテムと通貨を選択してください"
+        assert dialog.preview_label.text() == 'Select an item and a currency'
     finally:
         dialog.close()
 
@@ -345,15 +345,15 @@ def test_same_pair_same_currency_and_limit_have_nearby_reasons(qapp, tmp_path):
     try:
         select_candidate(dialog, DIVINE_ORB_ID)
         dialog.currency_buttons[CHAOS_ORB_ID].setChecked(True)
-        assert "すでに登録" in dialog.validation_label.text()
+        assert "already registered" in dialog.validation_label.text()
         dialog.currency_buttons[DIVINE_ORB_ID].setChecked(True)
-        assert "同じ通貨" in dialog.validation_label.text()
+        assert "with itself" in dialog.validation_label.text()
         for item_id in extras[:9]:
             store.add(POE1, item_id, DIVINE_ORB_ID)
         dialog._render_registered_pairs()
-        assert "上限" in dialog.validation_label.text()
-        assert "10件" in dialog.validation_label.text()
-        assert dialog.title_label.text() == "レート表示の管理（10 / 10）"
+        assert "limit" in dialog.validation_label.text()
+        assert "limit of 10" in dialog.validation_label.text()
+        assert dialog.title_label.text() == "Manage Rate Display (10 / 10)"
         assert not dialog.add_button.isEnabled()
     finally:
         dialog.close()
@@ -422,7 +422,7 @@ def test_dragging_registered_pair_to_bottom_reorders_and_saves_once(qapp, tmp_pa
         before = store.pairs(POE1)
         rows = dialog.registered_widget._rows
         assert len(rows) == 3
-        assert all("ドラッグ" in row.toolTip() for row in rows)
+        assert all("Drag" in row.toolTip() for row in rows)
 
         mime = QMimeData()
         mime.setData(RATE_PAIR_DRAG_MIME, b"0")
@@ -476,7 +476,7 @@ def test_candidate_refresh_does_not_remove_registered_pair(qapp, tmp_path):
     try:
         dialog.update_available_item_ids([])
         assert dialog.candidate_list.count() == 1
-        assert dialog.candidate_list.item(0).text() == "候補データを取得中…"
+        assert dialog.candidate_list.item(0).text() == 'Fetching candidates…'
         assert not dialog.candidate_list.item(0).flags() & Qt.ItemIsEnabled
         assert store.pairs(POE1) == before
     finally:
@@ -494,7 +494,7 @@ def test_candidates_appear_when_background_market_table_becomes_ready(qapp, tmp_
     )
     try:
         assert dialog._availability_timer.isActive()
-        assert dialog.candidate_list.item(0).text() == "候補データを取得中…"
+        assert dialog.candidate_list.item(0).text() == 'Fetching candidates…'
 
         live_ids.add(target.item_id)
         dialog._refresh_available_item_ids()

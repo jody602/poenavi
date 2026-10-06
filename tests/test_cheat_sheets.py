@@ -95,9 +95,9 @@ def test_manager_uses_transparency_rate_labels_consistently(qapp):
     try:
         labels = {label.text() for label in manager.findChildren(QLabel)}
 
-        assert "透明率の調整" in labels
-        assert "画像の透明率" in labels
-        assert "背景の透明率" in labels
+        assert 'Transparency' in labels
+        assert 'Image transparency' in labels
+        assert 'Background transparency' in labels
         assert not any("透明度" in label for label in labels)
     finally:
         manager.close()
@@ -126,14 +126,14 @@ def test_legacy_opacity_settings_are_migrated_without_changing_appearance():
 def test_empty_overlay_guides_user_to_main_window_button(qapp):
     overlay = CheatSheetOverlay({"images": []})
 
-    assert "画像が登録されていません" in overlay.image_label.text()
+    assert "No images registered" in overlay.image_label.text()
     assert "🖼" not in overlay.image_label.text()
     assert "data:image/png;base64," in overlay.image_label.text()
     assert "width='24' height='24'" in overlay.image_label.text()
-    assert "画像を登録してください" in overlay.image_label.text()
+    assert "button in the main PoENavi window" in overlay.image_label.text()
     assert "rgba(0, 0, 0, 205)" in overlay.image_label.styleSheet()
     assert "font-size: 20px" in overlay.image_label.styleSheet()
-    assert "画像タイトルをドラッグで移動" in overlay.title_label.text()
+    assert "drag the image title to move" in overlay.title_label.text()
     overlay.close()
 
 
@@ -268,7 +268,7 @@ def test_overlay_switches_images_and_saves_geometry(qapp, tmp_path, monkeypatch)
     overlay.hide_and_save()
 
     assert overlay.config["selected_id"] == second["id"]
-    assert overlay.title_label.text() == "second（画像タイトルをドラッグで移動）"
+    assert overlay.title_label.text() == "second (drag the image title to move)"
     assert saved[-1]["position"] == {"x": 40, "y": 50}
     assert saved[-1]["width"] == 600
     assert saved[-1]["height"] == 420

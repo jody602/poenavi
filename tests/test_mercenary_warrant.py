@@ -139,7 +139,7 @@ def test_warrant_ui_reveals_supports_without_losing_selected_skills(
         assert all(not row.isHidden() for row in main_rows)
         assert all(row.isHidden() for row in support_rows)
         assert not window.mercenary_supports_toggle.isHidden()
-        assert window.mercenary_supports_toggle.text() == "傭兵のサポートジェムを表示"
+        assert window.mercenary_supports_toggle.text() == 'Merc gems'
         assert window.mercenary_supports_toggle.objectName() == "secondaryActionButton"
         assert window.mercenary_supports_toggle.property("mutedText") is True
         window.show()
@@ -176,7 +176,7 @@ def test_warrant_ui_reveals_supports_without_losing_selected_skills(
 
         assert all(not row.isHidden() for row in main_rows + support_rows)
         assert window.mercenary_supports_toggle.isChecked()
-        assert window.mercenary_supports_toggle.text() == "傭兵のサポートジェムを隠す"
+        assert window.mercenary_supports_toggle.text() == 'Hide merc gems'
         assert main_checkbox.isChecked()
         selected = {
             row.stat_id for row in window._selected_stat_filters() if row.enabled

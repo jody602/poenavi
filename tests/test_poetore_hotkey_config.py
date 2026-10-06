@@ -388,7 +388,7 @@ def test_settings_dialog_can_change_poetore_capture_hotkey(monkeypatch):
         assert dialog.undo_lap_btn.key_text == "none"
         assert dialog.stash_tab_scroll_enabled_cb.isChecked()
         assert dialog.stash_tab_scroll_enabled_cb.text() == (
-            "Ctrl＋マウスホイールでスタッシュタブを切り替える"
+            'Switch stash tabs with Ctrl + mouse wheel'
         )
         dialog.poetore_capture_btn.set_modifier("alt")
         dialog.poetore_capture_btn.set_key("Q")

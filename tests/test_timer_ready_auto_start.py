@@ -57,9 +57,9 @@ def test_ready_is_rejected_with_existing_record_running_timer_or_poe2():
     assert window.timer_ready is False
     warning.assert_called_once_with(
         window,
-        "Readyにできません",
-        "タイマーの記録が残っています。\n"
-        "問題ないか確認のうえ、リセットしてからReadyしてください。",
+        'Cannot Set Ready',
+        'The timer still has records.\n'
+        "Check that's OK, reset it, then use Ready.",
     )
 
     window = make_window()

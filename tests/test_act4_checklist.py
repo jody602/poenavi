@@ -79,17 +79,17 @@ def test_window_uses_final_copy_and_updates_progress(qapp):
         )
         window.apply_state(state)
 
-        assert window.windowTitle() == "Act4 攻略チェック"
+        assert window.windowTitle() == 'Act 4 Checklist'
         assert window.progress_label.text() == "14 / 14"
-        assert window.complete_label.text() == "✓ Act4の攻略必須エリアをすべて完了済み"
+        assert window.complete_label.text() == '✓ All required Act 4 areas completed'
         assert (
             window.complete_label.isVisible() is False
         )  # 親を表示するまではQt上非表示
-        assert "ナカヌの装備販売NPCを確認" in window.optional_checkbox.text()
+        assert "Check Nakanu's gear vendor" in window.optional_checkbox.text()
         notes = [
             label.text() for label in window.findChildren(type(window.complete_label))
         ]
-        assert "発掘現場を攻略前に立ち寄る" in notes
+        assert 'Visit The Excavation before clearing' in notes
     finally:
         window.close()
 
@@ -101,21 +101,21 @@ def test_window_uses_requested_area_notes_without_number_prefixes(qapp):
             zone_id: checkbox.property("checklistLabel")
             for zone_id, checkbox in window._checkboxes.items()
         }
-        assert labels["poe2_act4_area01"] == "キンの島（地図の切れ端 ①、経験値効率良）"
-        assert labels["poe2_act4_area03"] == "ケッジ湾（地図の切れ端 ②）"
+        assert labels["poe2_act4_area01"] == 'Isle of Kin (Map Fragment ①, good XP)'
+        assert labels["poe2_act4_area03"] == 'Kedge Bay (Map Fragment ②)'
         assert (
             labels["poe2_act4_area04"]
-            == "└  旅の終わり（クエスト完了でスキルポイント+2）"
+            == "└  Journey's End (+2 skill points on quest completion)"
         )
-        assert labels["poe2_act4_area05"] == "放棄された監獄（礼拝堂で永続バフ）"
+        assert labels["poe2_act4_area05"] == 'Abandoned Prison (permanent buff at the chapel)'
         assert (
             labels["poe2_act4_area07"]
-            == "ワーカパヌ島（地図の切れ端 ③、鮫ボスで永続バフ）"
+            == 'Whakapanu Island (Map Fragment ③, permanent buff from the shark boss)'
         )
-        assert labels["poe2_act4_area09"] == "モズの島（地図の切れ端 ④）"
-        assert labels["poe2_act4_area10"] == "ヒネコラの目（永続バフ）"
-        assert labels["poe2_act4_area11"] == "└  死者の殿堂（永続バフ）"
-        assert labels["poe2_act4_area12"] == "   └  祖先の試練（スキルポイント+2）"
+        assert labels["poe2_act4_area09"] == 'Shrike Island (Map Fragment ④)'
+        assert labels["poe2_act4_area10"] == 'Eye of Hinekora (permanent buff)'
+        assert labels["poe2_act4_area11"] == "└  Halls of the Dead (permanent buff)"
+        assert labels["poe2_act4_area12"] == "   └  Trial of the Ancestors (+2 skill points)"
         assert all(
             not str(label).lstrip().startswith(tuple("12345678"))
             for label in labels.values()
@@ -153,7 +153,7 @@ def test_window_uses_shared_blue_checkbox_visual(qapp):
         assert "#4488ff" in stylesheet
         assert "ui-checkbox-checked.svg" in stylesheet
         assert "width: 18px" in stylesheet
-        assert window._checkboxes["poe2_act4_area01"].text().startswith("キンの島")
+        assert window._checkboxes["poe2_act4_area01"].text().startswith("Isle of Kin")
         assert not window._checkboxes["poe2_act4_area01"].text().startswith(("□", "✓"))
     finally:
         window.close()

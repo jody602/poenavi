@@ -430,8 +430,8 @@ def test_high_accuracy_status_explains_cold_start(qapp):
     controller._show_high_accuracy_status(True, client_rect, capture_rect)
 
     lines = overlay.show_status.call_args.args[2]
-    assert "高精度OCRを準備しています…" in lines
-    assert "初回のみ10～15秒ほどかかります" in lines
+    assert 'Preparing high-accuracy OCR…' in lines
+    assert 'The first run takes about 10–15 seconds' in lines
 
 
 def test_experimental_base_opens_existing_search_with_empty_optional_ilvl(qapp):
@@ -482,7 +482,7 @@ def test_heist_unique_opens_fixed_mod_candidates_blank_and_disabled(qapp):
         assert all(not row.enabled for row in filters)
         assert all(row.min_value is None and row.max_value is None for row in filters)
         assert all(
-            row.selection_reason == "ハイストユニーク固定Mod候補" for row in filters
+            row.selection_reason == 'Heist unique fixed mod candidate' for row in filters
         )
         window.parse_current_text()
         assert len(window._selected_stat_filters()) == 7
@@ -515,7 +515,7 @@ def test_heist_trinket_opens_detected_mods_with_values_and_disabled(qapp):
         filters = [
             row
             for row in window._selected_stat_filters()
-            if row.selection_reason == "盗賊のトリンケットOCR"
+            if row.selection_reason == "Rogue's Trinket OCR"
         ]
         assert [(row.min_value, row.enabled) for row in filters] == [
             (5.0, False),

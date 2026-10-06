@@ -107,7 +107,7 @@ def test_map_like_scope_matches_awakened_and_excludes_unique_map():
     assert is_map_check_item(item("heist_contract"))
     assert is_map_check_item(item("heist_blueprint"))
     assert is_map_check_item(item("expedition_logbook"))
-    assert not is_map_check_item(item("map", "ユニーク"))
+    assert not is_map_check_item(item("map", 'Unique'))
     assert not is_map_check_item(item("armour"))
 
 
@@ -381,7 +381,7 @@ def test_manager_orders_decision_columns_by_severity():
         dialog.table.horizontalHeaderItem(column).text()
         for column in range(dialog.table.columnCount())
     ]
-    assert headers == ["Map Mod", "危険", "警告", "有利", "解除"]
+    assert headers == ["Map Mod", 'Danger', 'Warning', 'Good', 'Clear']
     assert [
         dialog.table.cellWidget(0, column).text()
         for column in range(1, dialog.table.columnCount())
@@ -468,14 +468,14 @@ Map (Tier 16)
         if button.property("map_seen_key")
     )
     key = seen.property("map_seen_key")
-    assert seen.text() == "未確認"
-    assert "確認済み" in seen.toolTip()
+    assert seen.text() == 'Unchecked'
+    assert "as checked" in seen.toolTip()
 
     seen.click()
-    assert seen.text() == "確認済"
+    assert seen.text() == 'Checked'
     set_decision(window.config, key, "d")
     window._refresh_seen_buttons(key)
-    assert seen.text() == "設定済"
+    assert seen.text() == 'Set'
     assert not seen.isEnabled()
     assert decision_for(window.config, key) == "d"
     window.close()
@@ -532,7 +532,7 @@ def test_manager_uses_numeric_profiles_without_removed_reflect_defaults():
     dialog = MapModManagerDialog(default_map_check_config())
     assert [button.text() for button in dialog.profile_buttons] == ["1", "2", "3"]
     assert dialog.table.rowCount() == 232
-    assert "全232件" in dialog.count_label.text()
+    assert "(of 232)" in dialog.count_label.text()
     assert all(entry.scope != "outdated" for entry, _tag in dialog._rows())
     dialog.close()
 
@@ -567,7 +567,7 @@ def test_non_map_clipboard_is_rejected_without_trade_search():
     with patch("src.ui.map_check.QMessageBox.information") as information:
         window._consume_clipboard()
     information.assert_called_once()
-    assert "Map系アイテムではありません" in information.call_args.args[2]
+    assert "Not a map item" in information.call_args.args[2]
     assert not window.isVisible()
     window.close()
 def test_map_check_uses_shared_result_font_size():

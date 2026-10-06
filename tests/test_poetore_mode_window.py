@@ -21,8 +21,8 @@ def test_main_header_shows_short_poe_version_four_pixels_smaller_than_title():
     app = QApplication.instance() or QApplication([])
 
     for poe_version, expected in (
-        (POE1, "（PoE1）"),
-        (POE2, "（PoE2）"),
+        (POE1, "(PoE1)"),
+        (POE2, "(PoE2)"),
     ):
         with patch(
             "src.ui.poetore_mode_window.ConfigManager.load_config",
@@ -34,7 +34,7 @@ def test_main_header_shows_short_poe_version_four_pixels_smaller_than_title():
 
         window.show()
         app.processEvents()
-        assert window.title_label.text() == "ぽえとれ"
+        assert window.title_label.text() == 'PoETore'
         assert window.mode_label.text() == expected
         assert window.mode_label.width() >= window.mode_label.sizeHint().width()
         assert (
@@ -117,7 +117,7 @@ def test_poetore_mode_starts_only_common_and_poetore_services():
         window.settings_button,
     )
     assert window.header_action_buttons == header_buttons
-    assert window.focus_button.text() == "隠れ家滞在通知\nOFF"
+    assert window.focus_button.text() == 'Hideout alert\nOFF'
     assert window.focus_button.size().width() == 108
     assert window.focus_button.size().height() == 35
     assert "text-align: center" in window.centralWidget().styleSheet()
@@ -136,13 +136,13 @@ def test_poetore_mode_starts_only_common_and_poetore_services():
         button.height() == window.focus_button.height()
         for button in header_buttons
     )
-    assert window.divine_rate_value.text() == "最新データを取得できません"
+    assert window.divine_rate_value.text() == 'Cannot fetch latest data'
     assert window.divine_rate_value.alignment() == Qt.AlignCenter
     assert window.minimumWidth() == 500
     assert window.width() == 558
     assert window.windowFlags() & Qt.FramelessWindowHint
     assert window.capture_hint.text() == (
-        "アイテムにマウスオーバーして Alt + D 操作モード / "
+        "Hover over an item and press Alt + D Interactive mode / "
         "Ctrl + D AUTO-HIDE"
     )
     minimize_button = window.findChild(QPushButton, "poetoreMinimizeButton")
@@ -151,13 +151,13 @@ def test_poetore_mode_starts_only_common_and_poetore_services():
     assert close_button.text() == "✕"
     assert minimize_button.focusPolicy() == Qt.NoFocus
     assert close_button.focusPolicy() == Qt.NoFocus
-    assert window.rate_refresh_button.text() == "最新データ確認"
+    assert window.rate_refresh_button.text() == 'Check Latest Data'
     assert window.rate_refresh_button.focusPolicy() == Qt.NoFocus
-    assert window.tray_icon.toolTip() == "ぽえとれ"
+    assert window.tray_icon.toolTip() == 'PoETore'
     assert [
         action.text() for action in window.tray_icon.contextMenu().actions()
         if not action.isSeparator()
-    ] == ["ぽえとれを表示", "設定", "終了"]
+    ] == ['Show PoETore', 'Settings', 'Exit']
     hotkey_service.start.assert_called_once()
     window.close()
     app.processEvents()
@@ -180,7 +180,7 @@ def test_expedition_settings_button_is_immediately_right_of_memo_for_poe2():
     )
     assert window.expedition_settings_button.isVisibleTo(window)
     assert window.expedition_settings_button.toolTip() == (
-        "エクスペ報酬チェック設定を開く"
+        'Open Expedition reward check settings'
     )
     window.close()
     app.processEvents()
@@ -204,7 +204,7 @@ def test_heist_settings_button_is_immediately_right_of_memo_for_poe1():
     )
     assert window.heist_settings_button.isVisibleTo(window)
     assert not window.heist_settings_button.icon().isNull()
-    assert window.heist_settings_button.toolTip() == "ハイスト報酬OCR設定を開く"
+    assert window.heist_settings_button.toolTip() == 'Open Heist reward OCR settings'
     assert not _heist_curio_icon().isNull()
     window.close()
     app.processEvents()
@@ -263,7 +263,7 @@ def test_poetore_mode_starts_capture_and_stash_scroll_services_for_poe2():
     assert not window.map_mods_button.isVisibleTo(window)
     stash_class.assert_called_once_with(enabled=True)
     prepare_window.assert_called_once_with(window)
-    assert window.rate_panel.title_label.text() == "カレンシー交換レート"
+    assert window.rate_panel.title_label.text() == 'Currency Exchange Rates'
     assert len(window.rate_panel.row_widgets) == 1
     window.close()
     app.processEvents()
@@ -683,7 +683,7 @@ def test_expedition_diagnostic_report_uses_single_message_box():
         PoetoreModeWindow._show_expedition_diagnostic(window, "diagnostic report")
 
     information.assert_called_once_with(
-        window, "エクスペディションOCR診断", "diagnostic report"
+        window, 'Expedition OCR Diagnostics', "diagnostic report"
     )
 
 
@@ -735,7 +735,7 @@ def test_poetore_mode_starts_obs_window_collapsed_when_enabled():
     result = window._poetore_window
     assert result.isVisible()
     assert result._obs_collapsed
-    assert result.windowTitle() == "ぽえとれ - 検索結果ウィンドウ"
+    assert result.windowTitle() == 'PoETore - Search Results'
     window.close()
     app.processEvents()
 
@@ -864,13 +864,13 @@ def test_poetore_mode_capture_hint_uses_configured_hotkey():
         window = PoetoreModeWindow()
 
     assert window.capture_hint.text() == (
-        "アイテムにマウスオーバーして Ctrl + Shift + P 操作モード / "
+        "Hover over an item and press Ctrl + Shift + P Interactive mode / "
         "Alt + Q AUTO-HIDE"
     )
     window.config["hotkeys"]["poetore_capture"] = "none"
     window.config["hotkeys"]["poetore_auto_hide"] = "none"
     window._update_capture_hint()
-    assert window.capture_hint.text() == "価格チェックのホットキーが設定されていません。"
+    assert window.capture_hint.text() == 'No price check hotkey is set.'
     window.close()
     app.processEvents()
 

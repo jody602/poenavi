@@ -106,9 +106,9 @@ class GemShopSearchTest(unittest.TestCase):
         )
         self.assertEqual(settings.size().width(), 630)
         tabs = settings.findChild(QTabWidget)
-        self.assertEqual(tabs.tabText(tabs.count() - 3), "Regex短縮設定")
-        self.assertEqual(tabs.tabText(tabs.count() - 2), "その他")
-        self.assertEqual(tabs.tabText(tabs.count() - 1), "アプリ情報")
+        self.assertEqual(tabs.tabText(tabs.count() - 3), 'Regex Short Terms')
+        self.assertEqual(tabs.tabText(tabs.count() - 2), "Other")
+        self.assertEqual(tabs.tabText(tabs.count() - 1), 'About')
 
         review = settings.gem_shop_search_term_review
         self.assertEqual(review._table.columnWidth(0), 279)
@@ -117,15 +117,14 @@ class GemShopSearchTest(unittest.TestCase):
         hint_labels = [
             label.text()
             for label in review.findChildren(QLabel)
-            if "ジェム取得支援機能において" in label.text()
+            if "Customize the gem regexes" in label.text()
         ]
         self.assertEqual(
             hint_labels,
             [
-                "ジェム取得支援機能において自動で生成するジェムのRegexについて、"
-                "カスタマイズができます。"
-                "上書き欄が空欄なら自動短縮語を使います。"
-                "上書きは正式名に含まれる、他ジェムと重複しない4文字以上の語だけ保存できます。"
+                "Customize the gem regexes generated automatically by the gem tracker. "
+                'If the override field is empty, the automatic short term is used. '
+                'Overrides must be 4+ characters, contained in the full name, and unique among gems.'
             ],
         )
 

@@ -27,7 +27,7 @@ def test_heist_settings_reuses_poetore_dialog_structure_and_defaults():
     QApplication.instance() or QApplication([])
     dialog = HeistSettingsDialog()
     try:
-        assert dialog.windowTitle() == "ハイスト報酬OCR設定"
+        assert dialog.windowTitle() == 'Heist Reward OCR Settings'
         assert dialog.theme == POETORE_DIALOG_THEME
         assert not dialog.enabled_checkbox.isChecked()
         assert dialog.hotkey_widget.key_text == "alt+e"
@@ -36,9 +36,9 @@ def test_heist_settings_reuses_poetore_dialog_structure_and_defaults():
         assert dialog.findChild(QGroupBox, "highAccuracyOcrGroup") is not None
         assert dialog.findChild(QGroupBox, "readMethodGroup") is not None
         assert [group.title() for group in dialog.findChildren(QGroupBox)] == [
-            "1. 基本設定",
-            "2. 高精度OCR",
-            "3. 読み取り方法",
+            '1. Basic Settings',
+            '2. High-Accuracy OCR',
+            '3. How to Capture',
         ]
         assert dialog.cancel_button.property("buttonRole") == "secondary"
         assert dialog.save_button.property("buttonRole") == "primary"
@@ -56,7 +56,7 @@ def test_heist_settings_shares_pack_download_progress_and_retry_ui(qtbot):
 
     controller.status = PackStatus("error", "network")
     controller.status_changed.emit(controller.status)
-    assert "通常の読み取り機能は引き続き利用できます" in dialog.ocr_pack_status.text()
+    assert 'Standard reading still works' in dialog.ocr_pack_status.text()
     assert not dialog.ocr_pack_retry.isHidden()
     dialog.ocr_pack_retry.click()
     assert controller.retry_count == 1
@@ -71,10 +71,10 @@ def test_heist_settings_shows_manual_selection_example():
         source = dialog.example_thumbnail.pixmap()
         assert source.width() > 250
         assert source.height() > 100
-        assert "報酬名・ベースタイプ・青いMod全体" in dialog.findChild(
+        assert "base type, and all blue mods" in dialog.findChild(
             QLabel, "heistSelectionInstruction"
         ).text()
-        assert "自動で確定" in dialog.findChild(
+        assert "confirms automatically" in dialog.findChild(
             QLabel, "heistSelectionInstruction"
         ).text()
         assert "Enter" not in dialog.findChild(

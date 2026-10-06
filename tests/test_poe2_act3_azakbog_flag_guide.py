@@ -54,7 +54,7 @@ def test_detail_and_summary_editors_expose_azak_bog_flag_frame(qapp, guide_data)
     summary = GuideSummaryEditorDialog(None, "マトラン水路", entry)
 
     assert detail.primary_flag_key == FLAG_KEY
-    assert detail._v2_label_closed == "▶ フラグ進行後のガイド"
+    assert detail._v2_label_closed == '▶ Guide after flag progress'
     assert FLAG_KEY in summary.flag_editors
 
     detail.close()
@@ -78,8 +78,8 @@ def test_mini_navi_editor_exposes_azak_bog_flag_frame(monkeypatch, qapp, guide_d
     dialog._open_mini_navi_editor(QLineEdit("マトラン水路"), MATLAN_ZONE_ID)
 
     assert [section["title"] for section in captured["sections"]] == [
-        "通常時",
-        f"フラグ進行後: {FLAG_KEY}",
+        'Default',
+        f"After flag: {FLAG_KEY}",
     ]
     assert captured["show_direction"] is False
     dialog.close()

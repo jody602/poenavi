@@ -67,9 +67,9 @@ def test_high_accuracy_status_is_non_focus_and_uses_agreed_wording():
     client = QRect(0, 0, 800, 760)
     capture = QRect(70, 390, 620, 290)
     overlay.show_status(client, capture, (
-        "通常の読み取りで一部の数値を確認できませんでした",
-        "高精度OCRを準備しています…",
-        "初回のみ10～15秒ほどかかります",
+        'Standard reading could not confirm some values',
+        'Preparing high-accuracy OCR…',
+        'The first run takes about 10–15 seconds',
     ))
 
     assert overlay.windowFlags() & Qt.WindowDoesNotAcceptFocus
@@ -77,9 +77,9 @@ def test_high_accuracy_status_is_non_focus_and_uses_agreed_wording():
     assert overlay.testAttribute(Qt.WA_ShowWithoutActivating)
     assert overlay.testAttribute(Qt.WA_TransparentForMouseEvents)
     assert overlay.message.splitlines() == [
-        "通常の読み取りで一部の数値を確認できませんでした",
-        "高精度OCRを準備しています…",
-        "初回のみ10～15秒ほどかかります",
+        'Standard reading could not confirm some values',
+        'Preparing high-accuracy OCR…',
+        'The first run takes about 10–15 seconds',
     ]
     assert isinstance(overlay._message, OutlinedLabel)
     assert overlay._message.font().pixelSize() == 16
@@ -111,36 +111,36 @@ def test_category_selector_excludes_equipment_types_not_implemented_in_poe2():
     overlay = CategoryChoiceOverlay()
     overlay.show_categories(("bow", *unavailable, "spear"), QPoint(0, 0))
     labels = {button.text() for button in overlay.findChildren(QPushButton)}
-    assert {"弓", "スピア", "閉じる"} <= labels
+    assert {'Bow', 'Spear', 'Close'} <= labels
     assert not labels.intersection({
-        "クロー", "ダガー", "フレイル", "片手斧", "片手剣",
-        "両手斧", "両手剣",
+        'Claw', 'Dagger', 'Flail', 'One Hand Axe', 'One Hand Sword',
+        'Two Hand Axe', 'Two Hand Sword',
     })
     overlay.close()
 
 
 def test_category_selector_uses_distinct_staff_names_and_armour_wording():
     QApplication.instance() or QApplication([])
-    assert CATEGORY_LABELS["body_armour"] == "鎧"
-    assert CATEGORY_LABELS["staff"] == "スタッフ"
-    assert CATEGORY_LABELS["quarterstaff"] == "クォータースタッフ"
+    assert CATEGORY_LABELS["body_armour"] == 'Body Armour'
+    assert CATEGORY_LABELS["staff"] == 'Staff'
+    assert CATEGORY_LABELS["quarterstaff"] == 'Quarterstaff'
 
     overlay = CategoryChoiceOverlay()
     overlay.show_categories(
         ("body_armour", "staff", "quarterstaff"), QPoint(0, 0),
     )
     labels = {button.text() for button in overlay.findChildren(QPushButton)}
-    assert {"鎧", "スタッフ", "クォータースタッフ", "閉じる"} <= labels
+    assert {'Body Armour', 'Staff', 'Quarterstaff', 'Close'} <= labels
     assert "胴体防具" not in labels
     overlay.close()
 
 
 def test_unresolved_statuses_have_distinct_user_facing_labels():
     assert STATUS_LABELS == {
-        "read_failed": "読取失敗",
-        "unsupported": "未対応",
-        "tierless": "Tierなし",
-        "category_unselected": "部位未選択",
+        "read_failed": 'Read failed',
+        "unsupported": 'Unsupported',
+        "tierless": 'No tier',
+        "category_unselected": 'Slot not selected',
     }
 
 
@@ -170,8 +170,8 @@ def test_affix_candidates_render_with_japanese_labels_and_ranges():
     overlay.render(image)
 
     assert overlay._affix_display_labels(overlay._affix_options[0]) == (
-        ("プレフィックス T3", ("8–11%",)),
-        ("サフィックス T3", ("6–10%",)),
+        ("Prefix T3", ("8–11%",)),
+        ("Suffix T3", ("6–10%",)),
     )
     overlay.close()
 
@@ -571,9 +571,9 @@ def test_ndl_status_is_immediate_when_cold_and_delayed_when_warm():
     controller._ndl_status_overlay.show_status.assert_called_once()
     cold_lines = controller._ndl_status_overlay.show_status.call_args.args[2]
     assert cold_lines == [
-        "通常の読み取りで一部の数値を確認できませんでした",
-        "高精度OCRを準備しています…",
-        "初回のみ10～15秒ほどかかります",
+        'Standard reading could not confirm some values',
+        'Preparing high-accuracy OCR…',
+        'The first run takes about 10–15 seconds',
     ]
     controller._end_ndl_status(4, 1)
 
@@ -589,8 +589,8 @@ def test_ndl_status_is_immediate_when_cold_and_delayed_when_warm():
     controller._show_delayed_ndl_status()
     warm_lines = controller._ndl_status_overlay.show_status.call_args.args[2]
     assert warm_lines == [
-        "通常の読み取りで一部の数値を確認できませんでした",
-        "高精度OCRで再確認しています…",
+        'Standard reading could not confirm some values',
+        'Rechecking with high-accuracy OCR…',
     ]
     controller._end_ndl_status(4, 3)
     assert not controller._ndl_status_delay.isActive()
@@ -723,7 +723,7 @@ def test_controller_records_failure_stage_without_user_facing_message():
         "scan_completed",
         {"outcome": "failed", "failure_stage": "client_rect"},
     )
-    assert "Path of Exileのゲーム画面が見つかりませんでした。" not in repr(trace.records)
+    assert 'Could not find the Path of Exile game window.' not in repr(trace.records)
     controller.close()
 
 
@@ -765,7 +765,7 @@ def test_diagnostic_failure_never_blocks_the_scan_error_path():
     ):
         assert not controller.request_scan()
 
-    assert failures == ["Path of Exileのゲーム画面が見つかりませんでした。"]
+    assert failures == ['Could not find the Path of Exile game window.']
     controller.close()
 
 

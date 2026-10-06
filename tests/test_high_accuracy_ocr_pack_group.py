@@ -29,13 +29,13 @@ def test_shared_pack_group_tracks_progress_ready_and_error_states(qtbot):
 
     controller.status = PackStatus("ready")
     controller.status_changed.emit(controller.status)
-    assert "利用できます" in group.status_label.text()
+    assert "is available" in group.status_label.text()
     assert group.status_label.property("state") == "success"
     assert not group.progress_bar.isVisible()
 
     controller.status = PackStatus("error", "network")
     controller.status_changed.emit(controller.status)
-    assert "通常の読み取り機能は引き続き利用できます" in group.status_label.text()
+    assert 'Standard reading still works' in group.status_label.text()
     assert group.status_label.property("state") == "warning"
     assert not group.retry_button.isHidden()
     group.retry_button.click()
@@ -45,10 +45,10 @@ def test_shared_pack_group_tracks_progress_ready_and_error_states(qtbot):
 @pytest.mark.parametrize(
     ("state", "expected"),
     [
-        ("checking", "初回のみ高精度OCRパックをダウンロードします"),
-        ("idle", "初回のみ高精度OCRパックをダウンロードします"),
-        ("installing", "高精度OCRをインストールしています…"),
-        ("unavailable", "高精度OCRの状態を確認できません"),
+        ("checking", 'The high-accuracy OCR pack is downloaded the first time only'),
+        ("idle", 'The high-accuracy OCR pack is downloaded the first time only'),
+        ("installing", 'Installing high-accuracy OCR…'),
+        ("unavailable", 'Cannot check high-accuracy OCR status'),
     ],
 )
 def test_shared_pack_group_covers_all_non_progress_states(qtbot, state, expected):

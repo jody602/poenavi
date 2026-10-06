@@ -187,7 +187,7 @@ class MapModManagerDialog(QDialog):
                 button.setStyleSheet(f"QPushButton{{background:{color};}}")
                 button.clicked.connect(partial(self._choose, entry.key, value))
                 self.table.setCellWidget(row, column, button)
-        self.count_label.setText(f"{len(rows)} shown (of{len(self.catalog)})")
+        self.count_label.setText(f"{len(rows)} shown (of {len(self.catalog)})")
 
     def _choose(self, key, value, _checked=False):
         set_decision(self.config, key, value)

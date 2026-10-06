@@ -105,19 +105,19 @@ def test_latest_zone_rejects_undated_or_old_latest_zone(tmp_path):
 def test_timer_starts_at_enable_and_carries_between_hideouts():
     state = HideoutTimerState(duration_seconds=60)
     state.enable("Coastal Hideout", now=100.0)
-    assert state.button_text(142.0) == "隠れ家滞在通知\n0:42"
+    assert state.button_text(142.0) == "Hideout alert\n0:42"
     state.enter_zone("夕暮れの隠れ家", now=150.0)
-    assert state.button_text(165.0) == "隠れ家滞在通知\n1:05"
+    assert state.button_text(165.0) == "Hideout alert\n1:05"
     assert state.consume_due_notification(165.0) == 1
-    assert state.button_text(166.0) == "隠れ家滞在通知\n1:06 ✓"
+    assert state.button_text(166.0) == "Hideout alert\n1:06 ✓"
 
 
 def test_button_text_covers_off_and_repeating_notification_states():
     state = HideoutTimerState(duration_seconds=10, repeat=True)
-    assert state.button_text(0.0) == "隠れ家滞在通知\nOFF"
+    assert state.button_text(0.0) == 'Hideout alert\nOFF'
     state.enable("Coastal Hideout", now=0.0)
     assert state.consume_due_notification(10.0) == 1
-    assert state.button_text(11.0) == "隠れ家滞在通知\n0:11"
+    assert state.button_text(11.0) == "Hideout alert\n0:11"
 
 
 def test_timer_resets_only_after_leaving_hideout():
@@ -125,9 +125,9 @@ def test_timer_resets_only_after_leaving_hideout():
     state.enable("Coastal Hideout", now=10.0)
     assert state.consume_due_notification(20.0) == 1
     state.enter_zone("Kingsmarch", now=21.0)
-    assert state.button_text(30.0) == "隠れ家滞在通知\nON"
+    assert state.button_text(30.0) == "Hideout alert\nON"
     state.enter_zone("Coastal Hideout", now=40.0)
-    assert state.button_text(45.0) == "隠れ家滞在通知\n0:05"
+    assert state.button_text(45.0) == "Hideout alert\n0:05"
     assert state.consume_due_notification(45.0) is None
 
 
@@ -145,7 +145,7 @@ def test_duration_change_restarts_current_hideout_timer():
     state = HideoutTimerState(duration_seconds=60)
     state.enable("Coastal Hideout", now=0.0)
     state.set_duration(30, now=45.0)
-    assert state.button_text(46.0) == "隠れ家滞在通知\n0:01"
+    assert state.button_text(46.0) == "Hideout alert\n0:01"
     assert state.consume_due_notification(74.9) is None
     assert state.consume_due_notification(75.0) == 1
 
@@ -153,5 +153,5 @@ def test_duration_change_restarts_current_hideout_timer():
 def test_unknown_zone_waits_without_counting():
     state = HideoutTimerState()
     state.enable(None, now=0.0)
-    assert state.button_text(100.0) == "隠れ家滞在通知\nON（エリア待ち）"
+    assert state.button_text(100.0) == "Hideout alert\nON (waiting for area)"
     assert state.consume_due_notification(100.0) is None

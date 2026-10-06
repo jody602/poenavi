@@ -508,7 +508,7 @@ class CheatSheetOverlay(QWidget):
         record = images[index]
         self.config["selected_id"] = record["id"]
         title = record.get("name") or "Untitled"
-        self.title_label.setText(f"{title}(drag the image title to move)")
+        self.title_label.setText(f"{title} (drag the image title to move)")
         self.counter_label.setText(f"{index + 1} / {len(images)}")
         self._pixmap = QPixmap(str(registered_image_path(record)))
         if self._pixmap.isNull():

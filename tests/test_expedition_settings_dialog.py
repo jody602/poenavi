@@ -26,7 +26,7 @@ def test_expedition_settings_uses_poetore_dialog_theme_and_footer_roles():
     assert dialog.property("dialogTheme") == "poetore"
     assert dialog.property("dialogAccent") == "#65FFCA"
     assert dialog.title_label.property("uiRole") == "title"
-    assert dialog.title_label.text() == "エクスペ報酬チェック設定"
+    assert dialog.title_label.text() == 'Expedition Reward Check Settings'
     assert dialog.cancel_button.property("buttonRole") == "secondary"
     assert dialog.save_button.property("buttonRole") == "primary"
     assert dialog.footer_layout.itemAt(1).widget() is dialog.cancel_button
@@ -135,8 +135,8 @@ def test_expedition_dialog_saves_status_hotkey_and_region():
     assert dialog.enabled_checkbox.isChecked()
     assert dialog.hotkey_widget.key_text == "alt+r"
     assert dialog.hotkey_widget.no_modifier_button is not None
-    assert dialog.status_label.text() == "設定済み"
-    assert dialog.set_region_button.text() == "読取範囲を再設定"
+    assert dialog.status_label.text() == 'Set'
+    assert dialog.set_region_button.text() == 'Reset Capture Area'
     assert dialog.reset_region_button.isEnabled()
     assert dialog.settings() == (
         {"region": region},
@@ -145,8 +145,8 @@ def test_expedition_dialog_saves_status_hotkey_and_region():
     )
 
     dialog.reset_region_button.click()
-    assert dialog.status_label.text() == "未設定"
-    assert dialog.set_region_button.text() == "読取範囲を設定"
+    assert dialog.status_label.text() == 'Not set'
+    assert dialog.set_region_button.text() == 'Set Capture Area'
     assert not dialog.reset_region_button.isEnabled()
     assert dialog.settings() == ({}, "alt+r", True)
     dialog.close()
@@ -168,8 +168,8 @@ def test_expedition_settings_matches_abyss_grouped_layout():
 
     groups = dialog.findChildren(QGroupBox)
     assert [group.title() for group in groups] == [
-        "1. 基本設定",
-        "2. 読取範囲",
+        '1. Basic Settings',
+        '2. Capture Area',
     ]
     assert dialog.findChild(QScrollArea, "expeditionSettingsScroll") is not None
 
@@ -180,7 +180,7 @@ def test_expedition_settings_matches_abyss_grouped_layout():
     assert ranges.isAncestorOf(dialog.status_label)
     assert ranges.isAncestorOf(dialog.preview)
     assert ranges.isAncestorOf(dialog.example_thumbnail)
-    assert dialog.findChild(QLabel, "expeditionExampleHeading").text() == "指定例"
+    assert dialog.findChild(QLabel, "expeditionExampleHeading").text() == 'Example'
     dialog.close()
 
 
@@ -189,7 +189,7 @@ def test_expedition_settings_warns_that_screen_reading_must_be_enabled():
     dialog = ExpeditionSettingsDialog()
 
     hint = dialog.findChild(QLabel, "screenReadingEnableRequiredHint")
-    assert hint.text() == "※使用するにはチェックをONにしてください"
+    assert hint.text() == '* Check this box to use the feature'
     assert hint.property("state") == "warning"
     assert "#F6C85F" in dialog.styleSheet()
     assert "font-weight: 600" in dialog.styleSheet()
@@ -255,7 +255,7 @@ def test_expedition_dialog_accepts_region_from_selector():
     dialog.set_region_button.click()
 
     assert dialog.settings()[0]["region"] == region
-    assert dialog.status_label.text() == "設定済み"
+    assert dialog.status_label.text() == 'Set'
     assert selection_opacities == [(0.0, 0.0)]
     assert dialog.windowOpacity() == 1.0
     assert abs(owner.windowOpacity() - 0.75) < 0.01
@@ -289,9 +289,9 @@ def test_expedition_dialog_shows_example_or_clear_placeholder(tmp_path):
     QApplication.instance() or QApplication([])
     missing = ExpeditionSettingsDialog(example_image_path=tmp_path / "missing.png")
     assert missing.example_hint_label.text() == (
-        "※以下の画像をクリックするとポップアップで拡大表示します"
+        '* Click the image below to enlarge it in a popup'
     )
-    assert "準備中" in missing.example_thumbnail.text()
+    assert "coming soon" in missing.example_thumbnail.text()
     missing.close()
 
     image_path = tmp_path / "example.png"
@@ -301,7 +301,7 @@ def test_expedition_dialog_shows_example_or_clear_placeholder(tmp_path):
     available = ExpeditionSettingsDialog(example_image_path=image_path)
     assert available.example_thumbnail.pixmap() is not None
     assert not available.example_thumbnail.pixmap().isNull()
-    assert available.example_thumbnail.toolTip() == "クリックして拡大"
+    assert available.example_thumbnail.toolTip() == 'Click to enlarge'
     available.close()
 
 
@@ -312,7 +312,7 @@ def test_packaged_expedition_example_image_is_available():
     dialog = ExpeditionSettingsDialog()
     assert dialog.example_thumbnail.pixmap() is not None
     assert not dialog.example_thumbnail.pixmap().isNull()
-    assert dialog.example_thumbnail.toolTip() == "クリックして拡大"
+    assert dialog.example_thumbnail.toolTip() == 'Click to enlarge'
     dialog.close()
 
 
@@ -320,7 +320,7 @@ def test_expedition_dialog_warns_that_window_resize_requires_region_reset():
     dialog = ExpeditionSettingsDialog()
     warning = dialog.findChild(QLabel, "screenSizeRegionWarning")
     assert warning.text() == (
-        "PoE2のウィンドウサイズを変更した場合、位置が変わるため再設定が必要です。"
+        'If you change the PoE2 window size, positions shift and you will need to set this again.'
     )
     assert warning.property("state") == "warning"
     assert "#F6C85F" in dialog.styleSheet()
