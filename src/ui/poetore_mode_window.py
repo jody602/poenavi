@@ -350,7 +350,7 @@ class _PoetoreModeTitleBar(QWidget):
         self.minimize_button.setFocusPolicy(Qt.NoFocus)
         self.minimize_button.setFixedSize(30, 22)
         self.minimize_button.setStyleSheet(button_style)
-        self.minimize_button.setToolTip("最小化")
+        self.minimize_button.setToolTip("Minimize")
         self.minimize_button.clicked.connect(window.minimize_to_tray)
         layout.addWidget(self.minimize_button)
 
@@ -359,7 +359,7 @@ class _PoetoreModeTitleBar(QWidget):
         self.close_button.setFocusPolicy(Qt.NoFocus)
         self.close_button.setFixedSize(30, 22)
         self.close_button.setStyleSheet(close_style)
-        self.close_button.setToolTip("閉じる")
+        self.close_button.setToolTip("Close")
         self.close_button.clicked.connect(window.close)
         layout.addWidget(self.close_button)
 
@@ -408,7 +408,7 @@ class PoetoreModeWindow(QMainWindow):
         poe_version = self.config.get("poe_version", POE1)
         self.poe_version = poe_version
         if not is_feature_supported(POETORE, poe_version):
-            raise RuntimeError("PoE2版ぽえとれは現在テスト中です")
+            raise RuntimeError("PoETore for PoE2 is currently in testing")
         self._cheat_sheet_overlay = None
         self._map_check_window = None
         self._memo_dialog = None
@@ -428,14 +428,14 @@ class PoetoreModeWindow(QMainWindow):
         self._league_signals.ready.connect(self._queue_rate_sync)
         self._league_signals.failed.connect(self._show_rate_error)
 
-        self.setWindowTitle("ぽえとれ")
+        self.setWindowTitle("PoETore")
         self.setWindowFlags(Qt.Window | Qt.FramelessWindowHint)
         self.setAttribute(Qt.WA_TranslucentBackground)
         self.setMinimumSize(500, 300)
         self.resize(558, 360)
         self._build_ui()
         self._hideout_notification = None
-        self.focus_button.setText("隠れ家滞在通知\nOFF")
+        self.focus_button.setText("Hideout alert\nOFF")
         self._apply_rate_panel_height()
         self._build_tray_icon()
         self._apply_window_settings()
@@ -473,18 +473,18 @@ class PoetoreModeWindow(QMainWindow):
         self.setWindowIcon(icon)
 
         self.tray_icon = QSystemTrayIcon(icon, self)
-        self.tray_icon.setToolTip("ぽえとれ")
+        self.tray_icon.setToolTip("PoETore")
         self.tray_icon.activated.connect(self._handle_tray_activation)
 
         menu = QMenu(self)
-        self.tray_show_action = QAction("ぽえとれを表示", menu)
+        self.tray_show_action = QAction("Show PoETore", menu)
         self.tray_show_action.triggered.connect(self.restore_from_tray)
         menu.addAction(self.tray_show_action)
-        self.tray_settings_action = QAction("設定", menu)
+        self.tray_settings_action = QAction("Settings", menu)
         self.tray_settings_action.triggered.connect(self.open_settings_from_tray)
         menu.addAction(self.tray_settings_action)
         menu.addSeparator()
-        self.tray_exit_action = QAction("終了", menu)
+        self.tray_exit_action = QAction("Exit", menu)
         self.tray_exit_action.triggered.connect(self.quit_from_tray)
         menu.addAction(self.tray_exit_action)
         self.tray_icon.setContextMenu(menu)
@@ -499,8 +499,8 @@ class PoetoreModeWindow(QMainWindow):
         self.hide()
         if not self._tray_notification_shown:
             self.tray_icon.showMessage(
-                "ぽえとれ",
-                "タスクトレイに格納しました。",
+                "PoETore",
+                "Minimized to the system tray.",
                 QSystemTrayIcon.Information,
                 3000,
             )
@@ -590,17 +590,17 @@ class PoetoreModeWindow(QMainWindow):
         title_style = (
             f"color: {POETORE_ACCENT}; font-size: 26px; font-weight: bold;"
         )
-        self.title_label = QLabel("ぽえとれ")
+        self.title_label = QLabel("PoETore")
         self.title_label.setStyleSheet(title_style)
         mode_name = "PoE2" if self.poe_version == POE2 else "PoE1"
-        self.mode_label = QLabel(f"（{mode_name}）")
+        self.mode_label = QLabel(f"({mode_name})")
         self.mode_label.setStyleSheet(
             f"color: {POETORE_ACCENT}; font-size: 22px; font-weight: bold;"
         )
         self.mode_label.setMinimumWidth(self.mode_label.sizeHint().width())
         title_row.addWidget(self.title_label)
         title_row.addWidget(self.mode_label)
-        subtitle = QLabel("価格チェック・トレード支援")
+        subtitle = QLabel("Price check and trade helper")
         subtitle.setStyleSheet(
             f"color: {POETORE_THEME.muted_text}; font-size: 12px;"
         )
@@ -609,47 +609,47 @@ class PoetoreModeWindow(QMainWindow):
         header.addLayout(title_box)
         header.addStretch()
 
-        self.focus_button = QPushButton("隠れ家滞在通知\nOFF")
+        self.focus_button = QPushButton("Hideout alert\nOFF")
         self.focus_button.setObjectName("poetoreFocusButton")
         self.focus_button.setFocusPolicy(Qt.NoFocus)
-        self.focus_button.setToolTip("隠れ家滞在通知の集中モードを切り替える")
+        self.focus_button.setToolTip("Toggle focus mode for the hideout alert")
         self.focus_button.setFixedSize(108, 35)
         self.focus_button.clicked.connect(self.toggle_focus_mode)
         header.addWidget(self.focus_button)
 
-        self.memo_button = self._header_button("", "共通メモを開く")
+        self.memo_button = self._header_button("", "Open shared notes")
         self.memo_button.setIcon(_memo_icon())
         self.memo_button.setIconSize(QSize(24, 24))
         self.heist_settings_button = self._header_button(
-            "", "ハイスト報酬OCR設定を開く"
+            "", "Open Heist reward OCR settings"
         )
         self.heist_settings_button.setIcon(_heist_curio_icon())
         self.heist_settings_button.setIconSize(QSize(24, 24))
         self.heist_settings_button.setVisible(self.poe_version == POE1)
         self.expedition_settings_button = self._header_button(
-            "", "エクスペ報酬チェック設定を開く"
+            "", "Open Expedition reward check settings"
         )
         self.expedition_settings_button.setIcon(_expedition_icon())
         self.expedition_settings_button.setIconSize(QSize(24, 24))
         self.expedition_settings_button.setVisible(self.poe_version == POE2)
         self.desecration_settings_button = self._header_button(
-            "", "アビス冒涜Modティアチェック設定を開く"
+            "", "Open Abyss desecrated mod tier check settings"
         )
         self.desecration_settings_button.setIcon(_abyss_desecration_icon())
         self.desecration_settings_button.setIconSize(QSize(24, 24))
         self.desecration_settings_button.setVisible(self.poe_version == POE2)
         self.cheat_sheets_button = self._header_button(
-            "", "Cheat sheetsの画像を登録・管理"
+            "", "Add and manage cheat sheet images"
         )
         self.cheat_sheets_button.setIcon(_image_manager_icon())
         self.cheat_sheets_button.setIconSize(QSize(24, 24))
-        self.map_mods_button = self._header_button("", "Map Modを登録・管理")
+        self.map_mods_button = self._header_button("", "Add and manage map mods")
         self.map_mods_button.setIcon(_map_mod_manager_icon())
         self.map_mods_button.setIconSize(QSize(24, 24))
         self.map_mods_button.setVisible(
             is_feature_supported(MAP_CHECK, self.poe_version)
         )
-        self.settings_button = self._header_button("", "設定画面を開く")
+        self.settings_button = self._header_button("", "Open settings")
         self.settings_button.setIcon(_settings_icon())
         self.settings_button.setIconSize(QSize(24, 24))
         self.memo_button.clicked.connect(self.open_memo)
@@ -799,8 +799,8 @@ class PoetoreModeWindow(QMainWindow):
         if kind == "log_missing":
             answer = QMessageBox.question(
                 self,
-                "隠れ家滞在通知",
-                f"{text}\n\n設定画面を開きますか？",
+                "Hideout Alert",
+                f"{text}\n\nOpen settings?",
                 QMessageBox.Yes | QMessageBox.No,
                 QMessageBox.Yes,
             )
@@ -808,7 +808,7 @@ class PoetoreModeWindow(QMainWindow):
                 QTimer.singleShot(0, self.open_settings)
             return
         if kind == "poe_not_running":
-            QMessageBox.information(self, "隠れ家滞在通知", text)
+            QMessageBox.information(self, "Hideout Alert", text)
             return
         self.focus_message_label.setText(text)
         self.focus_message_label.show()
@@ -925,15 +925,15 @@ class PoetoreModeWindow(QMainWindow):
         )
         modes = []
         if interactive:
-            modes.append(f"{interactive} 操作モード")
+            modes.append(f"{interactive} Interactive mode")
         if auto_hide:
             modes.append(f"{auto_hide} AUTO-HIDE")
         if modes:
             self.capture_hint.setText(
-                "アイテムにマウスオーバーして " + " / ".join(modes)
+                "Hover over an item and press " + " / ".join(modes)
             )
         else:
-            self.capture_hint.setText("価格チェックのホットキーが設定されていません。")
+            self.capture_hint.setText("No price check hotkey is set.")
 
     @property
     def active_service_names(self):
@@ -970,7 +970,7 @@ class PoetoreModeWindow(QMainWindow):
             return
         self._league_request_running = True
         if hasattr(self, "rate_status"):
-            self.rate_status.setText("最新データを確認中…")
+            self.rate_status.setText("Checking for latest data…")
 
         def run():
             try:
@@ -991,7 +991,7 @@ class PoetoreModeWindow(QMainWindow):
     def _show_rate_error(self, message):
         self._league_request_running = False
         self.rate_panel.render_rows()
-        self.rate_status.setText("公式データを取得できませんでした")
+        self.rate_status.setText("Could not fetch official data")
 
     def open_exchange_rate_management(self):
         from src.ui.exchange_rate_management_dialog import (
@@ -1160,10 +1160,10 @@ class PoetoreModeWindow(QMainWindow):
         self.rate_status.setText(message)
 
     def _show_heist_curio_error(self, message):
-        self.rate_status.setText(f"ハイスト報酬読取失敗：{message}")
+        self.rate_status.setText(f"Heist reward read failed: {message}")
         if QSystemTrayIcon.isSystemTrayAvailable():
             self.tray_icon.showMessage(
-                "ハイスト報酬価格チェック", message, QSystemTrayIcon.Warning, 5000,
+                "Heist Reward Price Check", message, QSystemTrayIcon.Warning, 5000,
             )
 
     def _show_heist_curio_result(self, match, placement):
@@ -1171,7 +1171,7 @@ class PoetoreModeWindow(QMainWindow):
 
         window = show_poetore_window(self, activate=False)
         window.show_heist_curio_match(match, placement)
-        self.rate_status.setText(f"ハイスト報酬：{match.item.name_ja}")
+        self.rate_status.setText(f"Heist reward: {match.item.name_ja}")
 
     def _ensure_desecration_tier_controller(self):
         if self._desecration_tier_controller is None:
@@ -1206,20 +1206,20 @@ class PoetoreModeWindow(QMainWindow):
         self.rate_status.setText(message)
 
     def _show_desecration_error(self, message):
-        self.rate_status.setText(f"冒涜Mod読取失敗：{message}")
+        self.rate_status.setText(f"Desecrated mod read failed: {message}")
         if QSystemTrayIcon.isSystemTrayAvailable():
-            self.tray_icon.showMessage("アビス冒涜Modティア", message, QSystemTrayIcon.Warning, 5000)
+            self.tray_icon.showMessage("Abyss Desecrated Mod Tiers", message, QSystemTrayIcon.Warning, 5000)
 
     def _show_expedition_status(self, message):
         self.rate_status.setText(message)
 
     def _show_expedition_error(self, message):
-        self.rate_status.setText(f"報酬読取失敗：{message}")
+        self.rate_status.setText(f"Reward read failed: {message}")
         if QSystemTrayIcon.isSystemTrayAvailable():
-            self.tray_icon.showMessage("エクスペディション報酬価格", message, QSystemTrayIcon.Warning, 5000)
+            self.tray_icon.showMessage("Expedition Reward Prices", message, QSystemTrayIcon.Warning, 5000)
 
     def _show_expedition_diagnostic(self, report):
-        QMessageBox.information(self, "エクスペディションOCR診断", report)
+        QMessageBox.information(self, "Expedition OCR Diagnostics", report)
 
     def _save_map_check_config(self, map_check_config):
         self.config["map_check"] = dict(map_check_config)
@@ -1322,15 +1322,15 @@ class PoetoreModeWindow(QMainWindow):
         if duplicate is not None:
             key, actions = duplicate
             labels = {
-                "exit": "キャラクター選択へ戻る", "monastery": "修道院へ移動",
-                "poetore_capture": "ぽえとれ検索（操作モード）",
-                "poetore_auto_hide": "ぽえとれ検索（AUTO-HIDE）",
-                "expedition_reward_ocr": "エクスペ報酬チェック",
-                "desecration_tier_ocr": "アビス冒涜Modティアチェック",
-                "map_check": "Map Modチェック", "cheat_sheets_toggle": "Cheat sheets表示",
+                "exit": "Return to character select", "monastery": "Go to monastery",
+                "poetore_capture": "PoETore search (interactive mode)",
+                "poetore_auto_hide": "PoETore search (AUTO-HIDE)",
+                "expedition_reward_ocr": "Expedition reward check",
+                "desecration_tier_ocr": "Abyss desecrated mod tier check",
+                "map_check": "Map mod check", "cheat_sheets_toggle": "Show cheat sheets",
             }
             others = "、".join(labels.get(name, name) for name in actions if name != action)
-            QMessageBox.warning(self, "ホットキー重複", f"{key}は別の操作（{others}）にも設定されています。")
+            QMessageBox.warning(self, "Duplicate Hotkey", f"{key} is also assigned to another action ({others}).")
             return False
         poetore = self.config.get("poetore", {})
         poetore = dict(poetore) if isinstance(poetore, dict) else {}
@@ -1416,13 +1416,13 @@ class PoetoreModeWindow(QMainWindow):
         if duplicate is not None:
             key, actions = duplicate
             labels = {
-                "exit": "キャラクター選択へ戻る",
-                "monastery": "修道院へ移動",
-                "poetore_capture": "ぽえとれ検索（操作モード）",
-                "poetore_auto_hide": "ぽえとれ検索（AUTO-HIDE）",
-                "heist_curio_ocr": "ハイスト報酬OCR",
-                "map_check": "Map Modチェック",
-                "cheat_sheets_toggle": "Cheat sheets表示",
+                "exit": "Return to character select",
+                "monastery": "Go to monastery",
+                "poetore_capture": "PoETore search (interactive mode)",
+                "poetore_auto_hide": "PoETore search (AUTO-HIDE)",
+                "heist_curio_ocr": "Heist reward OCR",
+                "map_check": "Map mod check",
+                "cheat_sheets_toggle": "Show cheat sheets",
             }
             others = "、".join(
                 labels.get(name, name)
@@ -1431,8 +1431,8 @@ class PoetoreModeWindow(QMainWindow):
             )
             QMessageBox.warning(
                 self,
-                "ホットキー重複",
-                f"{key}は別の操作（{others}）にも設定されています。",
+                "Duplicate Hotkey",
+                f"{key} is also assigned to another action ({others}).",
             )
             return False
 
@@ -1531,9 +1531,9 @@ class PoetoreModeWindow(QMainWindow):
         if autostart_error:
             QMessageBox.warning(
                 self,
-                "自動起動設定エラー",
-                "Windowsの自動起動設定を更新できませんでした。\n"
-                "設定は保存済みのため、次回起動時に再試行します。",
+                "Auto-start Settings Error",
+                "Could not update the Windows auto-start setting.\n"
+                "Your settings are saved; it will be retried on the next launch.",
             )
         from src.app_restart import confirm_mode_switch_restart
 

@@ -57,14 +57,14 @@ class CustomCommandSettingsWidget(QWidget):
             self.setProperty("density", "compact")
         layout = QVBoxLayout(self)
         note = QLabel(
-            "PoEチャットへ送るコマンドを登録します。ホットキーは Ctrl+H のように入力してください。"
+            "Register commands to send to PoE chat. Enter hotkeys like Ctrl+H."
         )
         note.setWordWrap(True)
         if self._shared_dialog_theme:
             note.setProperty("uiRole", "muted")
         layout.addWidget(note)
         self.table = QTableWidget(0, 4)
-        self.table.setHorizontalHeaderLabels(["有効", "名前", "ホットキー", "コマンド"])
+        self.table.setHorizontalHeaderLabels(["Enabled", "Name", "Hotkey", "Command"])
         self.table.horizontalHeader().setStretchLastSection(True)
         self.table.verticalHeader().setVisible(False)
         self.table.setSelectionBehavior(QAbstractItemView.SelectionBehavior.SelectRows)
@@ -79,8 +79,8 @@ class CustomCommandSettingsWidget(QWidget):
             """)
         layout.addWidget(self.table, 1)
         buttons = QHBoxLayout()
-        self.add_button = QPushButton("追加")
-        self.remove_button = QPushButton("選択行を削除")
+        self.add_button = QPushButton("Add")
+        self.remove_button = QPushButton("Delete Selected Row")
         if self._shared_dialog_theme:
             self.add_button.setProperty("buttonRole", "primary")
             self.remove_button.setProperty("buttonRole", "danger")
@@ -173,8 +173,8 @@ class CustomCommandSettingsWidget(QWidget):
             ):
                 QMessageBox.warning(
                     self,
-                    "任意コマンド設定",
-                    f"{index}行目は名前・ホットキーを入力し、コマンドを / から始めてください。",
+                    "Custom Commands",
+                    f"Row {index}: enter a name and hotkey, and start the command with /.",
                 )
                 return False
         combined = dict(existing_hotkeys)
@@ -184,8 +184,8 @@ class CustomCommandSettingsWidget(QWidget):
             keys = "、".join(duplicates)
             QMessageBox.warning(
                 self,
-                "ホットキー重複",
-                f"既存機能または任意コマンドと重複しています: {keys}",
+                "Duplicate Hotkey",
+                f"Conflicts with an existing feature or custom command: {keys}",
             )
             return False
         return True

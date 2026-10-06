@@ -49,10 +49,10 @@ class MiniNaviLockButtonWindow(QWidget):
         layout = QHBoxLayout(self)
         layout.setContentsMargins(0, 0, 0, 0)
         layout.setSpacing(4)
-        self.restore_button = QPushButton("本体")
+        self.restore_button = QPushButton("Main")
         self.restore_button.setFixedSize(44, 28)
         self.restore_button.setCursor(QCursor(Qt.PointingHandCursor))
-        self.restore_button.setToolTip("ぽえなび本体の表示／非表示を切り替えます")
+        self.restore_button.setToolTip("Show/hide the main PoENavi window")
         self.restore_button.setStyleSheet("""
             QPushButton {
                 background: rgba(10, 10, 10, 220);
@@ -74,7 +74,7 @@ class MiniNaviLockButtonWindow(QWidget):
         self.act4_button.setCheckable(True)
         self.act4_button.setFixedSize(52, 28)
         self.act4_button.setCursor(QCursor(Qt.PointingHandCursor))
-        self.act4_button.setToolTip("Act4攻略チェックの表示／非表示を切り替えます")
+        self.act4_button.setToolTip("Show/hide the Act 4 checklist")
         self.act4_button.setStyleSheet("""
             QPushButton {
                 background: rgba(10, 10, 10, 220);
@@ -165,8 +165,8 @@ class MiniNaviLockButtonWindow(QWidget):
 class MiniNaviOverlay(QWidget):
     """みになび表示ウィンドウ。"""
 
-    WAITING_FOR_AREA_TEXT = "エリアに入場すると攻略ガイドが表示されます"
-    OBS_WINDOW_TITLE = "みになび - OBSキャプチャ"
+    WAITING_FOR_AREA_TEXT = "The guide appears when you enter an area"
+    OBS_WINDOW_TITLE = "MiniNavi - OBS Capture"
     OBS_WAITING_SIZE = 8
     OBS_WAITING_OPACITY = 0.01
     COMPACT_DEFAULT_WIDTH = 600
@@ -281,7 +281,7 @@ class MiniNaviOverlay(QWidget):
         right_column.setContentsMargins(0, 0, 0, 0)
         right_column.setSpacing(5)
 
-        self.area_note_badge = QLabel("エリアメモあり")
+        self.area_note_badge = QLabel("Has area notes")
         self.area_note_badge.setAlignment(Qt.AlignRight | Qt.AlignVCenter)
         self.area_note_badge.setStyleSheet(
             "color: #f0c674; font-size: 12px; font-weight: bold; "
@@ -919,7 +919,7 @@ class MiniNaviOverlay(QWidget):
         if not player_level or not enemy_level or not status:
             return ""
         return (
-            f"<span style='color:#dddddd;'>自Lv.{int(player_level)} / 敵Lv.{int(enemy_level)}</span><br>"
+            f"<span style='color:#dddddd;'>You Lv.{int(player_level)} / Enemy Lv.{int(enemy_level)}</span><br>"
             f"<b>{status}</b>"
         )
 

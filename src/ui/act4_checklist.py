@@ -35,35 +35,35 @@ class Act4ChecklistItem:
 
 
 ACT4_REQUIRED_ITEMS = (
-    Act4ChecklistItem("poe2_act4_area01", "キンの島（地図の切れ端 ①、経験値効率良）"),
-    Act4ChecklistItem("poe2_act4_area02", "火山地帯", 1, "poe2_act4_area01"),
-    Act4ChecklistItem("poe2_act4_area03", "ケッジ湾（地図の切れ端 ②）"),
+    Act4ChecklistItem("poe2_act4_area01", "Isle of Kin (Map Fragment ①, good XP)"),
+    Act4ChecklistItem("poe2_act4_area02", "Volcanic Warrens", 1, "poe2_act4_area01"),
+    Act4ChecklistItem("poe2_act4_area03", "Kedge Bay (Map Fragment ②)"),
     Act4ChecklistItem(
         "poe2_act4_area04",
-        "旅の終わり（クエスト完了でスキルポイント+2）",
+        "Journey's End (+2 skill points on quest completion)",
         1,
         "poe2_act4_area03",
     ),
-    Act4ChecklistItem("poe2_act4_area05", "放棄された監獄（礼拝堂で永続バフ）"),
-    Act4ChecklistItem("poe2_act4_area06", "監禁独房", 1, "poe2_act4_area05"),
+    Act4ChecklistItem("poe2_act4_area05", "Abandoned Prison (permanent buff at the chapel)"),
+    Act4ChecklistItem("poe2_act4_area06", "Solitary Confinement", 1, "poe2_act4_area05"),
     Act4ChecklistItem(
         "poe2_act4_area07",
-        "ワーカパヌ島（地図の切れ端 ③、鮫ボスで永続バフ）",
+        "Whakapanu Island (Map Fragment ③, permanent buff from the shark boss)",
     ),
-    Act4ChecklistItem("poe2_act4_area08", "歌う大洞窟", 1, "poe2_act4_area07"),
-    Act4ChecklistItem("poe2_act4_area09", "モズの島（地図の切れ端 ④）"),
-    Act4ChecklistItem("poe2_act4_area10", "ヒネコラの目（永続バフ）"),
+    Act4ChecklistItem("poe2_act4_area08", "Singing Caverns", 1, "poe2_act4_area07"),
+    Act4ChecklistItem("poe2_act4_area09", "Shrike Island (Map Fragment ④)"),
+    Act4ChecklistItem("poe2_act4_area10", "Eye of Hinekora (permanent buff)"),
     Act4ChecklistItem(
-        "poe2_act4_area11", "死者の殿堂（永続バフ）", 1, "poe2_act4_area10"
+        "poe2_act4_area11", "Halls of the Dead (permanent buff)", 1, "poe2_act4_area10"
     ),
     Act4ChecklistItem(
         "poe2_act4_area12",
-        "祖先の試練（スキルポイント+2）",
+        "Trial of the Ancestors (+2 skill points)",
         2,
         "poe2_act4_area11",
     ),
-    Act4ChecklistItem("poe2_act4_area13", "アラスタス"),
-    Act4ChecklistItem("poe2_act4_area14", "発掘現場"),
+    Act4ChecklistItem("poe2_act4_area13", "Arastas"),
+    Act4ChecklistItem("poe2_act4_area14", "The Excavation"),
 )
 ACT4_REQUIRED_ZONE_IDS = frozenset(item.zone_id for item in ACT4_REQUIRED_ITEMS)
 _ITEMS_BY_ID = {item.zone_id: item for item in ACT4_REQUIRED_ITEMS}
@@ -226,7 +226,7 @@ class Act4ChecklistWindow(QWidget):
                 main_window,
             )
         )
-        self.setWindowTitle("Act4 攻略チェック")
+        self.setWindowTitle("Act 4 Checklist")
         self.setAttribute(Qt.WA_TranslucentBackground, True)
         self._drag_offset: QPoint | None = None
         self._position_timer = QTimer(self)
@@ -251,7 +251,7 @@ class Act4ChecklistWindow(QWidget):
         title_layout = QHBoxLayout(self.title_bar)
         title_layout.setContentsMargins(0, 0, 0, 2)
         title_layout.setSpacing(8)
-        self.title_label = QLabel("Act4 攻略チェック")
+        self.title_label = QLabel("Act 4 Checklist")
         self.title_label.setObjectName("act4ChecklistTitle")
         title_layout.addWidget(self.title_label)
         title_layout.addStretch()
@@ -259,9 +259,9 @@ class Act4ChecklistWindow(QWidget):
         self.progress_label.setObjectName("act4ChecklistProgress")
         title_layout.addWidget(self.progress_label)
         self.close_button = QPushButton("×")
-        self.close_button.setAccessibleName("Act4攻略チェックを閉じる")
+        self.close_button.setAccessibleName("Close Act 4 checklist")
         self.close_button.setToolTip(
-            "このキャラクターでは自動表示しません。Act4ボタンから再表示できます"
+            "Won't auto-show for this character. Reopen it with the Act4 button"
         )
         self.close_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.close_button.clicked.connect(self._dismiss)
@@ -276,7 +276,7 @@ class Act4ChecklistWindow(QWidget):
             checkbox.setProperty("checklistLabel", f"{prefix}{item.label}")
             checkbox.setProperty("checklistDepth", item.depth)
             checkbox.setCursor(QCursor(Qt.PointingHandCursor))
-            checkbox.setAccessibleName(f"{item.label} 入場済み")
+            checkbox.setAccessibleName(f"{item.label} visited")
             checkbox.toggled.connect(
                 lambda checked, zone_id=item.zone_id: self.required_toggled.emit(
                     zone_id, checked
@@ -285,7 +285,7 @@ class Act4ChecklistWindow(QWidget):
             self._checkboxes[item.zone_id] = checkbox
             self.outer_layout.addWidget(checkbox)
 
-        self.complete_label = QLabel("✓ Act4の攻略必須エリアをすべて完了済み")
+        self.complete_label = QLabel("✓ All required Act 4 areas completed")
         self.complete_label.setObjectName("act4ChecklistComplete")
         self.complete_label.setWordWrap(True)
         self.complete_label.hide()
@@ -300,18 +300,18 @@ class Act4ChecklistWindow(QWidget):
         optional_layout = QVBoxLayout(self.optional_frame)
         optional_layout.setContentsMargins(8, 5, 8, 6)
         optional_layout.setSpacing(2)
-        self.optional_title = QLabel("任意のお得ポイント")
+        self.optional_title = QLabel("Optional extras")
         self.optional_title.setObjectName("act4OptionalTitle")
         optional_layout.addWidget(self.optional_title)
-        self.optional_checkbox = QCheckBox("ナカヌの装備販売NPCを確認")
+        self.optional_checkbox = QCheckBox("Check Nakanu's gear vendor")
         self.optional_checkbox.setProperty(
-            "checklistLabel", "ナカヌの装備販売NPCを確認"
+            "checklistLabel", "Check Nakanu's gear vendor"
         )
         self.optional_checkbox.setCursor(QCursor(Qt.PointingHandCursor))
-        self.optional_checkbox.setAccessibleName("ナカヌの装備販売NPCを確認済み")
+        self.optional_checkbox.setAccessibleName("Checked Nakanu's gear vendor")
         self.optional_checkbox.toggled.connect(self.optional_toggled.emit)
         optional_layout.addWidget(self.optional_checkbox)
-        self.optional_note = QLabel("発掘現場を攻略前に立ち寄る")
+        self.optional_note = QLabel("Visit The Excavation before clearing")
         self.optional_note.setObjectName("act4OptionalNote")
         optional_layout.addWidget(self.optional_note)
         self.outer_layout.addWidget(self.optional_frame)

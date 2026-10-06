@@ -31,7 +31,7 @@ class SearchStringPasteTestDialog(QDialog):
         self.owner = owner
         self.target_hwnd = target_hwnd
         self.choices = choices or []
-        self.setWindowTitle("店売り・スタッシュ検索")
+        self.setWindowTitle("Vendor and Stash Search")
         self.setWindowFlags(_with_optional_always_on_top(Qt.Tool | Qt.FramelessWindowHint, parent))
         self.setAttribute(Qt.WA_DeleteOnClose, True)
         self.setStyleSheet(Styles.MAIN_WINDOW)
@@ -40,11 +40,11 @@ class SearchStringPasteTestDialog(QDialog):
         layout.setContentsMargins(10, 10, 10, 10)
         layout.setSpacing(8)
 
-        title = QLabel("🔍 店売り・スタッシュ検索")
+        title = QLabel("🔍 Vendor and Stash Search")
         title.setStyleSheet(f"color: {Styles.TEXT_COLOR}; font-size: 13px; font-weight: bold;")
         layout.addWidget(title)
 
-        hint = QLabel("選択後、ホットキー時点のウィンドウへ戻して Ctrl+F → 貼り付けます。")
+        hint = QLabel("After selecting, returns to the window that was active when you pressed the hotkey, then presses Ctrl+F and pastes.")
         hint.setStyleSheet("color: #cccccc; font-size: 10px;")
         hint.setWordWrap(True)
         layout.addWidget(hint)
@@ -62,7 +62,7 @@ class SearchStringPasteTestDialog(QDialog):
             )
             layout.addWidget(btn)
 
-        cancel = QPushButton("キャンセル")
+        cancel = QPushButton("Cancel")
         cancel.setAutoDefault(False)
         cancel.setDefault(False)
         cancel.setStyleSheet(Styles.BUTTON)
@@ -103,7 +103,7 @@ class SearchStringPasteTestDialog(QDialog):
             target_hwnd = get_next_visible_window_after(target_hwnd, skip_current_process=True)
 
         if not target_hwnd:
-            QMessageBox.warning(self.parent(), "検索文字列の貼り付け", "復帰先ウィンドウを取得できませんでした。")
+            QMessageBox.warning(self.parent(), "Paste Search Text", "Could not find the window to return to.")
             return
 
         self.target_hwnd = target_hwnd
@@ -121,8 +121,8 @@ class SearchStringPasteTestDialog(QDialog):
         if not focused:
             QMessageBox.warning(
                 self.parent(),
-                "検索文字列の貼り付け",
-                "元のウィンドウを前面化できませんでした。文字列はクリップボードへコピー済みです。",
+                "Paste Search Text",
+                "Could not bring the original window to the front. The text has been copied to the clipboard.",
             )
             if self.owner is not None:
                 self.owner._search_paste_in_progress = False

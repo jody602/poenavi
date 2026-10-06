@@ -22,8 +22,8 @@ class MemoDialog(QDialog):
     """ゲーム中メモ帳ダイアログ（フレームレス・色付きテキスト対応）"""
 
     COLORS = [
-        ("#ff6666", "赤"), ("#4488ff", "青"), ("#ff8800", "オレンジ"),
-        ("#44cc44", "緑"), ("#dddd44", "黄"), ("#dd66ff", "紫"), ("#ffffff", "白"),
+        ("#ff6666", "Red"), ("#4488ff", "Blue"), ("#ff8800", "Orange"),
+        ("#44cc44", "Green"), ("#dddd44", "Yellow"), ("#dd66ff", "Purple"), ("#ffffff", "White"),
     ]
 
     def __init__(self, parent=None, notes_path: str = "", theme=POENAVI_THEME):
@@ -62,7 +62,7 @@ class MemoDialog(QDialog):
         title_layout = QHBoxLayout(title_bar)
         title_layout.setContentsMargins(4, 0, 4, 0)
 
-        title_label = QLabel("📝 共通メモ")
+        title_label = QLabel("📝 Shared Notes")
         title_label.setStyleSheet(f"color: {theme.text}; font-size: 15px; font-weight: bold; border: none;")
         title_layout.addWidget(title_label)
         title_layout.addStretch()
@@ -106,7 +106,7 @@ class MemoDialog(QDialog):
 
         reset_btn = QPushButton("✕")
         reset_btn.setFixedSize(18, 18)
-        reset_btn.setToolTip("色をリセット")
+        reset_btn.setToolTip("Reset Color")
         reset_btn.setStyleSheet(f"""
             QPushButton {{ background: rgba(40,40,40,200); color: #888; 
                 border: 1px solid {theme.accent}; border-radius: 2px; font-size: 10px; }}

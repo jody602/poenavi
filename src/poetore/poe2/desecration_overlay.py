@@ -45,16 +45,16 @@ from src.poetore.poe2.ndlocr_lite import NdlOcrLiteServer
 from src.poetore.window_position import path_of_exile_client_rect
 
 CATEGORY_LABELS = {
-    "amulet": "アミュレット", "belt": "ベルト", "body_armour": "鎧",
-    "boots": "靴", "bow": "弓", "claw": "クロー", "crossbow": "クロスボウ",
-    "dagger": "ダガー", "flail": "フレイル", "focus": "フォーカス",
-    "gloves": "手袋", "helmet": "兜", "jewel": "ジュエル",
-    "one_hand_axe": "片手斧", "one_hand_mace": "片手メイス",
-    "one_hand_sword": "片手剣", "quiver": "矢筒", "ring": "指輪",
-    "sceptre": "セプター", "shield": "盾", "spear": "スピア",
-    "staff": "スタッフ", "quarterstaff": "クォータースタッフ",
-    "talisman": "タリスマン", "two_hand_axe": "両手斧",
-    "two_hand_mace": "両手メイス", "two_hand_sword": "両手剣", "wand": "ワンド",
+    "amulet": "Amulet", "belt": "Belt", "body_armour": "Body Armour",
+    "boots": "Boots", "bow": "Bow", "claw": "Claw", "crossbow": "Crossbow",
+    "dagger": "Dagger", "flail": "Flail", "focus": "Focus",
+    "gloves": "Gloves", "helmet": "Helmet", "jewel": "Jewel",
+    "one_hand_axe": "One Hand Axe", "one_hand_mace": "One Hand Mace",
+    "one_hand_sword": "One Hand Sword", "quiver": "Quiver", "ring": "Ring",
+    "sceptre": "Sceptre", "shield": "Shield", "spear": "Spear",
+    "staff": "Staff", "quarterstaff": "Quarterstaff",
+    "talisman": "Talisman", "two_hand_axe": "Two Hand Axe",
+    "two_hand_mace": "Two Hand Mace", "two_hand_sword": "Two Hand Sword", "wand": "Wand",
 }
 
 UNAVAILABLE_POE2_CATEGORIES = frozenset({
@@ -85,10 +85,10 @@ def should_retry_closed_region(resolution) -> bool:
 
 
 STATUS_LABELS = {
-    "read_failed": "読取失敗",
-    "unsupported": "未対応",
-    "tierless": "Tierなし",
-    "category_unselected": "部位未選択",
+    "read_failed": "Read failed",
+    "unsupported": "Unsupported",
+    "tierless": "No tier",
+    "category_unselected": "Slot not selected",
 }
 
 
@@ -97,7 +97,7 @@ def tier_badge_label(tier: TierValue, status: str) -> str:
         return "/".join(f"T{candidate}" for candidate in tier)
     if tier is not None:
         return f"T{tier}"
-    return STATUS_LABELS.get(status, "読取失敗")
+    return STATUS_LABELS.get(status, "Read failed")
 
 
 def normalized_capture_rect(client_rect: QRect, value) -> QRect | None:
@@ -202,7 +202,7 @@ class DesecrationTierOverlay(QWidget):
 
     @staticmethod
     def _affix_display_labels(options: tuple[AffixTierOption, ...]):
-        names = {"prefix": "プレフィックス", "suffix": "サフィックス"}
+        names = {"prefix": "Prefix", "suffix": "Suffix"}
         return tuple(
             (
                 f"{names.get(option.affix, option.affix)} {tier_badge_label(option.tier, 'matched')}",
@@ -282,7 +282,7 @@ class CategoryChoiceOverlay(QWidget):
         self.setStyleSheet("QWidget { background:#111715; color:#E8F1EE; } QPushButton { padding:6px 10px; border:1px solid #63E6C5; border-radius:5px; color:#E8F1EE; } QPushButton:hover { background:#25463E; }")
         root = QVBoxLayout(self)
         root.setContentsMargins(10, 8, 10, 8)
-        root.addWidget(QLabel("装備の種類を選択してください"))
+        root.addWidget(QLabel("Select the equipment type"))
         self._buttons = QGridLayout()
         root.addLayout(self._buttons)
 
@@ -296,7 +296,7 @@ class CategoryChoiceOverlay(QWidget):
             button = QPushButton(CATEGORY_LABELS.get(category, category))
             button.clicked.connect(lambda _checked=False, value=category: self._choose(value))
             self._buttons.addWidget(button, index // 4, index % 4)
-        cancel = QPushButton("閉じる")
+        cancel = QPushButton("Close")
         cancel.clicked.connect(self._cancel)
         final_index = len(categories)
         self._buttons.addWidget(cancel, final_index // 4, final_index % 4)
@@ -502,14 +502,14 @@ class DesecrationTierController(QObject):
             return False
         if self._scan_coordinator is not None and not self._scan_coordinator.try_begin("desecration"):
             self._mark_trace(trace, "scan_completed", outcome="rejected_ocr_busy")
-            self.failed.emit("別の画面読み取り処理中です。")
+            self.failed.emit("Another screen read is in progress.")
             return False
         self._active_trace = trace
         self._mark_trace(trace, "scan_gate_acquired")
         client_rect = path_of_exile_client_rect()
         if client_rect is None:
             self._finish_error(
-                "Path of Exileのゲーム画面が見つかりませんでした。",
+                "Could not find the Path of Exile game window.",
                 failure_stage="client_rect",
             )
             return False
@@ -521,7 +521,7 @@ class DesecrationTierController(QObject):
         open_rect = normalized_capture_rect(client_rect, regions.get("inventory_open_region"))
         if open_rect is None:
             self._finish_error(
-                "インベントリを開いた状態の読取範囲が未設定です。",
+                "The \"inventory open\" capture area is not set.",
                 failure_stage="open_region",
             )
             return False
@@ -551,7 +551,7 @@ class DesecrationTierController(QObject):
             return self._scan_closed(generation)
         self._capture_rect = QRect(open_rect)
         self._bands = prepared.bands
-        self.status.emit("アビス冒涜Modを読み取っています…")
+        self.status.emit("Reading Abyss desecrated mods…")
         allow_closed = normalized_capture_rect(
             client_rect, regions.get("inventory_closed_region")
         ) is not None
@@ -570,7 +570,7 @@ class DesecrationTierController(QObject):
         )
         if closed_rect is None:
             self._finish_error(
-                "冒涜Modの3択を検出できませんでした。",
+                "Could not detect the three desecrated mod choices.",
                 failure_stage="closed_region",
             )
             return False
@@ -588,13 +588,13 @@ class DesecrationTierController(QObject):
         self._mark_frame_prepared(trace, closed_prepared, "closed")
         if not closed_prepared.valid_panel:
             self._finish_error(
-                "冒涜Modの3択を検出できませんでした。",
+                "Could not detect the three desecrated mod choices.",
                 failure_stage="closed_frame_preparation",
             )
             return False
         self._capture_rect = QRect(closed_rect)
         self._bands = closed_prepared.bands
-        self.status.emit("閉じた状態の範囲で再確認しています…")
+        self.status.emit("Rechecking with the \"inventory closed\" area…")
         threading.Thread(
             target=self._process,
             args=(closed_prepared, QRect(closed_rect), generation, False, "closed"),
@@ -761,11 +761,11 @@ class DesecrationTierController(QObject):
                 self._active_trace, "category_choice_displayed",
                 category_count=len(resolution.categories),
             )
-            self.status.emit("装備の種類を選択してください。")
+            self.status.emit("Select the equipment type.")
             return
         tiers = resolution.tiers
         if tiers is None:
-            self._finish_error("Tierを一意に特定できませんでした。")
+            self._finish_error("Could not uniquely identify the tier.")
             return
         self._display(
             client_rect, capture_rect, bands, tiers,
@@ -818,8 +818,8 @@ class DesecrationTierController(QObject):
         unresolved = [STATUS_LABELS.get(status, status) for tier, status in zip(
             tiers, statuses or ("matched",) * len(tiers),
         ) if tier is None]
-        suffix = f"（{'、'.join(unresolved)}）" if unresolved else ""
-        self.status.emit(f"{known}/3件のTierを表示しました。{suffix}")
+        suffix = f" ({'、'.join(unresolved)})" if unresolved else ""
+        self.status.emit(f"{known}/3 tiers shown.{suffix}")
         trace = self._active_trace
         self._mark_trace(
             trace, "overlay_displayed", resolved_count=known,
@@ -838,7 +838,7 @@ class DesecrationTierController(QObject):
         self._monitor_misses += 1
         if self._monitor_misses >= 2:
             self.hide()
-            self.status.emit("冒涜Modの3択画面を閉じたため表示を消しました。")
+            self.status.emit("The desecrated mod screen was closed, so the overlay was cleared.")
 
     def _finish_error(self, message, *, failure_stage="unknown", error_type=None):
         self._running = False
@@ -897,14 +897,14 @@ class DesecrationTierController(QObject):
         if self._client_rect is None or self._capture_rect is None:
             return
         lines = [
-            "通常の読み取りで一部の数値を確認できませんでした",
+            "Standard reading could not confirm some values",
             (
-                "高精度OCRを準備しています…"
-                if cold_start else "高精度OCRで再確認しています…"
+                "Preparing high-accuracy OCR…"
+                if cold_start else "Rechecking with high-accuracy OCR…"
             ),
         ]
         if cold_start:
-            lines.append("初回のみ10～15秒ほどかかります")
+            lines.append("The first run takes about 10–15 seconds")
         self._ndl_status_overlay.show_status(
             self._client_rect, self._capture_rect, lines,
         )

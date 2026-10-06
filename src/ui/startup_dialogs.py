@@ -35,7 +35,7 @@ class StartupSelectionDialog(QDialog):
         poetore_supported = is_feature_supported(POETORE, self.selected_version)
         if self.selected_mode == POETORE_MODE and not poetore_supported:
             self.selected_mode = POENAVI_MODE
-        self.setWindowTitle("起動設定")
+        self.setWindowTitle("Launch Settings")
         self.setModal(True)
         self.setFixedSize(760, 760)
         self.setStyleSheet(Styles.MAIN_WINDOW)
@@ -44,7 +44,7 @@ class StartupSelectionDialog(QDialog):
         layout.setContentsMargins(22, 20, 22, 18)
         layout.setSpacing(14)
 
-        title = QLabel("起動するPoEバージョンと機能を選んでください")
+        title = QLabel("Choose the PoE version and feature to launch")
         title.setStyleSheet(f"color: {Styles.TEXT_COLOR}; font-size: 20px; font-weight: bold;")
         layout.addWidget(title)
 
@@ -59,7 +59,7 @@ class StartupSelectionDialog(QDialog):
         version_cards.addWidget(self.poe2_tile)
         layout.addLayout(version_cards)
 
-        feature_title = QLabel("使う機能を選んでください")
+        feature_title = QLabel("Choose a feature")
         feature_title.setStyleSheet(f"color: {Styles.TEXT_COLOR}; font-size: 18px; font-weight: bold;")
         layout.addWidget(feature_title)
 
@@ -69,16 +69,16 @@ class StartupSelectionDialog(QDialog):
         cards.setSpacing(16)
         self.poenavi_card = self._create_card(
             POENAVI_MODE,
-            "ぽえなび",
-            "Act攻略支援",
+            "PoENavi",
+            "Act leveling guide",
             theme_for_mode(POENAVI_MODE).accent,
             "icon.ico",
             self.selected_mode == POENAVI_MODE,
         )
         self.poetore_card = self._create_card(
             POETORE_MODE,
-            "ぽえとれ",
-            "価格チェック・トレード支援",
+            "PoETore",
+            "Price check and trade helper",
             Styles.TEXT_COLOR,
             "icon2.ico",
             self.selected_mode == POETORE_MODE,
@@ -89,13 +89,13 @@ class StartupSelectionDialog(QDialog):
         layout.addLayout(cards)
 
         notice = QLabel(
-            "※デフォルトでは起動時に毎回確認します。以下のチェックボックスをONにすると固定にもできます。設定画面からも変更可能です。"
+            "* By default you are asked every time the app starts. Check the box below to always use this choice. You can also change it in Settings."
         )
         notice.setWordWrap(True)
         notice.setStyleSheet("color: rgba(176, 255, 123, 0.78); font-size: 13px;")
         layout.addWidget(notice)
 
-        self.skip_selector_checkbox = QCheckBox("次回からこの設定で直接起動")
+        self.skip_selector_checkbox = QCheckBox("Launch directly with these settings next time")
         self.skip_selector_checkbox.setChecked(False)
         self.skip_selector_checkbox.setStyleSheet(
             f"""
@@ -114,10 +114,10 @@ class StartupSelectionDialog(QDialog):
 
         buttons = QHBoxLayout()
         buttons.addStretch()
-        start_button = QPushButton("この設定で起動")
+        start_button = QPushButton("Launch")
         start_button.setStyleSheet(Styles.BUTTON)
         start_button.clicked.connect(self._accept_selection)
-        cancel_button = QPushButton("キャンセル")
+        cancel_button = QPushButton("Cancel")
         cancel_button.setStyleSheet(Styles.BUTTON)
         cancel_button.clicked.connect(self.reject)
         buttons.addWidget(start_button)
@@ -190,11 +190,11 @@ class StartupSelectionDialog(QDialog):
 
     def _set_poetore_supported(self, supported):
         self.poetore_card.setEnabled(supported)
-        self.poetore_card.setToolTip("" if supported else "PoE2版は現在テスト中です")
-        description = "価格チェック・トレード支援"
+        self.poetore_card.setToolTip("" if supported else "The PoE2 version is currently in testing")
+        description = "Price check and trade helper"
         if not supported:
-            description += "\nPoE2版は現在テスト中です"
-        self.poetore_card.setText(f"ぽえとれ\n{description}")
+            description += "\nThe PoE2 version is currently in testing"
+        self.poetore_card.setText(f"PoETore\n{description}")
 
     def _assets_dir(self):
         if getattr(sys, "frozen", False):
@@ -268,7 +268,7 @@ class RouteSelectionDialog(QDialog):
     """ルート選択ダイアログ（初回セットアップ用）"""
     def __init__(self, parent=None, config=None):
         super().__init__(parent)
-        self.setWindowTitle("ルート設定")
+        self.setWindowTitle("Route Settings")
         self.setFixedSize(400, 270)
         self.setStyleSheet(Styles.MAIN_WINDOW)
         config = config or {}
@@ -276,7 +276,7 @@ class RouteSelectionDialog(QDialog):
         layout = QVBoxLayout(self)
         layout.setSpacing(12)
 
-        desc = QLabel("攻略ルートを選択してください。後から設定画面で変更できます。")
+        desc = QLabel("Choose your leveling route. You can change it later in Settings.")
         desc.setStyleSheet(f"color: {Styles.TEXT_COLOR}; font-size: 13px;")
         desc.setWordWrap(True)
         layout.addWidget(desc)
@@ -298,33 +298,33 @@ class RouteSelectionDialog(QDialog):
         form = QFormLayout()
 
         self.act3_combo = QComboBox()
-        self.act3_combo.addItem("通常ルート（図書館スキップ）", "standard")
-        self.act3_combo.addItem("図書館寄り道ルート", "library_detour")
+        self.act3_combo.addItem("Standard route (skip the Library)", "standard")
+        self.act3_combo.addItem("Library detour route", "library_detour")
         self.act3_combo.setStyleSheet(combo_style)
         cur3 = ConfigManager.effective_poe1_route_act3(config)
         idx3 = self.act3_combo.findData(cur3)
         if idx3 >= 0:
             self.act3_combo.setCurrentIndex(idx3)
-        lbl3 = QLabel("Act3 ルート:")
+        lbl3 = QLabel("Act 3 route:")
         lbl3.setStyleSheet(label_style)
         form.addRow(lbl3, self.act3_combo)
 
         self.act8_combo = QComboBox()
-        self.act8_combo.addItem("通常ルート", "standard")
-        self.act8_combo.addItem("隠れた裏道（The Hidden Underbelly）ルート", "underbelly")
+        self.act8_combo.addItem("Standard route", "standard")
+        self.act8_combo.addItem("The Hidden Underbelly route", "underbelly")
         self.act8_combo.setStyleSheet(combo_style)
         cur8 = ConfigManager.effective_poe1_route_act8(config)
         idx8 = self.act8_combo.findData(cur8)
         if idx8 >= 0:
             self.act8_combo.setCurrentIndex(idx8)
-        lbl8 = QLabel("Act8 ルート:")
+        lbl8 = QLabel("Act 8 route:")
         lbl8.setStyleSheet(label_style)
         form.addRow(lbl8, self.act8_combo)
 
         layout.addLayout(form)
         layout.addStretch()
 
-        tip = QLabel("あまり経験のない方は、Act3ルートは「図書館寄り道ルート」、\nAct8ルートは「通常ルート」を選択するのがおすすめです。")
+        tip = QLabel("If you are less experienced, we recommend the \"Library detour route\" for Act 3\nand the \"Standard route\" for Act 8.")
         tip.setStyleSheet(f"color: #aaaaaa; font-size: 13px;")
         tip.setWordWrap(True)
         layout.addWidget(tip)

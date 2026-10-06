@@ -28,7 +28,7 @@ def process_running(pid: int) -> bool:
 
 def show_error(message: str) -> None:
     app = QApplication.instance() or QApplication([])
-    QMessageBox.critical(None, "ぽえなび アップデート", message)
+    QMessageBox.critical(None, "PoENavi Update", message)
     app.processEvents()
 
 
@@ -47,10 +47,10 @@ def main() -> int:
 
     install_dir = args.install_dir.resolve()
     if install_dir.parent == install_dir or not (install_dir / "PoENavi.exe").is_file():
-        show_error("更新対象の PoENavi.exe が見つかりません。")
+        show_error("PoENavi.exe to update was not found.")
         return 2
     if not wait_for_process_exit(args.pid, 30, process_running):
-        show_error("ぽえなびを終了できなかったため、更新を中止しました。")
+        show_error("Update cancelled because PoENavi could not be closed.")
         return 3
 
     try:

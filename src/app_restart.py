@@ -70,14 +70,14 @@ def _ask_mode_switch_restart(parent, current_mode, text):
     if current_mode != POETORE_MODE:
         return QMessageBox.question(
             parent,
-            "設定切り替え",
+            "Switch Settings",
             text,
             QMessageBox.Ok | QMessageBox.Cancel,
             QMessageBox.Ok,
         )
 
     message_box = QMessageBox(parent)
-    message_box.setWindowTitle("設定切り替え")
+    message_box.setWindowTitle("Switch Settings")
     message_box.setIcon(QMessageBox.Question)
     message_box.setText(text)
     message_box.setStandardButtons(QMessageBox.Ok | QMessageBox.Cancel)
@@ -106,19 +106,19 @@ def confirm_mode_switch_restart(parent, config, current_poe_version=None):
     changes = []
     if poe_version_changed:
         changes.append(
-            f"PoE版：{get_poe_label(current_poe_version)} → "
+            f"PoE version: {get_poe_label(current_poe_version)} → "
             f"{get_poe_label(requested_poe_version)}"
         )
     if mode_changed:
-        changes.append("起動モード")
+        changes.append("Launch mode")
     change_summary = "\n".join(changes)
     if show_selector:
-        next_step = "再起動後に、起動する設定をもう一度選択します。"
+        next_step = "After restarting, you will choose the launch settings again."
     else:
-        next_step = "再起動後に、選択した設定へ切り替わります。"
+        next_step = "After restarting, the selected settings will take effect."
     message = (
-        f"次の変更を保存しました。\n{change_summary}\n\n"
-        "設定を安全に切り替えるため、今すぐ再起動しますか？\n\n"
+        f"The following changes were saved:\n{change_summary}\n\n"
+        "Restart now to apply the settings safely?\n\n"
         f"{next_step}"
     )
     result = _ask_mode_switch_restart(parent, current_mode, message)
@@ -130,8 +130,8 @@ def confirm_mode_switch_restart(parent, config, current_poe_version=None):
 
     QMessageBox.warning(
         parent,
-        "再起動エラー",
-        "アプリを再起動できませんでした。\n"
-        "設定は保存されているため、いったん終了して起動し直してください。",
+        "Restart Error",
+        "The app could not be restarted.\n"
+        "Your settings are saved, so please close the app and start it again.",
     )
     return False

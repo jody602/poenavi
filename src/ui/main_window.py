@@ -358,12 +358,12 @@ class MainWindow(QMainWindow):
         for widget in header_widgets:
             header_layout.addWidget(widget)
 
-        minimize_button = QPushButton("─ 最小化")
+        minimize_button = QPushButton("─ Minimize")
         minimize_button.setStyleSheet(Styles.BUTTON)
         minimize_button.setCursor(QCursor(Qt.PointingHandCursor))
         minimize_button.clicked.connect(lambda: self.minimize_panel(panel_id))
         header_layout.addWidget(minimize_button)
-        detach_button = QPushButton("↗ 切り離す")
+        detach_button = QPushButton("↗ Detach")
         detach_button.setStyleSheet(Styles.BUTTON)
         detach_button.setCursor(QCursor(Qt.PointingHandCursor))
         detach_button.clicked.connect(lambda: self.detach_panel(panel_id))
@@ -486,7 +486,7 @@ class MainWindow(QMainWindow):
 
         # 設定読み込み
         self.config = ConfigManager.load_config()
-        self.setWindowTitle(f"ぽえなび [{get_poe_label(self.config.get('poe_version', POE1))}]")
+        self.setWindowTitle(f"PoENavi [{get_poe_label(self.config.get('poe_version', POE1))}]")
 
         # config の display_monitor で指定されたモニターの右端に縦長で配置
         from PySide6.QtWidgets import QApplication
@@ -832,16 +832,16 @@ class MainWindow(QMainWindow):
         if download_result["error"]:
             QMessageBox.warning(
                 self,
-                "アップデート",
-                f"更新をダウンロードできませんでした。\n{download_result['error']}",
+                "Update",
+                f"Could not download the update.\n{download_result['error']}",
             )
             return True
 
         answer = QMessageBox.question(
             self,
-            "アップデートを適用",
-            f"v{release.version} の検証が完了しました。\n"
-            "ぽえなびを終了して更新しますか？",
+            "Apply Update",
+            f"v{release.version} has been verified.\n"
+            "Close PoENavi and update now?",
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.Yes,
         )
@@ -850,7 +850,7 @@ class MainWindow(QMainWindow):
         try:
             self.update_controller.launch_updater(download_result["archive"])
         except Exception as exc:
-            QMessageBox.critical(self, "アップデート", str(exc))
+            QMessageBox.critical(self, "Update", str(exc))
             return True
         return False
         
@@ -874,7 +874,7 @@ class MainWindow(QMainWindow):
     def _on_update_check_finished(self, release, manual):
         if release is None:
             if manual:
-                QMessageBox.information(self, "アップデート", "最新バージョンです。")
+                QMessageBox.information(self, "Update", "You are on the latest version.")
             return
         if not manual and self.config.get("notified_update_version") == release.version:
             return
@@ -884,8 +884,8 @@ class MainWindow(QMainWindow):
         if manual:
             QMessageBox.warning(
                 self,
-                "アップデート",
-                f"更新を確認できませんでした。\n{message}",
+                "Update",
+                f"Could not check for updates.\n{message}",
             )
 
     def _show_update_available(self, release):
@@ -925,8 +925,8 @@ class MainWindow(QMainWindow):
         self._on_update_download_cancelled()
         QMessageBox.warning(
             self,
-            "アップデート",
-            f"更新をダウンロードできませんでした。\n{message}",
+            "Update",
+            f"Could not download the update.\n{message}",
         )
 
     def _on_update_download_ready(self, archive, release):
@@ -935,9 +935,9 @@ class MainWindow(QMainWindow):
             self._update_progress_dialog = None
         answer = QMessageBox.question(
             self,
-            "アップデートを適用",
-            f"v{release.version} の検証が完了しました。\n"
-            "ぽえなびを終了して更新しますか？",
+            "Apply Update",
+            f"v{release.version} has been verified.\n"
+            "Close PoENavi and update now?",
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.Yes,
         )
@@ -946,7 +946,7 @@ class MainWindow(QMainWindow):
         try:
             self.update_controller.launch_updater(archive)
         except Exception as exc:
-            QMessageBox.critical(self, "アップデート", str(exc))
+            QMessageBox.critical(self, "Update", str(exc))
             return
         QApplication.instance().quit()
     
@@ -960,18 +960,18 @@ class MainWindow(QMainWindow):
             # 初回または、選択中バージョンのログファイルが未設定なら案内を出す
             msg = QMessageBox(self)
             msg.setStyleSheet("QMessageBox { font-size: 14px; } QMessageBox QLabel { font-size: 14px; }")
-            msg.setWindowTitle("⚙️ ログファイル設定")
+            msg.setWindowTitle("⚙️ Log File Setup")
             msg.setIcon(QMessageBox.Icon.Information)
             msg.setText(
-                "ぽえなびをご利用いただきありがとうございます！\n\n"
-                f"現在は {poe_label} モードです。対応するログファイル（Client.txt）を設定してください。\n\n"
-                "1. 右クリックメニューの「設定」、または右側中央の ⚙️ ボタンから設定画面を開く\n"
-                "2. 「基本設定」タブで、現在のモードに対応するログファイル欄を設定\n"
-                f"   - {poe_label}ログファイル\n"
-                "3. 通常のパス例（これはPoE1 Steam版の例です）：\n"
+                "Thank you for using PoENavi!\n\n"
+                f"You are in {poe_label} mode. Please set the matching log file (Client.txt).\n\n"
+                "1. Open Settings from \"Settings\" in the right-click menu, or the ⚙️ button on the middle right\n"
+                "2. On the \"General\" tab, fill in the log file field for the current mode\n"
+                f"   - {poe_label}log file\n"
+                "3. Typical path (this example is for PoE1 on Steam):\n"
                 "    C:\\Program Files (x86)\\Steam\\steamapps\n"
                 "    \\common\\Path of Exile\\logs\\Client.txt\n\n"
-                "⚠️ 対応するログファイルが未設定だと、エリア検知が動作しません。"
+                "⚠️ Area detection won't work until the matching log file is set."
             )
             msg.setStandardButtons(QMessageBox.StandardButton.Ok)
             msg.exec()
@@ -979,12 +979,12 @@ class MainWindow(QMainWindow):
             self.guide_text_label.setText(
                 '<div style="padding: 15px;">'
                 '<span style="font-size: 20px;">⚙️</span>'
-                f'<span style="font-size: 15px; color: #ffc832; font-weight: bold;"> {poe_label}ログファイル（Client.txt）が未設定です</span><br><br>'
+                f'<span style="font-size: 15px; color: #ffc832; font-weight: bold;"> {poe_label}Log file (Client.txt) is not set</span><br><br>'
                 '<span style="font-size: 13px; color: #cccccc;">'
-                '右クリック →「設定」→「基本設定」タブから<br>'
-                f'{poe_label}ログファイル を設定してください</span><br><br>'
+                'Right-click → "Settings" → "General" tab<br>'
+                f'{poe_label}and set the log file</span><br><br>'
                 '<span style="font-size: 12px; color: #999999;">'
-                '通常のパス例（これはPoE1 Steam版の例です）：<br>'
+                'Typical path (this example is for PoE1 on Steam):<br>'
                 '<span style="color: #b0ffb0;">C:\\Program Files (x86)\\Steam\\steamapps<br>'
                 '\\common\\Path of Exile\\logs\\Client.txt</span></span>'
                 '</div>'
@@ -998,19 +998,19 @@ class MainWindow(QMainWindow):
 
         msg = QMessageBox(self)
         msg.setStyleSheet("QMessageBox { font-size: 14px; } QMessageBox QLabel { font-size: 14px; }")
-        msg.setWindowTitle("📝 エリアメモ機能について")
+        msg.setWindowTitle("📝 About Area Notes")
         msg.setIcon(QMessageBox.Icon.Information)
         msg.setText(
-            "今回のバージョンから、各エリアのガイドデータは\n"
-            "編集できない仕様に変更しました。\n"
-            "（PoENaviの自動アップデート機能を正しく動作させるためです）\n"
-            "その代わり、各エリアにエリアメモを追加できる\n"
-            "「エリアメモ」機能を実装しました。\n\n"
-            "大変お手数ですが、以前のガイドを編集していた方は、\n"
-            "旧PoENaviフォルダのJSONファイルから、\n"
-            "必要な内容を各エリアのエリアメモへコピーしてください。\n\n"
-            "今後は公式ガイドとエリアメモを分けて保存するため、\n"
-            "次回以降のアップデートでエリアメモが失われることはありません。"
+            "Starting with this version, the guide data for each area\n"
+            "can no longer be edited.\n"
+            "(This is so PoENavi's auto-update works correctly.)\n"
+            "Instead, a new \"Area Notes\" feature lets you\n"
+            "add notes to each area.\n\n"
+            "Sorry for the trouble, but if you edited guides before,\n"
+            "please copy what you need from the JSON files in your old PoENavi folder\n"
+            "into each area's notes.\n\n"
+            "From now on, the official guide and your area notes are stored separately,\n"
+            "so future updates will not erase your area notes."
         )
         msg.setStandardButtons(QMessageBox.StandardButton.Ok)
         msg.exec()
@@ -1164,7 +1164,7 @@ class MainWindow(QMainWindow):
         self.stop_btn.setVisible(expanded)
         self.reset_btn.setVisible(expanded)
         self.ready_btn.setVisible(expanded)
-        self.timer_toggle_btn.setText("▼ タイマー" if expanded else "▶ タイマー")
+        self.timer_toggle_btn.setText("▼ Timer" if expanded else "▶ Timer")
 
     def _apply_timer_size(self):
         """タイマーの表示サイズを適用する"""
@@ -1239,14 +1239,14 @@ class MainWindow(QMainWindow):
         minimize_btn = QPushButton("─")
         minimize_btn.setFixedSize(30, 22)
         minimize_btn.setStyleSheet(btn_style)
-        minimize_btn.setToolTip("最小化（みになび表示中は本体だけ隠します）")
+        minimize_btn.setToolTip("Minimize (only hides the main window while MiniNavi is shown)")
         minimize_btn.clicked.connect(self.minimize_main_window)
         title_bar.addWidget(minimize_btn)
         
         close_btn = QPushButton("✕")
         close_btn.setFixedSize(30, 22)
         close_btn.setStyleSheet(close_btn_style)
-        close_btn.setToolTip("閉じる")
+        close_btn.setToolTip("Close")
         close_btn.clicked.connect(self.close)
         title_bar.addWidget(close_btn)
         
@@ -1257,7 +1257,7 @@ class MainWindow(QMainWindow):
         if self.config.get("timer_size") == "off":
             self.timer_expanded = False
         
-        self.timer_toggle_btn = QPushButton("▼ タイマー" if self.timer_expanded else "▶ タイマー")
+        self.timer_toggle_btn = QPushButton("▼ Timer" if self.timer_expanded else "▶ Timer")
         self.timer_toggle_btn.setStyleSheet(f"""
             QPushButton {{
                 background: transparent; color: {Styles.TEXT_COLOR};
@@ -1337,7 +1337,7 @@ class MainWindow(QMainWindow):
         # === ラップタイム折りたたみトグル ===
         self.lap_expanded = self.config.get("lap_expanded", True)
         
-        self.lap_toggle_btn = QPushButton("▼ ラップタイム" if self.lap_expanded else "▶ ラップタイム")
+        self.lap_toggle_btn = QPushButton("▼ Lap Times" if self.lap_expanded else "▶ Lap Times")
         self.lap_toggle_btn.setStyleSheet(f"""
             QPushButton {{
                 background: transparent; color: {Styles.TEXT_COLOR};
@@ -1358,7 +1358,7 @@ class MainWindow(QMainWindow):
         lap_header_layout.addWidget(self.lap_toggle_btn)
         
         self.auto_lap = self.config.get("auto_lap", True)
-        self.auto_lap_btn = QPushButton("自動" if self.auto_lap else "手動")
+        self.auto_lap_btn = QPushButton("Auto" if self.auto_lap else "Manual")
         self.auto_lap_btn.setStyleSheet(self._auto_lap_btn_style())
         self.auto_lap_btn.setCursor(QCursor(Qt.PointingHandCursor))
         self.auto_lap_btn.clicked.connect(self.toggle_auto_lap)
@@ -1410,7 +1410,7 @@ class MainWindow(QMainWindow):
 
         self.ready_btn = QPushButton("Ready")
         self.ready_btn.setStyleSheet(Styles.BUTTON)
-        self.ready_btn.setToolTip("黄昏の岸辺への入場を待ってタイマーを自動開始")
+        self.ready_btn.setToolTip("Start the timer automatically on entering The Twilight Strand")
         self.ready_btn.clicked.connect(self.toggle_timer_ready)
         button_layout.addWidget(self.ready_btn)
         
@@ -1431,9 +1431,9 @@ class MainWindow(QMainWindow):
         global_controls_layout.setSpacing(10)
         global_controls_layout.addStretch()
 
-        self.restore_all_panels_btn = QPushButton("パネルを全て表示")
+        self.restore_all_panels_btn = QPushButton("Show All Panels")
         self.restore_all_panels_btn.setStyleSheet(Styles.BUTTON)
-        self.restore_all_panels_btn.setToolTip("最小化したパネルをすべて表示")
+        self.restore_all_panels_btn.setToolTip("Show all minimized panels")
         self.restore_all_panels_btn.clicked.connect(self.restore_all_minimized_panels)
         self.restore_all_panels_btn.hide()
         global_controls_layout.addWidget(self.restore_all_panels_btn)
@@ -1449,7 +1449,7 @@ class MainWindow(QMainWindow):
         self.memo_btn.setFixedSize(35, 35)
         self.memo_btn.setIcon(memo_icon(**poenavi_icon_colors))
         self.memo_btn.setIconSize(QSize(24, 24))
-        self.memo_btn.setToolTip("共通メモ")
+        self.memo_btn.setToolTip("Shared Notes")
         self.memo_btn.clicked.connect(self.open_memo)
         global_controls_layout.addWidget(self.memo_btn)
 
@@ -1458,7 +1458,7 @@ class MainWindow(QMainWindow):
         self.vendor_search_btn.setFixedSize(35, 35)
         self.vendor_search_btn.setIcon(vendor_presets_icon(**poenavi_icon_colors))
         self.vendor_search_btn.setIconSize(QSize(24, 24))
-        self.vendor_search_btn.setToolTip("店売り・スタッシュ検索プリセット")
+        self.vendor_search_btn.setToolTip("Vendor and stash search presets")
         self.vendor_search_btn.clicked.connect(self.open_vendor_search_presets)
         global_controls_layout.addWidget(self.vendor_search_btn)
 
@@ -1510,14 +1510,14 @@ class MainWindow(QMainWindow):
         self.part2_btn.setVisible(self.poe_version == POE1)
         guide_mode_layout.addWidget(self.part2_btn)
 
-        self.visit_btn = QPushButton("自動")
+        self.visit_btn = QPushButton("Auto")
         self.visit_btn.setStyleSheet(self._visit_btn_style())
         self.visit_btn.setFixedHeight(22)
         self.visit_btn.clicked.connect(self.toggle_visit_override)
         guide_mode_layout.addWidget(self.visit_btn)
         
         # 折りたたみトグルボタン
-        self.guide_toggle_btn = QPushButton("▼ ガイド" if self.guide_expanded else "▶ ガイド")
+        self.guide_toggle_btn = QPushButton("▼ Guide" if self.guide_expanded else "▶ Guide")
         self.guide_toggle_btn.setStyleSheet(f"""
             QPushButton {{
                 background: transparent; color: {Styles.TEXT_COLOR};
@@ -1546,19 +1546,19 @@ class MainWindow(QMainWindow):
         
         # ゾーン名 + レベル表示
         zone_info_layout = QHBoxLayout()
-        self.zone_label = QLabel("📍 エリア: ---")
+        self.zone_label = QLabel("📍 Area: ---")
         self.zone_label.setStyleSheet(f"color: {Styles.TEXT_COLOR}; font-size: 13px; font-weight: bold;")
         zone_info_layout.addWidget(self.zone_label)
         
         zone_info_layout.addStretch()
         
-        self.level_label = QLabel("キャラLv. 1")
+        self.level_label = QLabel("Char Lv. 1")
         self.level_label.setStyleSheet(f"color: {Styles.TEXT_COLOR}; font-size: 13px; font-weight: bold;")
         zone_info_layout.addWidget(self.level_label)
         guide_layout.addLayout(zone_info_layout)
         
         # アドバイスメッセージ
-        self.advice_label = QLabel("ログ監視待機中...")
+        self.advice_label = QLabel("Waiting for log...")
         self.advice_label.setStyleSheet("color: #888888; font-size: 12px;")
         self.advice_label.setWordWrap(True)
         guide_layout.addWidget(self.advice_label)
@@ -1566,7 +1566,7 @@ class MainWindow(QMainWindow):
         self.guide_info_frame = guide_frame
         
         # ゾーンヘッダー折りたたみトグル
-        self.zone_header_toggle_btn = QPushButton("▼ ゾーン情報")
+        self.zone_header_toggle_btn = QPushButton("▼ Zone Info")
         self.zone_header_toggle_btn.setStyleSheet(f"""
             QPushButton {{
                 background: transparent; color: {Styles.TEXT_COLOR};
@@ -1583,7 +1583,7 @@ class MainWindow(QMainWindow):
         
         # ── 攻略ガイド表示エリア ──
         # ガイドテキスト折りたたみトグル
-        self.guide_text_toggle_btn = QPushButton("▼ ガイドテキスト")
+        self.guide_text_toggle_btn = QPushButton("▼ Guide Text")
         self.guide_text_toggle_btn.setStyleSheet(f"""
             QPushButton {{
                 background: transparent; color: {Styles.TEXT_COLOR};
@@ -1602,10 +1602,10 @@ class MainWindow(QMainWindow):
         guide_text_header_layout.addWidget(self.guide_text_toggle_btn)
         guide_text_header_layout.addStretch()
 
-        self.area_note_edit_button = QPushButton("📝 エリアメモ")
+        self.area_note_edit_button = QPushButton("📝 Area Notes")
         self.area_note_edit_button.setCursor(QCursor(Qt.PointingHandCursor))
         self.area_note_edit_button.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
-        self.area_note_edit_button.setToolTip("現在のエリアのエリアメモを編集します")
+        self.area_note_edit_button.setToolTip("Edit notes for the current area")
         self.area_note_edit_button.setStyleSheet(f"""
             QPushButton {{
                 background: rgba(20, 30, 20, 160);
@@ -1626,7 +1626,7 @@ class MainWindow(QMainWindow):
         self.mini_navi_toggle_btn = QPushButton()
         self.mini_navi_toggle_btn.setCursor(QCursor(Qt.PointingHandCursor))
         self.mini_navi_toggle_btn.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
-        self.mini_navi_toggle_btn.setToolTip("ボタンに表示された動作でみになびを切り替えます。ロック操作はみになび側の鍵ボタンで行えます。")
+        self.mini_navi_toggle_btn.setToolTip("Toggles MiniNavi as shown on the button. Use the lock button on MiniNavi to lock it.")
         self.mini_navi_toggle_btn.setStyleSheet(f"""
             QPushButton {{
                 background: rgba(20, 30, 20, 160);
@@ -1671,7 +1671,7 @@ class MainWindow(QMainWindow):
         area_note_layout = QVBoxLayout(self.area_note_frame)
         area_note_layout.setContentsMargins(9, 6, 9, 6)
         area_note_layout.setSpacing(3)
-        area_note_title = QLabel("📝 エリアメモ")
+        area_note_title = QLabel("📝 Area Notes")
         area_note_title.setStyleSheet(
             "color: #ffd86b; font-size: 11px; font-weight: bold; border: none; background: transparent;"
         )
@@ -1689,9 +1689,9 @@ class MainWindow(QMainWindow):
 
         poelab_button_layout = QHBoxLayout()
         poelab_button_layout.setContentsMargins(0, 0, 0, 0)
-        self.poelab_link_button = QPushButton("🏛️ PoELabを開く")
+        self.poelab_link_button = QPushButton("🏛️ Open PoELab")
         self.poelab_link_button.setCursor(QCursor(Qt.PointingHandCursor))
-        self.poelab_link_button.setToolTip("PoELabトップページを標準ブラウザで開きます")
+        self.poelab_link_button.setToolTip("Opens the PoELab home page in your default browser")
         self.poelab_link_button.setSizePolicy(QSizePolicy.Maximum, QSizePolicy.Fixed)
         self.poelab_link_button.setStyleSheet("""
             QPushButton {
@@ -1735,7 +1735,7 @@ class MainWindow(QMainWindow):
             QScrollBar::add-page:vertical, QScrollBar::sub-page:vertical { background: transparent; }
         """)
         
-        self.guide_text_label = QLabel("エリアに入場すると攻略ガイドが表示されます")
+        self.guide_text_label = QLabel("The guide appears when you enter an area")
         self.guide_text_label.setStyleSheet(f"color: #888888; font-size: {self.guide_font_size}px; background: transparent;")
         self.guide_text_label.setAlignment(Qt.AlignTop | Qt.AlignLeft)
         self.guide_text_label.setWordWrap(True)
@@ -1777,7 +1777,7 @@ class MainWindow(QMainWindow):
         
         # ── マップサムネイル一覧 ──
         # マップ折りたたみトグル
-        self.map_toggle_btn = QPushButton("▼ マップ")
+        self.map_toggle_btn = QPushButton("▼ Map")
         self.map_toggle_btn.setStyleSheet(f"""
             QPushButton {{
                 background: transparent; color: {Styles.TEXT_COLOR};
@@ -1799,7 +1799,7 @@ class MainWindow(QMainWindow):
         # ── ジェム取得タイミング表示 ──
         # ジェムトラッカー折りたたみトグル
         self.gem_tracker_expanded = self.config.get("gem_tracker_expanded", True)
-        self.gem_tracker_toggle_btn = QPushButton("▼ ジェム取得" if self.gem_tracker_expanded else "▶ ジェム取得")
+        self.gem_tracker_toggle_btn = QPushButton("▼ Gems" if self.gem_tracker_expanded else "▶ Gems")
         self.gem_tracker_toggle_btn.setStyleSheet(f"""
             QPushButton {{
                 background: transparent; color: {Styles.TEXT_COLOR};
@@ -1830,7 +1830,7 @@ class MainWindow(QMainWindow):
         pob_btn_layout = QHBoxLayout()
         pob_btn_layout.setSpacing(6)
         
-        self.pob_import_btn = QPushButton("📥 PoBインポート")
+        self.pob_import_btn = QPushButton("📥 Import PoB")
         self.pob_import_btn.setStyleSheet(f"""
             QPushButton {{
                 background: rgba(68,136,255,0.2); color: #4488ff;
@@ -1844,7 +1844,7 @@ class MainWindow(QMainWindow):
         pob_btn_layout.addWidget(self.pob_import_btn)
         
         # PoBクリアボタン
-        self.pob_clear_btn = QPushButton("データクリア")
+        self.pob_clear_btn = QPushButton("Clear Data")
         self.pob_clear_btn.setMinimumHeight(22)
         self.pob_clear_btn.setStyleSheet(f"""
             QPushButton {{
@@ -1854,7 +1854,7 @@ class MainWindow(QMainWindow):
             }}
             QPushButton:hover {{ background: rgba(255,102,102,0.22); color: #ffaaaa; }}
         """)
-        self.pob_clear_btn.setToolTip("PoBデータをクリア")
+        self.pob_clear_btn.setToolTip("Clear PoB data")
         self.pob_clear_btn.clicked.connect(self._on_pob_clear)
         pob_btn_layout.addWidget(self.pob_clear_btn)
 
@@ -1869,9 +1869,9 @@ class MainWindow(QMainWindow):
         self.gem_shop_search_preview_label.setWordWrap(True)
         gem_search_preview_layout.addWidget(self.gem_shop_search_preview_label, stretch=1)
 
-        self.gem_shop_search_copy_btn = QPushButton("Regexをコピー")
+        self.gem_shop_search_copy_btn = QPushButton("Copy Regex")
         self.gem_shop_search_copy_btn.setMinimumHeight(22)
-        self.gem_shop_search_copy_btn.setToolTip("現在Actのショップ検索Regexをクリップボードへコピー（ゲームには入力しません）")
+        self.gem_shop_search_copy_btn.setToolTip("Copy the shop search regex for the current act to the clipboard (does not type it into the game)")
         self.gem_shop_search_copy_btn.setStyleSheet(Styles.BUTTON)
         self.gem_shop_search_copy_btn.clicked.connect(self.copy_gem_shop_search_query)
         gem_search_preview_layout.addWidget(self.gem_shop_search_copy_btn)
@@ -1904,20 +1904,20 @@ class MainWindow(QMainWindow):
         layout.addWidget(self.guide_container, stretch=1)
 
         self._register_detachable_panel(
-            "timer", "タイマー", [self.timer_toggle_btn, self.timer_container], layout,
+            "timer", "Timer", [self.timer_toggle_btn, self.timer_container], layout,
             header_right_margin=10,
         )
         self._register_detachable_panel(
-            "guide", "ガイド", [self.guide_toggle_btn, self.guide_container], layout,
+            "guide", "Guide", [self.guide_toggle_btn, self.guide_container], layout,
             expand_widgets=(self.guide_container,), header_widgets=(self.guide_mode_controls,),
             header_right_margin=10,
         )
         self._register_detachable_panel(
-            "map", "マップ", [self.map_toggle_btn, self.map_thumbnail], guide_lower_layout,
+            "map", "Map", [self.map_toggle_btn, self.map_thumbnail], guide_lower_layout,
             expand_widgets=(self.map_thumbnail,),
         )
         self._register_detachable_panel(
-            "gem", "ジェム取得", [self.gem_tracker_toggle_btn, self.gem_tracker_frame],
+            "gem", "Gems", [self.gem_tracker_toggle_btn, self.gem_tracker_frame],
             guide_lower_layout, expand_widgets=(self.gem_tracker_frame,),
         )
         self.panel_registry["gem"]["content"].setVisible(self.poe_version == POE1)
@@ -2091,7 +2091,7 @@ class MainWindow(QMainWindow):
 
     def toggle_auto_lap(self):
         self.auto_lap = not self.auto_lap
-        self.auto_lap_btn.setText("自動" if self.auto_lap else "手動")
+        self.auto_lap_btn.setText("Auto" if self.auto_lap else "Manual")
         self.auto_lap_btn.setStyleSheet(self._auto_lap_btn_style())
         self.config["auto_lap"] = self.auto_lap
         ConfigManager.save_config(self.config)
@@ -2198,11 +2198,11 @@ class MainWindow(QMainWindow):
 
     def _update_visit_btn(self):
         if self.visit_override is None:
-            self.visit_btn.setText("自動")
+            self.visit_btn.setText("Auto")
         elif self.visit_override == 1:
-            self.visit_btn.setText("1回目")
+            self.visit_btn.setText("1st visit")
         else:
-            self.visit_btn.setText("2回目")
+            self.visit_btn.setText("2nd visit")
         self.visit_btn.setStyleSheet(self._visit_btn_style())
 
     def _current_zone_id(self):
@@ -2250,7 +2250,7 @@ class MainWindow(QMainWindow):
         """ラップタイム表示の折りたたみ/展開"""
         self.lap_expanded = not self.lap_expanded
         self.lap_content.setVisible(self.lap_expanded)
-        self.lap_toggle_btn.setText("▼ ラップタイム" if self.lap_expanded else "▶ ラップタイム")
+        self.lap_toggle_btn.setText("▼ Lap Times" if self.lap_expanded else "▶ Lap Times")
         self.config["lap_expanded"] = self.lap_expanded
         ConfigManager.save_config(self.config)
         if not self._is_panel_detached("timer"):
@@ -2269,7 +2269,7 @@ class MainWindow(QMainWindow):
             return
         self.gem_tracker_expanded = not self.gem_tracker_expanded
         self.gem_tracker_frame.setVisible(self.gem_tracker_expanded)
-        self.gem_tracker_toggle_btn.setText("▼ ジェム取得" if self.gem_tracker_expanded else "▶ ジェム取得")
+        self.gem_tracker_toggle_btn.setText("▼ Gems" if self.gem_tracker_expanded else "▶ Gems")
         self.config["gem_tracker_expanded"] = self.gem_tracker_expanded
         ConfigManager.save_config(self.config)
         self._adjust_panel_or_main("gem")
@@ -2301,7 +2301,7 @@ class MainWindow(QMainWindow):
 
                 result = import_pob(pob_code, selected_skill_set_ids=selected_skill_set_ids)
                 if not result or not result.get("gem_groups"):
-                    QMessageBox.warning(self, "インポートエラー", "選択されたSkill setからジェム情報を取得できませんでした。")
+                    QMessageBox.warning(self, "Import Error", "Could not get gem info from the selected skill sets.")
                     return
 
                 # PoBインポート結果は設定ではなく専用JSONへ保存
@@ -2324,15 +2324,15 @@ class MainWindow(QMainWindow):
                 ]
                 skill_set_summary = "\n".join(f"- {title}" for title in selected_titles[:8])
                 if len(selected_titles) > 8:
-                    skill_set_summary += f"\n- 他 {len(selected_titles) - 8}件"
-                QMessageBox.information(self, "インポート成功",
-                    f"クラス: {result.get('class', '?')}\n"
-                    f"昇華: {result.get('ascendancy', '?')}\n"
-                    f"Skill set: {len(selected_titles) if selected_titles else '全'}個\n"
-                    f"ジェムグループ: {len(result.get('gem_groups', []))}個"
+                    skill_set_summary += f"\n- and {len(selected_titles) - 8} more"
+                QMessageBox.information(self, "Import Successful",
+                    f"Class: {result.get('class', '?')}\n"
+                    f"Ascendancy: {result.get('ascendancy', '?')}\n"
+                    f"Skill set: {len(selected_titles) if selected_titles else 'all'}\n"
+                    f"Gem groups: {len(result.get('gem_groups', []))}"
                     + (f"\n\n{skill_set_summary}" if skill_set_summary else ""))
             except Exception as e:
-                QMessageBox.warning(self, "インポートエラー", f"PoBコードの解析に失敗しました:\n{e}")
+                QMessageBox.warning(self, "Import Error", f"Failed to parse the PoB code:\n{e}")
 
     def _update_gem_tracker(self):
         """ジェム取得リストを現在のActに基づいて更新"""
@@ -2423,14 +2423,14 @@ class MainWindow(QMainWindow):
         """ゾーンヘッダーの折りたたみ/展開"""
         self.zone_header_expanded = not self.zone_header_expanded
         self.guide_info_frame.setVisible(self.zone_header_expanded)
-        self.zone_header_toggle_btn.setText("▼ ゾーン情報" if self.zone_header_expanded else "▶ ゾーン情報")
+        self.zone_header_toggle_btn.setText("▼ Zone Info" if self.zone_header_expanded else "▶ Zone Info")
         self._adjust_panel_or_main("guide")
     
     def toggle_guide_text(self):
         """ガイドテキストの折りたたみ/展開"""
         self.guide_text_expanded = not self.guide_text_expanded
         self.guide_text_frame.setVisible(self.guide_text_expanded)
-        self.guide_text_toggle_btn.setText("▼ ガイドテキスト" if self.guide_text_expanded else "▶ ガイドテキスト")
+        self.guide_text_toggle_btn.setText("▼ Guide Text" if self.guide_text_expanded else "▶ Guide Text")
         self._adjust_panel_or_main("guide")
 
     def _update_poelab_link_visibility(self, zone_id: str | None):
@@ -2456,7 +2456,7 @@ class MainWindow(QMainWindow):
             self.area_note_label.clear()
             self.area_note_frame.hide()
             self.area_note_edit_button.setEnabled(False)
-            QMessageBox.warning(self, "エリアメモ読込エラー", str(exc))
+            QMessageBox.warning(self, "Area Notes Load Error", str(exc))
             return
         self._current_area_note = content
         self.area_note_label.setText(content.replace("\n", "<br>"))
@@ -2472,7 +2472,7 @@ class MainWindow(QMainWindow):
         try:
             set_area_note(self.poe_version, zone_id, dialog.content())
         except (OSError, ValueError) as exc:
-            QMessageBox.warning(self, "エリアメモ保存エラー", str(exc))
+            QMessageBox.warning(self, "Area Notes Save Error", str(exc))
             return
         self._update_area_note(self._current_zone_name, zone_id)
 
@@ -2493,7 +2493,7 @@ class MainWindow(QMainWindow):
 
     def _reset_poelab_link_button(self):
         self.poelab_link_button.setEnabled(True)
-        self.poelab_link_button.setText("🏛️ PoELabを開く")
+        self.poelab_link_button.setText("🏛️ Open PoELab")
     
     def _is_mini_navi_available(self):
         """Return whether the current PoE version supports the mini guide overlay."""
@@ -2511,7 +2511,7 @@ class MainWindow(QMainWindow):
     def _mini_navi_toggle_text(self):
         overlay_config = self.config.get("mini_guide_overlay", {})
         enabled = bool(overlay_config.get("enabled", False))
-        return "みになびをOFF" if enabled else "みになびをON"
+        return "MiniNavi OFF" if enabled else "MiniNavi ON"
 
     def _refresh_mini_navi_toggle(self):
         if not hasattr(self, "mini_navi_toggle_btn"):
@@ -2687,7 +2687,7 @@ class MainWindow(QMainWindow):
             self.map_thumbnail.setVisible(len(self.map_thumbnail.current_paths) > 0)
         else:
             self.map_thumbnail.setVisible(False)
-        self.map_toggle_btn.setText("▼ マップ" if self.map_section_expanded else "▶ マップ")
+        self.map_toggle_btn.setText("▼ Map" if self.map_section_expanded else "▶ Map")
         self._adjust_panel_or_main("map")
     
     def _apply_guide_visibility(self):
@@ -2716,7 +2716,7 @@ class MainWindow(QMainWindow):
             self.guide_container.setStyleSheet("""
                 #guideContainer { background-color: transparent; }
             """)
-        self.guide_toggle_btn.setText("▼ ガイド" if self.guide_expanded else "▶ ガイド")
+        self.guide_toggle_btn.setText("▼ Guide" if self.guide_expanded else "▶ Guide")
     
     def start_timer(self):
         self._set_timer_ready(False)
@@ -2748,9 +2748,9 @@ class MainWindow(QMainWindow):
             if has_data:
                 msg = QMessageBox(self)
                 msg.setStyleSheet("QMessageBox { font-size: 14px; } QMessageBox QLabel { font-size: 14px; }")
-                msg.setWindowTitle("リセット確認")
+                msg.setWindowTitle("Confirm Reset")
                 msg.setIcon(QMessageBox.Icon.Warning)
-                msg.setText("タイマーとラップをリセットしますか？")
+                msg.setText("Reset the timer and laps?")
                 msg.setStandardButtons(QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No)
                 msg.setDefaultButton(QMessageBox.StandardButton.No)
                 if msg.exec() != QMessageBox.StandardButton.Yes:
@@ -2820,13 +2820,13 @@ class MainWindow(QMainWindow):
         self.ready_btn.setStyleSheet(self._ready_button_style())
         self.ready_btn.setEnabled(self.timer_ready or self._can_use_ready_button())
         if self.timer_ready:
-            tooltip = "黄昏の岸辺への入場を待機中（クリックで解除）"
+            tooltip = "Waiting to enter The Twilight Strand (click to cancel)"
         elif self.poe_version != POE1:
-            tooltip = "Ready自動開始はPoE1専用です"
+            tooltip = "Ready auto-start is PoE1 only"
         elif self.is_running or self._has_timer_record():
-            tooltip = "ReadyにするにはタイマーをResetしてください"
+            tooltip = "Reset the timer to use Ready"
         else:
-            tooltip = "Client.txtを監視できる時だけReadyを使用できます"
+            tooltip = "Ready is only available while Client.txt can be monitored"
         self.ready_btn.setToolTip(tooltip)
 
     def _set_timer_ready(self, ready: bool):
@@ -2844,9 +2844,9 @@ class MainWindow(QMainWindow):
         if not self.timer_ready and self._has_timer_record():
             QMessageBox.warning(
                 self,
-                "Readyにできません",
-                "タイマーの記録が残っています。\n"
-                "問題ないか確認のうえ、リセットしてからReadyしてください。",
+                "Cannot Set Ready",
+                "The timer still has records.\n"
+                "Check that's OK, reset it, then use Ready.",
             )
             return
         self._set_timer_ready(not self.timer_ready)
@@ -3096,17 +3096,17 @@ class MainWindow(QMainWindow):
         summary = self.segment_recorder.summary()
         latest = summary["latest"]
         if not latest:
-            self.segment_summary_label.setText("区間: エリア移動を待機中")
+            self.segment_summary_label.setText("Segment: waiting for area change")
             return
 
-        latest_name = latest.get("zone_name") or latest.get("zone_id", "不明")
-        latest_text = f"直近: {latest_name} {self.format_lap_time(latest.get('duration', 0.0))}"
+        latest_name = latest.get("zone_name") or latest.get("zone_id", "Unknown")
+        latest_text = f"Last: {latest_name} {self.format_lap_time(latest.get('duration', 0.0))}"
         slowest_text = " / ".join(
-            f"{segment.get('zone_name') or segment.get('zone_id', '不明')} {self.format_lap_time(segment.get('duration', 0.0))}"
+            f"{segment.get('zone_name') or segment.get('zone_id', 'Unknown')} {self.format_lap_time(segment.get('duration', 0.0))}"
             for segment in summary["slowest"]
         )
         self.segment_summary_label.setText(
-            f"{latest_text}\n遅い区間: {slowest_text}"
+            f"{latest_text}\nSlowest: {slowest_text}"
         )
 
     def _configure_segment_summary_label(self):
@@ -3146,7 +3146,7 @@ class MainWindow(QMainWindow):
                 split_lbl.setStyleSheet(Styles.LAP_ITEM_COMPLETED)
             elif (i + 1) == self.current_act:
                 act_lbl.setText(f"⇒ {display_name}")
-                time_lbl.setText("進行中...")
+                time_lbl.setText("In progress...")
                 split_lbl.setText("")
                 act_lbl.setStyleSheet(Styles.LAP_ITEM_CURRENT)
                 time_lbl.setStyleSheet(Styles.LAP_ITEM_CURRENT)
@@ -3477,8 +3477,8 @@ class MainWindow(QMainWindow):
             self._refresh_gem_shop_search_preview()
             return
         QApplication.clipboard().setText(query)
-        self.gem_shop_search_copy_btn.setText("コピー済み")
-        QTimer.singleShot(1200, lambda: self.gem_shop_search_copy_btn.setText("Regexをコピー"))
+        self.gem_shop_search_copy_btn.setText("Copied")
+        QTimer.singleShot(1200, lambda: self.gem_shop_search_copy_btn.setText("Copy Regex"))
 
     def _show_gem_shop_search_status(self, message: str):
         QToolTip.showText(QCursor.pos(), message, self, QRect(), 2500)
@@ -3535,7 +3535,7 @@ class MainWindow(QMainWindow):
         choices = self._load_vendor_search_presets(enabled_only=True)
         self._debug_search(f"open menu target={target_hwnd} title={self._window_title(target_hwnd)!r} choices={choices!r}")
         if not choices:
-            QMessageBox.information(self, "ベンダー検索", "有効なベンダー検索プリセットがありません。")
+            QMessageBox.information(self, "Vendor Search", "There are no enabled vendor search presets.")
             return
 
         # 設定画面などのモーダルダイアログが開いている場合、メインウィンドウを親にした
@@ -3678,14 +3678,14 @@ class MainWindow(QMainWindow):
         time.sleep(0.05)
 
         if not target_hwnd:
-            QMessageBox.warning(self, "検索文字列の貼り付け", "復帰先ウィンドウを取得できませんでした。文字列はクリップボードへコピー済みです。")
+            QMessageBox.warning(self, "Paste Search Text", "Could not find the window to return to. The text has been copied to the clipboard.")
             return
 
         if not focus_window(target_hwnd, wait_seconds=0.45):
             QMessageBox.warning(
                 self,
-                "検索文字列の貼り付け",
-                "元のウィンドウを前面化できませんでした。文字列はクリップボードへコピー済みです。",
+                "Paste Search Text",
+                "Could not bring the original window to the front. The text has been copied to the clipboard.",
             )
             return
 
@@ -3743,8 +3743,8 @@ class MainWindow(QMainWindow):
             print(f"[LOGOUT] Failed: {msg}")
             if "管理者権限" in msg:
                 QMessageBox.warning(
-                    self, "ログアウトマクロ",
-                    "ログアウト機能を使用するためには、ぽえなびを「管理者として実行」する必要があります"
+                    self, "Logout Macro",
+                    "To use the logout feature, PoENavi must be started with \"Run as administrator\""
                 )
 
     # --- クリックスルー ---
@@ -3796,10 +3796,10 @@ class MainWindow(QMainWindow):
             return
         hotkey = self.config.get('hotkeys', {}).get('click_through', DEFAULT_CLICK_THROUGH_HOTKEY)
         if getattr(self, 'click_through', False):
-            self.click_through_label.setText(f"🔓 クリックスルーON（{hotkey}で解除）")
+            self.click_through_label.setText(f"🔓 Click-through ON ({hotkey} to turn off)")
             self.click_through_label.setStyleSheet("color: #ff9944; font-size: 14px; font-weight: bold;")
         else:
-            self.click_through_label.setText(f"クリックスルーOFF（{hotkey}でON）")
+            self.click_through_label.setText(f"Click-through OFF ({hotkey} to turn on)")
             self.click_through_label.setStyleSheet("color: rgba(176, 255, 123, 0.45); font-size: 12px; font-weight: normal;")
         self.click_through_label.setVisible(True)
 
@@ -3900,18 +3900,18 @@ class MainWindow(QMainWindow):
         ):
             message_box = QMessageBox(self)
             message_box.setIcon(QMessageBox.Question)
-            message_box.setWindowTitle("ガイド進行の確認")
+            message_box.setWindowTitle("Confirm Guide Progress")
             message_box.setText(
-                "保存された進行状況と異なる進行状況を検知しました。\n"
-                "新キャラクターに合わせるため、ガイド進行をリセットしますか？"
+                "Detected progress that differs from the saved progress.\n"
+                "Reset guide progress for a new character?"
             )
             evidence = (
-                "その後のログ：「川岸」への入場を検知"
+                "Later log: entered \"The Riverbank\""
                 if inspected_version == POE2
-                else "その後のログ：「黄昏の岸辺 → Lv2」を検知"
+                else "Later log: \"The Twilight Strand → Lv2\" detected"
             )
             message_box.setInformativeText(
-                f"前回最後に確認したエリア：{anchor_zone}\n{evidence}"
+                f"Last area seen previously: {anchor_zone}\n{evidence}"
             )
             message_box.setStandardButtons(QMessageBox.Yes | QMessageBox.No)
             message_box.setDefaultButton(QMessageBox.Yes)
@@ -3997,7 +3997,7 @@ class MainWindow(QMainWindow):
         if actual_entry and self.poe_version == POE2 and zone_name in ("川岸", "The Riverbank") and not self._restoring:
             self.clear_progress_flags()
             self.player_level = 1
-            self.level_label.setText("キャラLv. 1")
+            self.level_label.setText("Char Lv. 1")
 
         # 自動ラップ判定（街エリアでも実行 — 橋の野営地/オリアスの船着場がトリガー）
         if actual_entry and not self._restoring:
@@ -4031,7 +4031,7 @@ class MainWindow(QMainWindow):
             # Labクリア後の街帰還 → 志す者の広場の2回目ガイドを表示
             if actual_entry and self._in_lab and self._lab_zone_id:
                 self._in_lab = False
-                self.advice_label.setText("🏛️ Labクリア — 次のガイドを表示中")
+                self.advice_label.setText("🏛️ Lab cleared — showing the next guide")
                 self.advice_label.setStyleSheet("color: #ffc832; font-size: 12px;")
                 # 志す者の広場のvisitカウントを増やす
                 self.zone_visit_counts[self._lab_zone_id] = self.zone_visit_counts.get(self._lab_zone_id, 1) + 1
@@ -4040,7 +4040,7 @@ class MainWindow(QMainWindow):
                 self._update_guide_and_map(lab_zone_name, self._lab_zone_id, visit_num)
                 self._lab_zone_id = None
             else:
-                self.advice_label.setText("（街エリア — ガイドは前のエリアを表示中）")
+                self.advice_label.setText("(Town — showing the previous area's guide)")
                 self.advice_label.setStyleSheet("color: #888888; font-size: 12px;")
             return
         
@@ -4072,7 +4072,7 @@ class MainWindow(QMainWindow):
         elif actual_entry and self._in_lab and not zone_id:
             # Lab中に未知のエリア（Lab内部）→ ガイド更新スキップ
             self.zone_label.setText(f"📍 {display_zone_name}")
-            self.advice_label.setText("🏛️ Lab — ガイドは前のエリアを表示中")
+            self.advice_label.setText("🏛️ Lab — showing the previous area's guide")
             self.advice_label.setStyleSheet("color: #888888; font-size: 12px;")
             return
         
@@ -4085,7 +4085,7 @@ class MainWindow(QMainWindow):
             if exclude_type == "town":
                 # 街扱い — 既存の街処理と同じ
                 self.zone_label.setText(f"🏠 {display_zone_name}")
-                self.advice_label.setText("（街エリア — ガイドは前のエリアを表示中）")
+                self.advice_label.setText("(Town — showing the previous area's guide)")
                 self.advice_label.setStyleSheet("color: #888888; font-size: 12px;")
                 return
             elif exclude_type == "boss":
@@ -4094,7 +4094,7 @@ class MainWindow(QMainWindow):
                 act_name, _ = get_zone_info(self.zone_data, zone_name, part2=self.part2_mode)
                 act_prefix = f"{act_name} — " if act_name else ""
                 self.zone_label.setText(f"📍 {act_prefix}{display_zone_name}")
-                self.advice_label.setText("⚔️ ボスエリア")
+                self.advice_label.setText("⚔️ Boss area")
                 self.advice_label.setStyleSheet("color: #ff9944; font-size: 12px;")
                 # ガイド・マップ更新は続行
                 self._update_guide_and_map(zone_name, zone_id, 1, zone_changed=actual_entry)
@@ -4105,7 +4105,7 @@ class MainWindow(QMainWindow):
                 act_name, _ = get_zone_info(self.zone_data, zone_name, part2=self.part2_mode)
                 act_prefix = f"{act_name} — " if act_name else ""
                 self.zone_label.setText(f"📍 {act_prefix}{display_zone_name}")
-                self.advice_label.setText("🏛️ 非戦闘エリア")
+                self.advice_label.setText("🏛️ Non-combat area")
                 self.advice_label.setStyleSheet("color: #888888; font-size: 12px;")
                 self._update_guide_and_map(zone_name, zone_id, 1, zone_changed=actual_entry)
                 return
@@ -4273,9 +4273,9 @@ class MainWindow(QMainWindow):
         else:
             self.zone_label.setText(f"📍 {display_zone_name}")
             if act_name:
-                self.advice_label.setText("（エリアレベルは攻略順で変動するため固定表示なし）")
+                self.advice_label.setText("(Area level depends on route order, so no fixed level is shown)")
             else:
-                self.advice_label.setText("（適正レベル未登録エリア）")
+                self.advice_label.setText("(No recommended level for this area)")
             self.advice_label.setStyleSheet("color: #888888; font-size: 12px;")
         
         # 攻略ガイド・マップ更新
@@ -4291,11 +4291,11 @@ class MainWindow(QMainWindow):
         player_level = int(getattr(self, "player_level", 1) or 1)
         msg, _color = get_level_advice(player_level, int(enemy_level))
         if "🔴" in msg:
-            status = "🔴 ペナ発生"
+            status = "🔴 XP penalty"
         elif "🟢" in msg:
-            status = "🟢 最適"
+            status = "🟢 Optimal"
         else:
-            status = "🟡 ペナなし"
+            status = "🟡 No penalty"
         return {"player_level": player_level, "enemy_level": int(enemy_level), "status": status}
 
     def _voicevox_config(self) -> dict:
@@ -4409,7 +4409,7 @@ class MainWindow(QMainWindow):
                 else:
                     self.mini_navi_overlay.hide()
         else:
-            self.guide_text_label.setText(f"「{zone_name}」のガイドデータはありません")
+            self.guide_text_label.setText(f"No guide data for \"{zone_name}\"")
             self.guide_text_label.setStyleSheet(f"color: #666666; font-size: {self.guide_font_size}px; background: transparent;")
             if hasattr(self, "mini_navi_overlay"):
                 if self._is_mini_navi_available():
@@ -4465,8 +4465,8 @@ class MainWindow(QMainWindow):
         zone_name = "渇望の祭壇"
         zone_id = "act10_area11"
         self.current_zone = zone_name
-        self.zone_label.setText("📍 Act 10 — 渇望の祭壇")
-        self.advice_label.setText("🎉 Act10クリア — クリア後ガイドを表示中")
+        self.zone_label.setText("📍 Act 10 — Campaign complete")
+        self.advice_label.setText("🎉 Act 10 cleared — showing post-campaign guide")
         self.advice_label.setStyleSheet("color: #ffd700; font-size: 12px;")
         self._update_guide_and_map(zone_name, zone_id, 1, zone_changed=True)
 
@@ -4580,7 +4580,7 @@ class MainWindow(QMainWindow):
     def on_level_up(self, char_name: str, level: int):
         """レベルアップ検知"""
         self.player_level = level
-        self.level_label.setText(f"キャラLv. {level}")
+        self.level_label.setText(f"Char Lv. {level}")
         
         # 新キャラ判定: 黄昏の岸辺入場済み + Lv2 = ヒロック討伐 → visitカウントリセット
         if level == 2 and getattr(self, '_twilight_strand_entered', False):
@@ -4733,17 +4733,17 @@ class MainWindow(QMainWindow):
     def contextMenuEvent(self, event):
         menu = QMenu(self)
         
-        settings_action = menu.addAction("設定")
+        settings_action = menu.addAction("Settings")
         settings_action.triggered.connect(self.open_settings)
 
-        update_action = menu.addAction("アップデートを確認")
+        update_action = menu.addAction("Check for Updates")
         update_action.triggered.connect(
             lambda: self._check_for_updates(manual=True)
         )
         
         menu.addSeparator()
         
-        quit_action = menu.addAction("終了")
+        quit_action = menu.addAction("Exit")
         quit_action.triggered.connect(self.close)
         
         menu.exec(event.globalPos())
@@ -4846,10 +4846,10 @@ class MainWindow(QMainWindow):
         if hotkey and hotkey != "none":
             display_hotkey = QKeySequence(hotkey).toString(QKeySequence.NativeText)
             self.cheat_sheets_btn.setToolTip(
-                f"Cheat sheets（{display_hotkey}で表示／非表示）"
+                f"Cheat sheets ({display_hotkey} to show/hide)"
             )
         else:
-            self.cheat_sheets_btn.setToolTip("Cheat sheets（ホットキー未設定）")
+            self.cheat_sheets_btn.setToolTip("Cheat sheets (no hotkey set)")
 
     def _ensure_cheat_sheet_overlay(self):
         from src.ui.cheat_sheets import CheatSheetOverlay
@@ -4949,9 +4949,9 @@ class MainWindow(QMainWindow):
                 if autostart_error:
                     QMessageBox.warning(
                         self,
-                        "自動起動設定エラー",
-                        "Windowsの自動起動設定を更新できませんでした。\n"
-                        "設定は保存済みのため、次回起動時に再試行します。",
+                        "Auto-start Settings Error",
+                        "Could not update the Windows auto-start setting.\n"
+                        "Your settings are saved; it will be retried on the next launch.",
                     )
             if (
                 previous_config.get("stash_tab_scroll_enabled", True)
@@ -5018,7 +5018,7 @@ class MainWindow(QMainWindow):
             if poe_version_changed:
                 self.lap_labels = get_lap_labels(self.poe_version)
                 self.log_watcher.set_poe_version(self.poe_version)
-                self.setWindowTitle(f"ぽえなび [{get_poe_label(self.poe_version)}]")
+                self.setWindowTitle(f"PoENavi [{get_poe_label(self.poe_version)}]")
             if prev_version != self.poe_version:
                 self.lap_times = [None] * len(self.lap_labels)
                 self.current_act = 1
@@ -5233,15 +5233,15 @@ class MainWindow(QMainWindow):
             icon = self.style().standardIcon(QStyle.SP_ComputerIcon)
 
         self.tray_icon = QSystemTrayIcon(icon, self)
-        self.tray_icon.setToolTip("ぽえなび")
+        self.tray_icon.setToolTip("PoENavi")
         self.tray_icon.activated.connect(self._handle_tray_activation)
 
         menu = QMenu(self)
-        self.tray_show_action = QAction("ぽえなびを表示", menu)
+        self.tray_show_action = QAction("Show PoENavi", menu)
         self.tray_show_action.triggered.connect(self.restore_from_tray)
         menu.addAction(self.tray_show_action)
         menu.addSeparator()
-        self.tray_exit_action = QAction("終了", menu)
+        self.tray_exit_action = QAction("Exit", menu)
         self.tray_exit_action.triggered.connect(self.quit_from_tray)
         menu.addAction(self.tray_exit_action)
         self.tray_icon.setContextMenu(menu)
@@ -5261,8 +5261,8 @@ class MainWindow(QMainWindow):
         self.tray_icon.show()
         if not self._tray_notification_shown:
             self.tray_icon.showMessage(
-                "ぽえなび",
-                "タスクトレイに格納しました。",
+                "PoENavi",
+                "Minimized to the system tray.",
                 QSystemTrayIcon.Information,
                 3000,
             )

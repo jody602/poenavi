@@ -51,14 +51,14 @@ class HeistSettingsDialog(QDialog):
         )
         self._ocr_pack_controller = ocr_pack_controller
         self.theme = POETORE_DIALOG_THEME
-        self.setWindowTitle("ハイスト報酬OCR設定")
+        self.setWindowTitle("Heist Reward OCR Settings")
         self.setMinimumSize(620, 700)
         apply_dialog_theme(self, self.theme)
 
         root = QVBoxLayout(self)
         root.setContentsMargins(14, 14, 14, 12)
         root.setSpacing(10)
-        self.title_label = QLabel("ハイスト報酬OCR設定")
+        self.title_label = QLabel("Heist Reward OCR Settings")
         self.title_label.setProperty("uiRole", "title")
         root.addWidget(self.title_label)
 
@@ -74,13 +74,13 @@ class HeistSettingsDialog(QDialog):
         scroll.setWidget(content_widget)
         root.addWidget(scroll, 1)
 
-        basic_group, basic = self._section_group("1. 基本設定", "basicSettingsGroup")
+        basic_group, basic = self._section_group("1. Basic Settings", "basicSettingsGroup")
         toggle_row = QHBoxLayout()
         toggle_row.setSpacing(8)
-        self.enabled_checkbox = QCheckBox("ハイスト報酬OCRを有効化")
+        self.enabled_checkbox = QCheckBox("Enable Heist reward OCR")
         self.enabled_checkbox.setChecked(bool(enabled))
         toggle_row.addWidget(self.enabled_checkbox)
-        self.enable_required_hint = QLabel("※有効時だけOCRとホットキーを起動します")
+        self.enable_required_hint = QLabel("* OCR and the hotkey only run while enabled")
         self.enable_required_hint.setObjectName("heistEnableRequiredHint")
         self.enable_required_hint.setProperty("uiRole", "muted")
         toggle_row.addWidget(self.enable_required_hint)
@@ -97,7 +97,7 @@ class HeistSettingsDialog(QDialog):
             allow_shift=True,
         )
         self.hotkey_widget.key_button.setStyleSheet("")
-        form.addRow("読取ショートカット:", self.hotkey_widget)
+        form.addRow("Capture shortcut:", self.hotkey_widget)
         basic.addLayout(form)
         content.addWidget(basic_group)
 
@@ -107,11 +107,11 @@ class HeistSettingsDialog(QDialog):
         self.ocr_pack_retry = pack_group.retry_button
         content.addWidget(pack_group)
 
-        usage_group, usage = self._section_group("3. 読み取り方法", "readMethodGroup")
+        usage_group, usage = self._section_group("3. How to Capture", "readMethodGroup")
         instruction = QLabel(
-            "ショートカットを押したら、展示パネルの報酬名・ベースタイプ・青いMod全体を"
-            "左上から右下へドラッグしてください。\n"
-            "ドラッグを終えると自動で確定します。Escでキャンセルできます。"
+            "After pressing the shortcut, drag from top-left to bottom-right over the reward name, "
+            "base type, and all blue mods in the display panel.\n"
+            "The selection confirms automatically when you release. Press Esc to cancel."
         )
         instruction.setObjectName("heistSelectionInstruction")
         instruction.setProperty("uiRole", "muted")
@@ -119,8 +119,8 @@ class HeistSettingsDialog(QDialog):
         usage.addWidget(instruction)
 
         warning = QLabel(
-            "盗賊のトリンケットは青いModの末尾まで含めてください。その他の報酬は"
-            "名前とベースタイプが入っていれば読み取れます。"
+            "For Rogue's Trinkets, include everything down to the last blue mod. For other rewards, "
+            "including the name and base type is enough."
         )
         warning.setObjectName("heistSelectionWarning")
         warning.setProperty("state", "warning")
@@ -128,11 +128,11 @@ class HeistSettingsDialog(QDialog):
         usage.addWidget(warning)
 
         example_heading = QHBoxLayout()
-        example_title = QLabel("範囲指定例")
+        example_title = QLabel("Area Example")
         example_title.setObjectName("heistExampleHeading")
         example_title.setProperty("uiRole", "section")
         example_heading.addWidget(example_title)
-        hint = QLabel("※画像をクリックすると拡大表示します")
+        hint = QLabel("* Click the image to enlarge it")
         hint.setObjectName("heistExampleHint")
         hint.setProperty("uiRole", "muted")
         example_heading.addWidget(hint)
@@ -153,10 +153,10 @@ class HeistSettingsDialog(QDialog):
 
         footer = QHBoxLayout()
         footer.addStretch()
-        self.cancel_button = QPushButton("キャンセル")
+        self.cancel_button = QPushButton("Cancel")
         self.cancel_button.setProperty("buttonRole", "secondary")
         self.cancel_button.clicked.connect(self.reject)
-        self.save_button = QPushButton("保存")
+        self.save_button = QPushButton("Save")
         self.save_button.setProperty("buttonRole", "primary")
         self.save_button.setDefault(True)
         self.save_button.clicked.connect(self.accept)
@@ -183,21 +183,21 @@ class HeistSettingsDialog(QDialog):
     def _load_example_thumbnail(self) -> None:
         pixmap = QPixmap(str(self._example_image_path))
         if pixmap.isNull():
-            self.example_thumbnail.setText("範囲指定例画像を読み込めませんでした。")
+            self.example_thumbnail.setText("Could not load the area example image.")
             return
         self.example_thumbnail.setPixmap(
             pixmap.scaled(QSize(550, 138), Qt.KeepAspectRatio, Qt.SmoothTransformation)
         )
-        self.example_thumbnail.setToolTip("クリックして拡大")
+        self.example_thumbnail.setToolTip("Click to enlarge")
 
     def _show_example_popup(self) -> None:
         popup = QDialog(self)
-        popup.setWindowTitle("ハイスト報酬の範囲指定例")
+        popup.setWindowTitle("Heist Reward Area Example")
         popup.resize(900, 520)
         apply_dialog_theme(popup, self.theme)
         layout = QVBoxLayout(popup)
         guide = QLabel(
-            "このように、報酬名・ベースタイプ・青いModの末尾までを囲みます。"
+            "Select from the reward name and base type down to the last blue mod, like this."
         )
         guide.setProperty("uiRole", "muted")
         guide.setWordWrap(True)
@@ -206,7 +206,7 @@ class HeistSettingsDialog(QDialog):
         image.setAlignment(Qt.AlignCenter)
         pixmap = QPixmap(str(self._example_image_path))
         if pixmap.isNull():
-            image.setText("範囲指定例画像を読み込めませんでした。")
+            image.setText("Could not load the area example image.")
         else:
             image.setPixmap(
                 pixmap.scaled(
@@ -214,7 +214,7 @@ class HeistSettingsDialog(QDialog):
                 )
             )
         layout.addWidget(image)
-        close = QPushButton("閉じる")
+        close = QPushButton("Close")
         close.setProperty("buttonRole", "secondary")
         close.clicked.connect(popup.accept)
         layout.addWidget(close, alignment=Qt.AlignRight)

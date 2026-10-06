@@ -38,14 +38,14 @@ def _run_update_gate(config: dict, parent=None, manual: bool = False) -> bool:
             if result["error"]:
                 QMessageBox.warning(
                     parent,
-                    "アップデート",
-                    f"更新を確認できませんでした。\n{result['error']}",
+                    "Update",
+                    f"Could not check for updates.\n{result['error']}",
                 )
             else:
                 QMessageBox.information(
                     parent,
-                    "アップデート",
-                    "最新バージョンです。",
+                    "Update",
+                    "You are on the latest version.",
                 )
         return True
     if (
@@ -98,16 +98,16 @@ def _run_update_gate(config: dict, parent=None, manual: bool = False) -> bool:
     if download_result["error"]:
         QMessageBox.warning(
             parent,
-            "アップデート",
-            f"更新をダウンロードできませんでした。\n{download_result['error']}",
+            "Update",
+            f"Could not download the update.\n{download_result['error']}",
         )
         return True
 
     answer = QMessageBox.question(
         parent,
-        "アップデートを適用",
-        f"v{release.version} の検証が完了しました。\n"
-        "アプリを終了して更新しますか？",
+        "Apply Update",
+        f"v{release.version} has been verified.\n"
+        "Close the app and update now?",
         QMessageBox.Yes | QMessageBox.No,
         QMessageBox.Yes,
     )
@@ -116,7 +116,7 @@ def _run_update_gate(config: dict, parent=None, manual: bool = False) -> bool:
     try:
         controller.launch_updater(download_result["archive"])
     except Exception as exc:
-        QMessageBox.critical(parent, "アップデート", str(exc))
+        QMessageBox.critical(parent, "Update", str(exc))
         return True
     return False
 

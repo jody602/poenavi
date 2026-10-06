@@ -129,18 +129,18 @@ def _user_facing_trade_error(message: str) -> str:
     )
     if not too_complex:
         return message
-    return "検索条件が多すぎます。条件を減らして、もう一度検索してください。"
+    return "Too many search conditions. Remove some conditions and search again."
 
 _HEIST_JOB_LABELS = {
-    "property.heist_lockpicking": "錠前破り",
-    "property.heist_brute_force": "怪力",
-    "property.heist_perception": "知覚能力",
-    "property.heist_demolition": "爆破",
-    "property.heist_counter_thaumaturgy": "対魔術",
-    "property.heist_trap_disarmament": "罠解除",
-    "property.heist_agility": "敏捷性",
-    "property.heist_deception": "欺瞞",
-    "property.heist_engineering": "工作",
+    "property.heist_lockpicking": "Lockpicking",
+    "property.heist_brute_force": "Brute Force",
+    "property.heist_perception": "Perception",
+    "property.heist_demolition": "Demolition",
+    "property.heist_counter_thaumaturgy": "Counter-Thaumaturgy",
+    "property.heist_trap_disarmament": "Trap Disarmament",
+    "property.heist_agility": "Agility",
+    "property.heist_deception": "Deception",
+    "property.heist_engineering": "Engineering",
 }
 
 _MOD_COLUMN_CHECK = 0
@@ -275,7 +275,7 @@ class _UniqueRollSlider(QWidget):
         self.setMinimumHeight(24)
         self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Fixed)
         self.setCursor(Qt.PointingHandCursor)
-        self.setToolTip("クリックまたはドラッグで検索値を調整")
+        self.setToolTip("Click or drag to adjust the search value")
 
     def searchValues(self) -> tuple[float | None, float | None]:
         return self._minimum, self._maximum
@@ -387,54 +387,54 @@ def _is_valdo_map(item) -> bool:
 
 
 _FILTER_KIND_LABELS = {
-    "explicit": "明示",
-    "prefix": "プレフィックス",
-    "suffix": "サフィックス",
-    "prefix_suffix": "プレフィックス／サフィックス",
-    "crafted": "クラフト",
-    "fractured": "フラクチャー",
-    "implicit": "暗黙",
-    "enchant": "エンチャント",
-    "veiled": "ヴェール",
-    "desecrated": "冒涜",
-    "necropolis": "ネクロポリス",
-    "imbued": "注入",
-    "foulborn": "ファウルボーン",
-    "vestigial": "痕跡",
-    "essence": "エッセンス",
-    "infamous": "悪名高い",
-    "corrupted": "コラプト",
-    "catalyst": "カタリスト",
-    "volatile": "ヴォラタイル・ヴァール",
-    "reflecting": "リフレクティング・ミスト",
-    "eldritch": "エルドリッチ",
-    "synthesised": "シンセシス",
-    "delve": "デルブ",
-    "incursion": "インカージョン",
-    "veiled": "ヴェール",
-    "shaper": "シェイパー",
-    "elder": "エルダー",
-    "hunter": "ハンター",
-    "warlord": "ウォーロード",
-    "redeemer": "リディーマー",
-    "crusader": "クルセーダー",
-    "pseudo": "疑似",
-    "property": "アイテム特性",
-    "base": "ベース",
-    "cluster": "クラスター",
-    "craft": "クラフト",
-    "expedition": "エクスペディション",
-    "flask hybrid": "フラスコ複合",
-    "gem": "ジェム",
-    "heist": "ハイスト",
-    "influence": "インフルエンス",
-    "map": "マップ",
-    "map pseudo": "マップ",
-    "map safety": "マップ危険",
-    "sanctum": "サンクタム",
-    "socket": "ソケット",
-    "special": "特殊",
-    "unique exception": "ユニーク例外",
+    "explicit": "Explicit",
+    "prefix": "Prefix",
+    "suffix": "Suffix",
+    "prefix_suffix": "Prefix/Suffix",
+    "crafted": "Crafted",
+    "fractured": "Fractured",
+    "implicit": "Implicit",
+    "enchant": "Enchant",
+    "veiled": "Veiled",
+    "desecrated": "Desecrated",
+    "necropolis": "Necropolis",
+    "imbued": "Imbued",
+    "foulborn": "Foulborn",
+    "vestigial": "Scourge",
+    "essence": "Essence",
+    "infamous": "Notorious",
+    "corrupted": "Corrupted",
+    "catalyst": "Catalyst",
+    "volatile": "Volatile Vaal",
+    "reflecting": "Reflecting Mist",
+    "eldritch": "Eldritch",
+    "synthesised": "Synthesis",
+    "delve": "Delve",
+    "incursion": "Incursion",
+    "veiled": "Veiled",
+    "shaper": "Shaper",
+    "elder": "Elder",
+    "hunter": "Hunter",
+    "warlord": "Warlord",
+    "redeemer": "Redeemer",
+    "crusader": "Crusader",
+    "pseudo": "Pseudo",
+    "property": "Item property",
+    "base": "Base",
+    "cluster": "Cluster",
+    "craft": "Crafted",
+    "expedition": "Expedition",
+    "flask hybrid": "Flask combined",
+    "gem": "Gem",
+    "heist": "Heist",
+    "influence": "Influence",
+    "map": "Map",
+    "map pseudo": "Map",
+    "map safety": "Map danger",
+    "sanctum": "Sanctum",
+    "socket": "Socket",
+    "special": "Special",
+    "unique exception": "Unique exception",
     "mercenary": "MERCENARY",
 }
 
@@ -454,14 +454,14 @@ def _filter_kind_label(stat_filter: TradeStatFilter) -> str:
         if stat_filter.affix in {"prefix", "suffix"}
         else stat_filter.kind
     )
-    kind_label = _FILTER_KIND_LABELS.get(kind, "特殊")
+    kind_label = _FILTER_KIND_LABELS.get(kind, "Special")
     if provenance_labels:
         labels = (
             (kind_label, *provenance_labels)
             if kind not in {"explicit", "implicit", "prefix", "suffix"}
             else provenance_labels
         )
-        return "／".join(dict.fromkeys(labels))
+        return "/".join(dict.fromkeys(labels))
     return kind_label
 
 
@@ -838,7 +838,7 @@ class _NumericFilterChip(QFrame):
         self.minimum_edit.setFixedWidth(30)
         self.minimum_edit.textEdited.connect(lambda _text: self.setActive(True))
         layout.addWidget(self.minimum_edit)
-        self.separator = QLabel("～")
+        self.separator = QLabel("~")
         self.maximum_edit = QLineEdit()
         self.maximum_edit.setObjectName("numericFilterEdit")
         self.maximum_edit.setValidator(QIntValidator(minimum, maximum, self.maximum_edit))
@@ -875,7 +875,7 @@ class _NumericFilterChip(QFrame):
     def setActive(self, active: bool):
         self._active = bool(active)
         self.setProperty("active", self._active)
-        self.toggle.setText(f"{'☑' if self._active else '☐'} {self._label}：")
+        self.toggle.setText(f"{'☑' if self._active else '☐'} {self._label}: ")
         for editor in (self.minimum_edit, self.maximum_edit):
             font = editor.font()
             font.setStrikeOut(not self._active)
@@ -894,7 +894,7 @@ class _SparklineWidget(QWidget):
         super().__init__(parent)
         self._points: tuple[float, ...] = ()
         self.setFixedSize(116, 24)
-        self.setToolTip("poe.ninja 7日推移")
+        self.setToolTip("poe.ninja 7-day trend")
 
     def setPoints(self, points: tuple[float, ...]):
         self._points = tuple(points)
@@ -932,7 +932,7 @@ class _PoetoreTitleBar(QWidget):
         self._drag_start_position: QPoint | None = None
         layout = QHBoxLayout(self)
         layout.setContentsMargins(6, 2, 2, 2)
-        self._obs_title_label = QLabel("ぽえとれ検索ウィンドウ")
+        self._obs_title_label = QLabel("PoETore search window")
         self._obs_title_label.setObjectName("obsSearchWindowTitle")
         self._obs_title_label.setAttribute(Qt.WA_TransparentForMouseEvents, True)
         self._obs_title_label.hide()
@@ -945,7 +945,7 @@ class _PoetoreTitleBar(QWidget):
         window.divine_rate_button = QPushButton("⇄ …", self._expanded_controls)
         window.divine_rate_button.setObjectName("divineRateButton")
         quote_name = "Exalted" if window.poe_version == POE2 else "Chaos"
-        window.divine_rate_button.setToolTip(f"Divine Orbの{quote_name}換算早見表")
+        window.divine_rate_button.setToolTip(f"Divine Orb {quote_name}conversion table")
         window.divine_rate_button.setEnabled(False)
         window.divine_rate_button.hide()
         window.divine_rate_menu = QMenu(window.divine_rate_button)
@@ -956,14 +956,14 @@ class _PoetoreTitleBar(QWidget):
         controls_layout.addWidget(window.trade_league_combo)
         window.league_popup_button = QPushButton("▼", self._expanded_controls)
         window.league_popup_button.setObjectName("leaguePopupButton")
-        window.league_popup_button.setToolTip("リーグ一覧を開く")
+        window.league_popup_button.setToolTip("Open league list")
         window.league_popup_button.setFixedSize(28, 28)
         window.league_popup_button.clicked.connect(window.trade_league_combo.showPopup)
         controls_layout.addWidget(window.league_popup_button)
         controls_layout.addSpacing(4)
-        window.league_refresh_button = QPushButton("再取得", self._expanded_controls)
+        window.league_refresh_button = QPushButton("Refresh", self._expanded_controls)
         window.league_refresh_button.setObjectName("leagueRefreshButton")
-        window.league_refresh_button.setToolTip("公式サイトからリーグ一覧を再取得")
+        window.league_refresh_button.setToolTip("Re-fetch the league list from the official site")
         window.league_refresh_button.setFixedSize(62, 28)
         window.league_refresh_button.clicked.connect(
             lambda: window.refresh_trade_leagues(force_refresh=True)
@@ -971,7 +971,7 @@ class _PoetoreTitleBar(QWidget):
         controls_layout.addWidget(window.league_refresh_button)
         controls_layout.addSpacing(4)
         window.poetore_close_button = QPushButton("×", self._expanded_controls)
-        window.poetore_close_button.setToolTip("閉じる")
+        window.poetore_close_button.setToolTip("Close")
         window.poetore_close_button.setFixedSize(28, 24)
         window.poetore_close_button.clicked.connect(window._close_and_return_to_poe)
         controls_layout.addWidget(window.poetore_close_button)
@@ -1046,7 +1046,7 @@ class PoetoreWindow(QWidget):
         # Alt+Dで表示した直後に編集欄へ文字が入らないよう、ウィンドウ自身を
         # 安全なフォーカス先にする。各入力欄は必要な時だけ個別にフォーカスする。
         self.setFocusPolicy(Qt.StrongFocus)
-        self.setWindowTitle("ぽえとれ")
+        self.setWindowTitle("PoETore")
         self._result_font_size = normalize_result_font_size(
             self._app_config.get("poetore", {}).get("result_font_size", "medium")
         )
@@ -1061,19 +1061,19 @@ class PoetoreWindow(QWidget):
         self.trade_league_combo.lineEdit().setFocusPolicy(Qt.ClickFocus)
         self.trade_league_combo.setFixedWidth(238)
         self.trade_league_combo.setMinimumContentsLength(12)
-        self.trade_league_combo.setToolTip("一覧から選択、またはPrivate League IDを直接入力")
+        self.trade_league_combo.setToolTip("Choose from the list, or type a Private League ID")
         saved_league = self._saved_trade_league()
         if self.poe_version == POE2:
             from .poe2.trade import FALLBACK_LEAGUES, default_pc_league as poe2_default_pc_league
             self._auto_league = poe2_default_pc_league(FALLBACK_LEAGUES)
             self.trade_league_combo.addItem(
-                f"自動（現行SC: {self._auto_league}）", "auto"
+                f"Auto (current SC: {self._auto_league})", "auto"
             )
             for league in FALLBACK_LEAGUES:
-                label = f"{league.id}（HC）" if league.hardcore else league.id
+                label = f"{league.id} (HC)" if league.hardcore else league.id
                 self.trade_league_combo.addItem(label, league.id)
         else:
-            self.trade_league_combo.addItem("自動（現行SCを取得中）", "auto")
+            self.trade_league_combo.addItem("Auto (fetching current SC)", "auto")
         if saved_league != "auto" and self.trade_league_combo.findData(saved_league) < 0:
             self.trade_league_combo.addItem(saved_league, saved_league)
         if saved_league != "auto":
@@ -1124,11 +1124,11 @@ class PoetoreWindow(QWidget):
         item_header_layout = QVBoxLayout(self.item_header)
         item_header_layout.setContentsMargins(10, 7, 10, 7)
         item_header_layout.setSpacing(1)
-        self.item_name_label = QLabel("アイテムを読み取ってください")
+        self.item_name_label = QLabel("Read an item first")
         self.item_name_label.setObjectName("itemName")
-        self.base_scope_toggle = _BinaryToggle(("ベース名", True), ("同一クラスすべて", False))
+        self.base_scope_toggle = _BinaryToggle(("Base name", True), ("All of same class", False))
         self.base_scope_toggle.setToolTip(
-            "読み取ったベースタイプに絞るか、同じアイテムクラス全体から探すかを切り替えます。"
+            "Switch between searching only the read base type or the whole item class."
         )
         self.base_scope_toggle.currentIndexChanged.connect(self._base_scope_changed)
         self.base_scope_toggle.hide()
@@ -1138,7 +1138,7 @@ class PoetoreWindow(QWidget):
         self.chart_area_chip.setCheckable(True)
         self.chart_area_chip.setChecked(True)
         self.chart_area_chip.setToolTip(
-            "ONなら同じ海域、OFFならすべての海図を検索します。"
+            "ON searches the same sea area; OFF searches all charts."
         )
         self.chart_area_chip.toggled.connect(self._chart_area_changed)
         self.chart_area_chip.hide()
@@ -1148,22 +1148,22 @@ class PoetoreWindow(QWidget):
         runemastered_layout = QHBoxLayout(self.runemastered_tag)
         runemastered_layout.setContentsMargins(8, 2, 6, 2)
         runemastered_layout.setSpacing(1)
-        self.runemastered_chip = QPushButton("☑ ルーンマスター")
+        self.runemastered_chip = QPushButton("☑ Runemaster")
         self.runemastered_chip.setObjectName("runemasteredToggle")
         self.runemastered_chip.setCheckable(True)
         self.runemastered_chip.setChecked(True)
         self.runemastered_chip.setToolTip(
-            "ONならルーンマスター版、OFFなら通常版のベースを検索します。"
+            "ON searches the Runemaster version; OFF searches the normal base."
         )
         self.runemastered_chip.toggled.connect(self._runemastered_changed)
         runemastered_layout.addWidget(self.runemastered_chip)
         self.runemastered_tag.hide()
         self.corrupted_combo = _CycleButton((
-            ("コラプトのみ", "only", True),
-            ("非コラプトのみ", False, False),
-            ("コラプト品含む", True, False),
+            ("Corrupted only", "only", True),
+            ("Non-corrupted only", False, False),
+            ("Include corrupted", True, False),
         ))
-        self.corrupted_combo.setToolTip("クリックするたびにコラプト条件を切り替えます")
+        self.corrupted_combo.setToolTip("Click to cycle the corrupted condition")
         self.corrupted_combo.setCurrentIndex(1)
         item_header_layout.addWidget(self.item_name_label)
         item_scope_layout = QHBoxLayout()
@@ -1182,7 +1182,7 @@ class PoetoreWindow(QWidget):
         ninja_layout = QHBoxLayout(self.poe_ninja_price_panel)
         ninja_layout.setContentsMargins(8, 5, 8, 5)
         ninja_layout.setSpacing(8)
-        self.poe_ninja_price_label = QLabel("poe.ninja 参考価格")
+        self.poe_ninja_price_label = QLabel("poe.ninja reference price")
         self.poe_ninja_price_label.setObjectName("poeNinjaPriceLabel")
         self.poe_ninja_price_value = QLabel("—")
         self.poe_ninja_price_value.setObjectName("poeNinjaPriceValue")
@@ -1216,7 +1216,7 @@ class PoetoreWindow(QWidget):
         dust_layout = QHBoxLayout(self.disenchant_dust_panel)
         dust_layout.setContentsMargins(8, 3, 8, 3)
         dust_layout.setSpacing(6)
-        self.disenchant_dust_label = QLabel("ダスト")
+        self.disenchant_dust_label = QLabel("Dust")
         self.disenchant_dust_label.setObjectName("disenchantDustLabel")
         self.disenchant_dust_value = QLabel("—")
         self.disenchant_dust_value.setObjectName("disenchantDustValue")
@@ -1232,13 +1232,13 @@ class PoetoreWindow(QWidget):
         related_layout = QVBoxLayout(self.related_items_panel)
         related_layout.setContentsMargins(8, 6, 8, 6)
         related_layout.setSpacing(4)
-        related_title = QLabel("関連アイテムの参考価格")
+        related_title = QLabel("Related item reference prices")
         related_title.setObjectName("relatedItemsTitle")
         related_layout.addWidget(related_title)
         self.related_items_tree = QTreeWidget()
         self.related_items_tree.setObjectName("relatedItemsTree")
         self.related_items_tree.setColumnCount(2)
-        self.related_items_tree.setHeaderLabels(("アイテム", "価格"))
+        self.related_items_tree.setHeaderLabels(("Item", "Price"))
         self.related_items_tree.setRootIsDecorated(True)
         self.related_items_tree.setAlternatingRowColors(True)
         self.related_items_tree.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -1252,7 +1252,7 @@ class PoetoreWindow(QWidget):
         top_options = QHBoxLayout()
         top_options.setSpacing(6)
         self.trade_preset_combo = _BinaryToggle(
-            ("完成品", PRESET_FINISHED), ("ベースアイテム", PRESET_BASE),
+            ("Finished item", PRESET_FINISHED), ("Base item", PRESET_BASE),
         )
         self.trade_preset_combo.currentIndexChanged.connect(self._trade_preset_changed)
         # 検索プリセットは左半分だけを使い、下のMod表との視線移動を短くする。
@@ -1267,9 +1267,9 @@ class PoetoreWindow(QWidget):
         self.search_range_combo.setObjectName("filterControl")
         for percent in (0, 5, 10, 15, 20, 30, 50):
             label = (
-                "Mod数値：完全一致"
+                "Mod values: exact"
                 if percent == 0
-                else f"Mod数値：-{percent}%まで許容"
+                else f"Mod values: -{percent}% tolerance"
             )
             self.search_range_combo.addItem(label, percent)
         saved_range = self._app_config.get("poetore", {}).get("search_stat_range", 10)
@@ -1280,17 +1280,17 @@ class PoetoreWindow(QWidget):
         index = self.search_range_combo.findData(saved_range)
         self.search_range_combo.setCurrentIndex(index if index >= 0 else 2)
         self.search_range_combo.setToolTip(
-            "各Modの読取値を基準に、どこまで低い数値を検索に含めるか設定します。\n"
-            "例：読取値100・-10%まで許容 → 最小値90で検索\n"
-            "ユニーク品はModの可変範囲を基準に調整します。"
+            "Sets how much lower than each mod's read value to include in the search.\n"
+            "Example: read value 100 with -10% tolerance → search with minimum 90\n"
+            "For uniques, it is based on the mod's roll range."
         )
         self.search_range_combo.currentIndexChanged.connect(self._search_range_changed)
         top_options.addWidget(self.search_range_combo)
         self.magic_rarity_toggle = _BinaryToggle(
-            ("非ユニーク", False), ("マジック完全一致", True),
+            ("Non-unique", False), ("Magic exact", True),
         )
         self.magic_rarity_toggle.setToolTip(
-            "マジックのベースアイテムだけに絞る場合は「マジック完全一致」を選択"
+            "Choose \"Magic exact\" to limit to magic base items only"
         )
         self.magic_rarity_toggle.hide()
         self.rarity_condition_chip = QPushButton()
@@ -1298,10 +1298,10 @@ class PoetoreWindow(QWidget):
         self.rarity_condition_chip.setEnabled(False)
         self.rarity_condition_chip.hide()
         self.tablet_rarity_combo = _CycleButton((
-            ("非ユニーク", "nonunique", False),
+            ("Non-unique", "nonunique", False),
         ))
         self.tablet_rarity_combo.setToolTip(
-            "クリックするたびに石板のレアリティ条件を切り替えます"
+            "Click to cycle the tablet rarity condition"
         )
         self.tablet_rarity_combo.hide()
 
@@ -1309,35 +1309,35 @@ class PoetoreWindow(QWidget):
         self.trade_status_combo.setObjectName("filterControl")
         self.trade_status_combo.setProperty("compactAction", True)
         self.trade_status_combo.setProperty("mutedText", True)
-        self.trade_status_combo.addItem("インスタントバイアウトのみ", "instant")
-        self.trade_status_combo.addItem("インスタント＋対面", "available")
-        self.trade_status_combo.addItem("対面トレードのみ", "online")
-        self.trade_status_combo.addItem("オフライン出品も含む", "offline")
+        self.trade_status_combo.addItem("Instant buyout only", "instant")
+        self.trade_status_combo.addItem("Instant + in person", "available")
+        self.trade_status_combo.addItem("In-person trade only", "online")
+        self.trade_status_combo.addItem("Include offline listings", "offline")
         self.trade_currency_combo = QComboBox()
         self.trade_currency_combo.setObjectName("filterControl")
         self.trade_currency_combo.setProperty("compactAction", True)
         self.trade_currency_combo.setProperty("mutedText", True)
-        self.trade_currency_combo.addItem("すべての通貨", "any")
+        self.trade_currency_combo.addItem("Any currency", "any")
         if self.poe_version == POE2:
-            self.trade_currency_combo.addItem("高貴なオーブのみ", "exalted")
-            self.trade_currency_combo.addItem("神のオーブのみ", "divine")
-            self.trade_currency_combo.addItem("カオスオーブのみ", "chaos")
+            self.trade_currency_combo.addItem("Exalted Orb only", "exalted")
+            self.trade_currency_combo.addItem("Divine Orb only", "divine")
+            self.trade_currency_combo.addItem("Chaos Orb only", "chaos")
             self.trade_currency_combo.addItem(
-                "高貴または神", "exalted_divine"
+                "Exalted or Divine", "exalted_divine"
             )
         else:
-            self.trade_currency_combo.addItem("カオスオーブのみ", "chaos")
-            self.trade_currency_combo.addItem("神のオーブのみ", "divine")
+            self.trade_currency_combo.addItem("Chaos Orb only", "chaos")
+            self.trade_currency_combo.addItem("Divine Orb only", "divine")
             self.trade_currency_combo.addItem(
-                "カオスまたは神のオーブ", "chaos_divine"
+                "Chaos or Divine Orb", "chaos_divine"
             )
         currency_tooltips = {
-            "any": "出品価格の通貨を指定しません",
-            "chaos": "カオスオーブ建ての出品のみ",
-            "divine": "神のオーブ建ての出品のみ",
-            "chaos_divine": "カオスオーブまたは神のオーブ建ての出品",
-            "exalted": "高貴なオーブ建ての出品のみ",
-            "exalted_divine": "高貴なオーブまたは神のオーブ建ての出品",
+            "any": "Don't filter by listing currency",
+            "chaos": "Only listings priced in Chaos Orbs",
+            "divine": "Only listings priced in Divine Orbs",
+            "chaos_divine": "Listings priced in Chaos or Divine Orbs",
+            "exalted": "Only listings priced in Exalted Orbs",
+            "exalted_divine": "Listings priced in Exalted or Divine Orbs",
         }
         for index in range(self.trade_currency_combo.count()):
             value = str(self.trade_currency_combo.itemData(index))
@@ -1349,9 +1349,9 @@ class PoetoreWindow(QWidget):
         self.listed_within_combo.setProperty("compactAction", True)
         self.listed_within_combo.setProperty("mutedText", True)
         for label, value in (
-            ("期間指定なし", "any"), ("24時間以内", "1day"), ("3日以内", "3days"),
-            ("1週間以内", "1week"), ("2週間以内", "2weeks"),
-            ("1か月以内", "1month"), ("2か月以内", "2months"),
+            ("Any time", "any"), ("Within 24 hours", "1day"), ("Within 3 days", "3days"),
+            ("Within 1 week", "1week"), ("Within 2 weeks", "2weeks"),
+            ("Within 1 month", "1month"), ("Within 2 months", "2months"),
         ):
             self.listed_within_combo.addItem(label, value)
         self._remember_trade_options = bool(
@@ -1363,7 +1363,7 @@ class PoetoreWindow(QWidget):
         self._update_trade_currency_tooltip()
 
         unique_options = QVBoxLayout()
-        self.unique_name_label = QLabel("未鑑定ユニーク候補:")
+        self.unique_name_label = QLabel("Unidentified unique candidates:")
         self.unique_name_container = QWidget()
         self.unique_name_container.setObjectName("uniqueCandidateContainer")
         self.unique_name_layout = _FlowLayout(
@@ -1386,23 +1386,23 @@ class PoetoreWindow(QWidget):
         unique_options.addWidget(self.unique_name_label)
         unique_options.addWidget(self.unique_name_scroll)
         variant_options = QHBoxLayout()
-        self.unique_variant_label = QLabel("ユニークVariant:")
+        self.unique_variant_label = QLabel("Unique variant:")
         self.unique_variant_combo = QComboBox()
         self.unique_variant_label.hide()
         self.unique_variant_combo.hide()
         variant_options.addWidget(self.unique_variant_label)
         variant_options.addWidget(self.unique_variant_combo)
-        self.virtual_augment_label = QLabel("Rune／Soul Core構成:")
+        self.virtual_augment_label = QLabel("Rune/Soul Core setup:")
         self.virtual_augment_count_combo = QComboBox()
         self.virtual_augment_count_combo.setObjectName("filterControl")
         self.virtual_augment_count_combo.setToolTip(
-            "空きソケットへの追加、または装着済みを含む全ソケットの置換を選びます。"
+            "Choose to add to empty sockets, or replace all sockets including filled ones."
         )
         self.virtual_augment_combo = QComboBox()
         self.virtual_augment_combo.setMinimumWidth(220)
         self.virtual_augment_combo.setToolTip(
-            "空きソケットへの追加、または全ソケットを置換した性能で検索します。\n"
-            "実際のアイテムやゲーム内ソケットは変更しません。"
+            "Searches using stats with empty sockets filled, or all sockets replaced.\n"
+            "Your actual item and in-game sockets are not changed."
         )
         self.virtual_augment_label.hide()
         self.virtual_augment_count_combo.hide()
@@ -1429,9 +1429,9 @@ class PoetoreWindow(QWidget):
         item_level_layout = QHBoxLayout(self.item_level_tag)
         item_level_layout.setContentsMargins(8, 2, 6, 2)
         item_level_layout.setSpacing(1)
-        self.item_level_toggle = QPushButton("☑ ilvl：")
+        self.item_level_toggle = QPushButton("☑ ilvl: ")
         self.item_level_toggle.setObjectName("itemLevelToggle")
-        self.item_level_toggle.setToolTip("クリックしてアイテムレベル条件を有効／無効にします")
+        self.item_level_toggle.setToolTip("Click to enable/disable the item level condition")
         self.item_level_toggle.clicked.connect(self._toggle_item_level_filter)
         item_level_layout.addWidget(self.item_level_toggle)
         self.item_level_edit = QLineEdit()
@@ -1440,10 +1440,10 @@ class PoetoreWindow(QWidget):
         self.item_level_edit.setProperty("wheelStepNumeric", True)
         self.item_level_edit.setAlignment(Qt.AlignCenter)
         self.item_level_edit.setFixedWidth(34)
-        self.item_level_edit.setToolTip("検索対象の最小アイテムレベル（1～100）")
+        self.item_level_edit.setToolTip("Minimum item level to search (1–100)")
         self.item_level_edit.textEdited.connect(self._enable_item_level_filter)
         item_level_layout.addWidget(self.item_level_edit)
-        self.item_level_range_separator = QLabel("～")
+        self.item_level_range_separator = QLabel("~")
         self.item_level_range_separator.hide()
         item_level_layout.addWidget(self.item_level_range_separator)
         self.item_level_max_edit = QLineEdit()
@@ -1452,7 +1452,7 @@ class PoetoreWindow(QWidget):
         self.item_level_max_edit.setProperty("wheelStepNumeric", True)
         self.item_level_max_edit.setAlignment(Qt.AlignCenter)
         self.item_level_max_edit.setFixedWidth(34)
-        self.item_level_max_edit.setToolTip("検索対象の最大アイテムレベル（1～100）")
+        self.item_level_max_edit.setToolTip("Maximum item level to search (1–100)")
         self.item_level_max_edit.textEdited.connect(self._enable_item_level_filter)
         self.item_level_max_edit.hide()
         item_level_layout.addWidget(self.item_level_max_edit)
@@ -1463,7 +1463,7 @@ class PoetoreWindow(QWidget):
         gem_level_layout = QHBoxLayout(self.gem_level_tag)
         gem_level_layout.setContentsMargins(8, 2, 6, 2)
         gem_level_layout.setSpacing(1)
-        self.gem_level_toggle = QPushButton("☑ ジェムLv：")
+        self.gem_level_toggle = QPushButton("☑ Gem Lv: ")
         self.gem_level_toggle.setObjectName("gemLevelToggle")
         self.gem_level_toggle.clicked.connect(self._toggle_gem_level_filter)
         gem_level_layout.addWidget(self.gem_level_toggle)
@@ -1482,7 +1482,7 @@ class PoetoreWindow(QWidget):
         gem_quality_layout = QHBoxLayout(self.gem_quality_tag)
         gem_quality_layout.setContentsMargins(8, 2, 6, 2)
         gem_quality_layout.setSpacing(1)
-        self.gem_quality_toggle = QPushButton("☑ 品質：")
+        self.gem_quality_toggle = QPushButton("☑ Quality: ")
         self.gem_quality_toggle.setObjectName("gemQualityToggle")
         self.gem_quality_toggle.clicked.connect(self._toggle_gem_quality_filter)
         gem_quality_layout.addWidget(self.gem_quality_toggle)
@@ -1501,7 +1501,7 @@ class PoetoreWindow(QWidget):
         gem_socket_layout = QHBoxLayout(self.gem_socket_tag)
         gem_socket_layout.setContentsMargins(8, 2, 6, 2)
         gem_socket_layout.setSpacing(1)
-        self.gem_socket_toggle = QPushButton("☑ Gem Socket：")
+        self.gem_socket_toggle = QPushButton("☑ Gem Socket: ")
         self.gem_socket_toggle.setObjectName("gemSocketToggle")
         self.gem_socket_toggle.clicked.connect(self._toggle_gem_socket_filter)
         gem_socket_layout.addWidget(self.gem_socket_toggle)
@@ -1520,7 +1520,7 @@ class PoetoreWindow(QWidget):
         links_layout = QHBoxLayout(self.links_tag)
         links_layout.setContentsMargins(8, 2, 6, 2)
         links_layout.setSpacing(1)
-        self.links_toggle = QPushButton("☑ リンク：")
+        self.links_toggle = QPushButton("☑ Links: ")
         self.links_toggle.setObjectName("linksToggle")
         self.links_toggle.clicked.connect(self._toggle_links_filter)
         links_layout.addWidget(self.links_toggle)
@@ -1546,31 +1546,31 @@ class PoetoreWindow(QWidget):
             button.hide()
             self.influence_chips[influence] = button
         self.unidentified_chip = _CycleButton(
-            (("未鑑定のみ", True, False), ("未鑑定を含む", False, False)),
+            (("Unidentified only", True, False), ("Include unidentified", False, False)),
         )
         self.unidentified_chip.hide()
         self.veiled_chip = _CycleButton(
-            (("同一Veiled Modあり", True, False), ("Veiled指定なし", False, False)),
+            (("Same veiled mod", True, False), ("Any veiled", False, False)),
         )
         self.veiled_chip.hide()
         self.foil_chip = _CycleButton(
-            (("Foil Unique", True, False), ("通常Unique", False, False)),
+            (("Foil Unique", True, False), ("Normal unique", False, False)),
         )
         self.foil_chip.hide()
         self.map_tier_chip = _NumericFilterChip("Tier", 1, 17)
         self.map_tier_chip.setFixedWidth(116)
-        self.nightmare_map_chip = QPushButton("ナイトメア")
+        self.nightmare_map_chip = QPushButton("Nightmare")
         self.nightmare_map_chip.setObjectName("readonlyFilterChip")
         self.nightmare_map_chip.setEnabled(False)
         self.nightmare_map_chip.hide()
         self.base_percentile_chip = _NumericFilterChip(
-            "ベース防御値", 0, 100, suffix="%",
+            "Base defences", 0, 100, suffix="%",
         )
         self.base_percentile_chip.setFixedWidth(174)
         self.area_level_chip = _NumericFilterChip("Area Lv", 1, 100)
-        self.heist_wings_chip = _NumericFilterChip("公開Wing", 1, 4)
+        self.heist_wings_chip = _NumericFilterChip("Revealed wings", 1, 4)
         self.heist_job_chip = _NumericFilterChip("Job Lv", 1, 5)
-        self.cluster_passives_chip = _NumericFilterChip("パッシブ数", 1, 35)
+        self.cluster_passives_chip = _NumericFilterChip("Passive count", 1, 35)
         for chip in (
             self.map_tier_chip, self.base_percentile_chip,
             self.area_level_chip, self.heist_wings_chip, self.heist_job_chip,
@@ -1610,19 +1610,19 @@ class PoetoreWindow(QWidget):
         logbook_area_layout.addStretch()
         self.logbook_area_container.hide()
         self.split_combo = _CycleButton(
-            (("スプリット品含む", True, False), ("非スプリット", False, False)),
+            (("Include split", True, False), ("Non-split", False, False)),
         )
         self.split_combo.hide()
         self.mirrored_combo = _CycleButton(
-            (("ミラー品含む", True, False), ("ミラー品を除外", False, False)),
+            (("Include mirrored", True, False), ("Exclude mirrored", False, False)),
         )
         self.mirrored_combo.hide()
         self.sanctified_combo = _CycleButton((
-            ("聖別品のみ", "only", False),
-            ("非聖別品のみ", False, False),
-            ("聖別品含む", True, False),
+            ("Sanctified only", "only", False),
+            ("Non-sanctified only", False, False),
+            ("Include sanctified", True, False),
         ))
-        self.sanctified_combo.setToolTip("クリックするたびに聖別化条件を切り替えます")
+        self.sanctified_combo.setToolTip("Click to cycle the sanctified condition")
         self.sanctified_combo.hide()
         self._filter_chips = (
             ("links", self.links_tag),
@@ -1661,7 +1661,7 @@ class PoetoreWindow(QWidget):
         content_layout.addLayout(top_options)
         content_layout.addWidget(self.logbook_area_container)
 
-        self.weapon_property_label = QLabel("武器性能・検索Mod")
+        self.weapon_property_label = QLabel("Weapon stats and search mods")
         self.weapon_property_label.setObjectName("sectionTitle")
         self.weapon_dps_label = QLabel()
         self.weapon_dps_label.setObjectName("weaponDpsSummary")
@@ -1674,11 +1674,11 @@ class PoetoreWindow(QWidget):
         self.weapon_property_header.addStretch(1)
         self.weapon_property_header.addWidget(self.disenchant_dust_panel)
         content_layout.addLayout(self.weapon_property_header)
-        self.clear_mod_conditions_button = QPushButton("一覧のチェックを全て選択")
+        self.clear_mod_conditions_button = QPushButton("Check all")
         self.clear_mod_conditions_button.setObjectName("secondaryActionButton")
         self.clear_mod_conditions_button.setProperty("mutedText", True)
         self.clear_mod_conditions_button.setToolTip(
-            "上の条件一覧のみ。ilvlなどの基本条件は変更しません"
+            "Only the condition list above; basic conditions like ilvl are not changed"
         )
         self.clear_mod_conditions_button.clicked.connect(
             self._toggle_all_mod_condition_checks
@@ -1687,9 +1687,9 @@ class PoetoreWindow(QWidget):
         self._debug_parse_area = QWidget()
         self._debug_parse_area.hide()
         self.input_edit = QPlainTextEdit()
-        self.input_edit.setPlaceholderText("ここにアイテムの詳細コピー文を貼り付けます")
+        self.input_edit.setPlaceholderText("Paste the item's advanced copy text here")
         self.result_tree = QTreeWidget()
-        self.result_tree.setHeaderLabels(["項目", "解析結果"])
+        self.result_tree.setHeaderLabels(["Field", "Parsed value"])
         self.result_tree.setAlternatingRowColors(True)
         self.result_tree.setRootIsDecorated(True)
         self.result_tree.setUniformRowHeights(True)
@@ -1703,7 +1703,7 @@ class PoetoreWindow(QWidget):
         content_layout.addWidget(self._debug_parse_area)
         self.mod_filter_tree = QTreeWidget()
         self.mod_filter_tree.setHeaderLabels([
-            "", "種別", "ティア", "検索条件", "最小", "最大",
+            "", "Type", "Tier", "Condition", "Min", "Max",
         ])
         self.mod_filter_tree.setRootIsDecorated(False)
         # 検索条件は行ごとの色分けをせず、同じ暗色背景で一覧性を保つ。
@@ -1740,35 +1740,35 @@ class PoetoreWindow(QWidget):
             self._toggle_mod_condition_from_text
         )
         content_layout.addWidget(self.mod_filter_tree, stretch=3)
-        self.mod_conditions_toggle = QPushButton("mod条件をたたむ∧")
+        self.mod_conditions_toggle = QPushButton("Collapse ∧")
         self.mod_conditions_toggle.setObjectName("secondaryActionButton")
         self.mod_conditions_toggle.setProperty("mutedText", True)
-        self.mod_conditions_toggle.setToolTip("Mod検索条件の一覧を折りたたむ")
+        self.mod_conditions_toggle.setToolTip("Collapse the mod condition list")
         self.mod_conditions_toggle.clicked.connect(self._toggle_mod_conditions)
-        self.hidden_mods_toggle = QPushButton("隠し候補を表示")
+        self.hidden_mods_toggle = QPushButton("Show hidden")
         self.hidden_mods_toggle.setObjectName("secondaryActionButton")
         self.hidden_mods_toggle.setProperty("mutedText", True)
         self.hidden_mods_toggle.setCheckable(True)
         self.hidden_mods_toggle.setToolTip(
-            "数値が固定され、同じアイテム同士の価格比較に影響しないため、\n"
-            "通常は隠している検索候補を表示します。"
+            "Shows search candidates that are normally hidden because their values are fixed\n"
+            "and don't affect price comparison between identical items."
         )
         self.hidden_mods_toggle.toggled.connect(self._toggle_hidden_mods)
-        self.mod_sources_toggle = QPushButton("計算元Modを表示")
+        self.mod_sources_toggle = QPushButton("Show sources")
         self.mod_sources_toggle.setObjectName("secondaryActionButton")
         self.mod_sources_toggle.setProperty("mutedText", True)
         self.mod_sources_toggle.setCheckable(True)
         self.mod_sources_toggle.setToolTip(
-            "合計ライフや防御力など、複数の数値をまとめた検索条件について、\n"
-            "計算に使われた元のMod文章を表示します。"
+            "For conditions that combine several values, like total life or defences,\n"
+            "shows the original mod text used in the calculation."
         )
         self.mod_sources_toggle.toggled.connect(self._toggle_mod_sources)
-        self.mercenary_supports_toggle = QPushButton("傭兵のサポートジェムを表示")
+        self.mercenary_supports_toggle = QPushButton("Merc gems")
         self.mercenary_supports_toggle.setObjectName("secondaryActionButton")
         self.mercenary_supports_toggle.setProperty("mutedText", True)
         self.mercenary_supports_toggle.setCheckable(True)
         self.mercenary_supports_toggle.setToolTip(
-            "傭兵の召喚状に含まれるサポートジェムの検索条件を表示します"
+            "Shows search conditions for support gems on a Mercenary's Warrant"
         )
         self.mercenary_supports_toggle.toggled.connect(
             self._toggle_mercenary_supports
@@ -1809,19 +1809,19 @@ class PoetoreWindow(QWidget):
         action_row.setSpacing(_ACTION_CLUSTER_HORIZONTAL_GAP)
         action_row.setAlignment(Qt.AlignLeft)
         self.trade_action_layout = action_row
-        self.price_button = QPushButton("検索")
+        self.price_button = QPushButton("Search")
         self.price_button.setObjectName("primaryButton")
         self.price_button.clicked.connect(self.search_current_item)
         action_row.addWidget(self.price_button)
         action_row.addWidget(self.trade_status_combo)
         action_row.addWidget(self.trade_currency_combo)
         action_row.addWidget(self.listed_within_combo)
-        self.remember_trade_options_checkbox = QCheckBox("選択を記憶")
+        self.remember_trade_options_checkbox = QCheckBox("Remember choices")
         self.remember_trade_options_checkbox.setObjectName(
             "rememberTradeOptionsCheckbox"
         )
         self.remember_trade_options_checkbox.setToolTip(
-            "ONの間は取引方式・通貨・出品期間の選択を記憶します"
+            "While ON, remembers your trade type, currency, and listing period choices"
         )
         Styles.apply_checkbox_style(
             self.remember_trade_options_checkbox,
@@ -1836,16 +1836,16 @@ class PoetoreWindow(QWidget):
             self._remember_trade_options
         )
         action_row.addWidget(self.remember_trade_options_checkbox)
-        self.trade_url_button = QPushButton("公式トレード  ↗")
+        self.trade_url_button = QPushButton("Official Trade  ↗")
         self.trade_url_button.setObjectName("filterActionButton")
         self.trade_url_button.setProperty("compactAction", True)
         self.trade_url_button.setProperty("mutedText", True)
-        self.trade_url_button.setToolTip("日本語公式Tradeをブラウザで開く")
+        self.trade_url_button.setToolTip("Open the Japanese official trade site in your browser")
         self.trade_url_button.setEnabled(False)
         self.trade_url_button.clicked.connect(self._open_trade_url)
         action_row.addWidget(self.trade_url_button)
 
-        self.price_status = QLabel("検索条件を読み取っています…")
+        self.price_status = QLabel("Reading search conditions…")
         self.price_status.setWordWrap(True)
         self.price_status.setObjectName("priceStatus")
         status_row = QHBoxLayout()
@@ -1865,7 +1865,7 @@ class PoetoreWindow(QWidget):
         self._set_price_status_layout(compact=False)
         self.price_list = QTreeWidget()
         self.price_list.setObjectName("priceList")
-        self.price_list.setHeaderLabels(["価格", "出品日時"])
+        self.price_list.setHeaderLabels(["Price", "Listed"])
         self.price_list.setRootIsDecorated(False)
         self.price_list.setAlternatingRowColors(True)
         self.price_list.setEditTriggers(QAbstractItemView.NoEditTriggers)
@@ -1877,8 +1877,8 @@ class PoetoreWindow(QWidget):
         self.virtual_augment_cost_label = QLabel("")
         self.virtual_augment_cost_label.setObjectName("virtualAugmentCost")
         self.virtual_augment_cost_label.setToolTip(
-            "検索で仮挿入した素材のカレンシー交換の直近価格を優先し、"
-            "取得できない場合はpoe.ninja参考価格で計算した目安です。"
+            "An estimate using the latest Currency Exchange prices for materials temporarily inserted for the search, "
+            "falling back to poe.ninja reference prices when unavailable."
         )
         self.virtual_augment_cost_label.hide()
         content_layout.addWidget(self.virtual_augment_cost_label)
@@ -1890,7 +1890,7 @@ class PoetoreWindow(QWidget):
         self.installed_augment_recovery_value = QLabel("")
         self.installed_augment_recovery_comparison = QLabel("")
         self.installed_augment_recovery_hint = QLabel(
-            "オーグメント抽出に価値がある可能性あり"
+            "Extracting augments may be worthwhile"
         )
         self.installed_augment_recovery_hint.setStyleSheet("color: #79b8b2;")
         for label in (
@@ -1900,12 +1900,12 @@ class PoetoreWindow(QWidget):
         ):
             recovery_layout.addWidget(label)
         self.installed_augment_recovery_panel.setToolTip(
-            "コピー元装備の装着素材と抽出のオーブはカレンシー交換の直近価格を"
-            "優先し、取得できない場合はpoe.ninja参考価格を使用して、"
-            "出品最安と比較した目安です。"
+            "An estimate comparing against the cheapest listing, using the latest Currency Exchange prices "
+            "for the source gear's socketed materials and extraction orbs (poe.ninja prices when unavailable),"
+            " compared with the cheapest listing."
         )
         self.installed_augment_recovery_panel.hide()
-        self.additional_results_button = QPushButton("次の10件を取得")
+        self.additional_results_button = QPushButton("Load next 10")
         self.additional_results_button.setObjectName("filterActionButton")
         self.additional_results_button.clicked.connect(self._fetch_additional_results)
         self.additional_results_button.hide()
@@ -2651,11 +2651,11 @@ class PoetoreWindow(QWidget):
     def _set_mod_conditions_collapsed(self, collapsed: bool):
         self.mod_filter_tree.setVisible(not collapsed)
         self.mod_conditions_toggle.setText(
-            "mod条件をひらく∨" if collapsed else "mod条件をたたむ∧"
+            "Expand ∨" if collapsed else "Collapse ∧"
         )
         self.mod_conditions_toggle.setToolTip(
-            "Mod検索条件の一覧を展開する" if collapsed
-            else "Mod検索条件の一覧を折りたたむ"
+            "Expand the mod condition list" if collapsed
+            else "Collapse the mod condition list"
         )
         self._adjust_window_height_to_mod_rows()
 
@@ -2668,7 +2668,7 @@ class PoetoreWindow(QWidget):
 
     def _toggle_hidden_mods(self, visible: bool):
         self.hidden_mods_toggle.setText(
-            "通常候補を表示" if visible else "隠し候補を表示"
+            "Normal only" if visible else "Show hidden"
         )
         for index in range(self.mod_filter_tree.topLevelItemCount()):
             row = self.mod_filter_tree.topLevelItem(index)
@@ -2718,14 +2718,14 @@ class PoetoreWindow(QWidget):
 
     def _toggle_mercenary_supports(self, visible: bool):
         self.mercenary_supports_toggle.setText(
-            "傭兵のサポートジェムを隠す"
-            if visible else "傭兵のサポートジェムを表示"
+            "Hide merc gems"
+            if visible else "Merc gems"
         )
         self._toggle_hidden_mods(self.hidden_mods_toggle.isChecked())
 
     def _toggle_mod_sources(self, visible: bool):
         self.mod_sources_toggle.setText(
-            "計算元Modを隠す" if visible else "計算元Modを表示"
+            "Hide sources" if visible else "Show sources"
         )
         for index in range(self.mod_filter_tree.topLevelItemCount()):
             row = self.mod_filter_tree.topLevelItem(index)
@@ -2852,8 +2852,8 @@ class PoetoreWindow(QWidget):
             for checkbox in self._mod_condition_checkboxes()
         )
         self.clear_mod_conditions_button.setText(
-            "一覧のチェックを全て解除"
-            if has_checked_condition else "一覧のチェックを全て選択"
+            "Uncheck all"
+            if has_checked_condition else "Check all"
         )
 
     def _toggle_all_mod_condition_checks(self):
@@ -2895,11 +2895,11 @@ class PoetoreWindow(QWidget):
             self.base_scope_toggle.setItemText(0, display_name)
             self.base_scope_toggle.setItemText(
                 1,
-                "すべての海図"
+                "All charts"
                 if item.category == "chart"
-                else "すべてのアビスジュエル"
+                else "All abyss jewels"
                 if is_nonunique_abyss_jewel
-                else f"すべての{self._item_class_label(item.item_class)}",
+                else f"All {self._item_class_label(item.item_class)}",
             )
             if key != self._base_scope_item_key:
                 self._base_scope_item_key = key
@@ -2913,7 +2913,7 @@ class PoetoreWindow(QWidget):
         )
         self.chart_area_chip.blockSignals(True)
         self.chart_area_chip.setText(
-            item.properties.get("マップエリア", "海域不明")
+            item.properties.get("マップエリア", "Unknown sea area")
         )
         self.chart_area_chip.setChecked(True)
         self.chart_area_chip.setVisible(chart_relaxed)
@@ -2927,7 +2927,7 @@ class PoetoreWindow(QWidget):
         self._refresh_runemastered_chip_style()
         self.runemastered_chip.blockSignals(False)
         self.weapon_property_label.setText(
-            "武器性能・検索Mod" if is_weapon_category(item.category) else "検索条件一覧"
+            "Weapon stats and search mods" if is_weapon_category(item.category) else "Search conditions"
         )
         self._update_weapon_dps_summary(item)
 
@@ -2972,7 +2972,7 @@ class PoetoreWindow(QWidget):
                 if localized:
                     return localized
 
-        return item.name or item.base_type or "名称不明"
+        return item.name or item.base_type or "Unknown name"
 
     def _update_weapon_dps_summary(self, item):
         if not is_weapon_category(item.category):
@@ -2988,13 +2988,13 @@ class PoetoreWindow(QWidget):
             edps = elemental_dps(item) or 0.0
         if pdps and edps:
             self.weapon_dps_label.setText(
-                f"合計DPS：{pdps + edps:.1f}（pDPS {pdps:.1f} / eDPS {edps:.1f}、"
-                "pDPSは品質20%換算）"
+                f"Total DPS: {pdps + edps:.1f} (pDPS {pdps:.1f} / eDPS {edps:.1f}、"
+                "pDPS at 20% quality)"
             )
         elif pdps:
-            self.weapon_dps_label.setText(f"pDPS：{pdps:.1f}（品質20%換算）")
+            self.weapon_dps_label.setText(f"pDPS: {pdps:.1f} (at 20% quality)")
         elif edps:
-            self.weapon_dps_label.setText(f"eDPS：{edps:.1f}")
+            self.weapon_dps_label.setText(f"eDPS: {edps:.1f}")
         else:
             self.weapon_dps_label.clear()
             self.weapon_dps_label.hide()
@@ -3009,14 +3009,14 @@ class PoetoreWindow(QWidget):
         """
         candidate = str(item.base_type or item.name or "").strip()
         if not candidate:
-            return "ベース名"
+            return "Base name"
         if item.category == "waystone":
             match = re.fullmatch(
                 r"Waystone\s*\(\s*Tier\s*(\d+)\s*\)", candidate,
                 flags=re.IGNORECASE,
             )
             if match:
-                return f"ウェイストーン (ティア{match.group(1)})"
+                return f"Waystone (Tier{match.group(1)})"
         if re.search(r"[\u3040-\u30ff\u3400-\u9fff]", candidate):
             return candidate.split()[-1]
         if self.poe_version == POE2:
@@ -3031,21 +3031,21 @@ class PoetoreWindow(QWidget):
     @staticmethod
     def _item_class_label(item_class: str) -> str:
         labels = {
-            "Body Armours": "鎧", "Boots": "ブーツ", "Gloves": "グローブ",
-            "Helmets": "ヘルメット", "Shields": "盾", "Bows": "弓",
-            "Claws": "鉤爪", "Daggers": "短剣", "Rune Daggers": "ルーンの短剣",
-            "Fishing Rods": "釣り竿", "One Hand Axes": "片手斧",
-            "One Hand Maces": "片手メイス", "Sceptres": "セプター",
-            "One Hand Swords": "片手剣", "Staves": "スタッフ",
-            "Warstaves": "ウォースタッフ", "Two Hand Axes": "両手斧",
-            "Two Hand Maces": "両手メイス", "Two Hand Swords": "両手剣",
-            "Wands": "ワンド", "Rings": "指輪", "Amulets": "アミュレット",
-            "Belts": "ベルト", "指輪": "指輪", "アミュレット": "アミュレット",
-            "ベルト": "ベルト", "Crossbows": "クロスボウ", "Spears": "槍",
-            "Flails": "フレイル", "Quarterstaves": "クォータースタッフ",
-            "Foci": "フォーカス", "Focus": "フォーカス", "Bucklers": "バックラー",
+            "Body Armours": "Body Armour", "Boots": "Boots", "Gloves": "Gloves",
+            "Helmets": "Helmet", "Shields": "Shield", "Bows": "Bow",
+            "Claws": "Claw", "Daggers": "Dagger", "Rune Daggers": "Rune Dagger",
+            "Fishing Rods": "Fishing Rod", "One Hand Axes": "One Hand Axe",
+            "One Hand Maces": "One Hand Mace", "Sceptres": "Sceptre",
+            "One Hand Swords": "One Hand Sword", "Staves": "Staff",
+            "Warstaves": "Warstaff", "Two Hand Axes": "Two Hand Axe",
+            "Two Hand Maces": "Two Hand Mace", "Two Hand Swords": "Two Hand Sword",
+            "Wands": "Wand", "Rings": "Ring", "Amulets": "Amulet",
+            "Belts": "Belt", "指輪": "Ring", "アミュレット": "Amulet",
+            "ベルト": "Belt", "Crossbows": "Crossbow", "Spears": "Spear",
+            "Flails": "Flail", "Quarterstaves": "Quarterstaff",
+            "Foci": "Focus", "Focus": "Focus", "Bucklers": "Buckler",
         }
-        return labels.get(item_class.strip(), item_class.strip() or "同一クラス")
+        return labels.get(item_class.strip(), item_class.strip() or "Same class")
 
     def _base_scope_changed(self, _index):
         if not hasattr(self, "price_list"):
@@ -3057,18 +3057,18 @@ class PoetoreWindow(QWidget):
             relaxed = not bool(self.base_scope_toggle.currentData())
             self.chart_area_chip.setVisible(relaxed)
             self._set_price_status(
-                "同じ海域の海図を検索します。"
+                "Searches charts from the same sea area."
                 if relaxed and self.chart_area_chip.isChecked()
-                else "すべての海図を検索します。"
+                else "Searches all charts."
                 if relaxed
-                else "この海図のベースタイプだけを検索します。"
+                else "Searches only this chart's base type."
             )
             self._mark_search_dirty()
             return
         self._set_price_status(
-            "ベースタイプを限定して検索します。"
+            "Searches only this base type."
             if self.base_scope_toggle.currentData()
-            else "同じアイテムクラスの全ベースを対象に検索します。"
+            else "Searches all bases in the same item class."
         )
 
     def _chart_area_changed(self, checked: bool):
@@ -3078,8 +3078,8 @@ class PoetoreWindow(QWidget):
         self.price_list.clear()
         self.trade_url_button.setEnabled(False)
         self._set_price_status(
-            "同じ海域の海図を検索します。"
-            if checked else "すべての海図を検索します。"
+            "Searches charts from the same sea area."
+            if checked else "Searches all charts."
         )
         self._mark_search_dirty()
 
@@ -3091,15 +3091,15 @@ class PoetoreWindow(QWidget):
         self.price_list.clear()
         self.trade_url_button.setEnabled(False)
         self._set_price_status(
-            "ルーンマスター版を検索します。"
-            if checked else "通常版のベースを検索します。"
+            "Searches the Runemaster version."
+            if checked else "Searches the normal base."
         )
         self._mark_search_dirty()
 
     def _refresh_runemastered_chip_style(self):
         checked = self.runemastered_chip.isChecked()
         self.runemastered_chip.setText(
-            "☑ ルーンマスター" if checked else "☐ ルーンマスター"
+            "☑ Runemaster" if checked else "☐ Runemaster"
         )
         self.runemastered_tag.setProperty("active", checked)
         self.runemastered_tag.style().unpolish(self.runemastered_tag)
@@ -3273,7 +3273,7 @@ class PoetoreWindow(QWidget):
             return
         self._league_refresh_started = True
         self.league_refresh_button.setEnabled(False)
-        self.league_refresh_button.setText("取得中…")
+        self.league_refresh_button.setText("Fetching…")
 
         def run():
             try:
@@ -3295,7 +3295,7 @@ class PoetoreWindow(QWidget):
     def _show_trade_leagues(self, leagues):
         self._league_refresh_started = False
         self.league_refresh_button.setEnabled(True)
-        self.league_refresh_button.setText("再取得")
+        self.league_refresh_button.setText("Refresh")
         saved = self._saved_trade_league()
         if self.poe_version == POE2:
             from .poe2.trade import default_pc_league as poe2_default_pc_league
@@ -3309,9 +3309,9 @@ class PoetoreWindow(QWidget):
 
         self.trade_league_combo.blockSignals(True)
         self.trade_league_combo.clear()
-        self.trade_league_combo.addItem(f"自動（現行SC: {self._auto_league}）", "auto")
+        self.trade_league_combo.addItem(f"Auto (current SC: {self._auto_league})", "auto")
         for league in leagues:
-            label = f"{league.id}（HC）" if league.hardcore else league.id
+            label = f"{league.id} (HC)" if league.hardcore else league.id
             self.trade_league_combo.addItem(label, league.id)
         if is_private and self.trade_league_combo.findData(saved) < 0:
             self.trade_league_combo.addItem(saved, saved)
@@ -3515,7 +3515,7 @@ class PoetoreWindow(QWidget):
         selected_count = self.virtual_augment_count_combo.currentData()
         self.virtual_augment_combo.blockSignals(True)
         self.virtual_augment_combo.clear()
-        self.virtual_augment_combo.addItem("仮挿入しない", None)
+        self.virtual_augment_combo.addItem("Don't insert", None)
         for choice in choices:
             label = virtual_augment_choice_label(item, choice, selected_count)
             self.virtual_augment_combo.addItem(
@@ -3543,7 +3543,7 @@ class PoetoreWindow(QWidget):
         selected_count = self.virtual_augment_count_combo.currentData()
         self.virtual_augment_combo.blockSignals(True)
         self.virtual_augment_combo.clear()
-        self.virtual_augment_combo.addItem("仮挿入しない", None)
+        self.virtual_augment_combo.addItem("Don't insert", None)
         for choice in available_virtual_augments(item):
             label = virtual_augment_choice_label(item, choice, selected_count)
             self.virtual_augment_combo.addItem(label, choice["ref_name"])
@@ -3845,7 +3845,7 @@ class PoetoreWindow(QWidget):
         return {
             "query": priced(group.get("query", ())),
             "items": priced(group.get("items", ())),
-            "query_label": str(group.get("query_label") or "関連素材・同系統"),
+            "query_label": str(group.get("query_label") or "Related materials and similar"),
             "current": (namespace, names[0].casefold()),
         }
 
@@ -3935,7 +3935,7 @@ class PoetoreWindow(QWidget):
                            for row in group.get("query", ())),
             "items": tuple((row, price_by_id.get(str(row.get("id", ""))))
                            for row in group.get("items", ())),
-            "query_label": "関連素材・同系統",
+            "query_label": "Related materials and similar",
             "current": (namespace, names[0].casefold()),
         }
 
@@ -4030,12 +4030,12 @@ class PoetoreWindow(QWidget):
             action.setDefaultWidget(row)
             self.divine_rate_menu.addAction(action)
         source_label = (
-            "公式Currency Exchangeの直近価格"
-            if source == "official" else "poe.ninja参考価格"
+            "Latest official Currency Exchange price"
+            if source == "official" else "poe.ninja reference price"
         )
         quote_name = "Exalted" if self.poe_version == POE2 else "Chaos"
         self.divine_rate_button.setToolTip(
-            f"Divine Orbの{quote_name}換算早見表（{source_label}）"
+            f"Divine Orb {quote_name}Conversion table ({source_label})"
         )
 
     def _hide_divine_rate(self, key=None):
@@ -4052,7 +4052,7 @@ class PoetoreWindow(QWidget):
             if trace is not None:
                 trace.mark("stale_poe_ninja_result_discarded")
             return
-        self.poe_ninja_price_label.setText("poe.ninja 参考価格")
+        self.poe_ninja_price_label.setText("poe.ninja reference price")
         self.poe_ninja_price_label.setToolTip("")
         amount, currency = price.display_price_parts()
         self.poe_ninja_price_value.setText(amount)
@@ -4076,7 +4076,7 @@ class PoetoreWindow(QWidget):
             self.poe_ninja_price_value.setText(price.display_price())
         trend = price.trend_summary()
         self.poe_ninja_trend_label.setText(
-            f"{trend[0]} {trend[1]}\n7日推移" if trend else "7日データなし"
+            f"{trend[0]} {trend[1]}\n7-day trend" if trend else "No 7-day data"
         )
         self.poe_ninja_trend_chart.setPoints(price.graph_points())
         self._last_poe_ninja_url = price.url
@@ -4134,15 +4134,15 @@ class PoetoreWindow(QWidget):
 
         if not accepted:
             if official_expected or official_price is not None:
-                self.poe_ninja_price_label.setText("poe.ninja 参考価格")
+                self.poe_ninja_price_label.setText("poe.ninja reference price")
                 self.poe_ninja_price_label.setToolTip(
-                    "カレンシー交換の直近価格が未確定のため、"
-                    "poe.ninjaの参考価格を表示しています"
+                    "The latest Currency Exchange price isn't settled yet, "
+                    "so the poe.ninja reference price is shown"
                 )
             else:
                 self.poe_ninja_price_label.setToolTip(
-                    "Currency Exchange対象外のため、"
-                    "poe.ninjaの参考価格を表示しています"
+                    "Not traded on Currency Exchange, "
+                    "so the poe.ninja reference price is shown"
                 )
             return
 
@@ -4152,15 +4152,15 @@ class PoetoreWindow(QWidget):
                 self._hide_poe_ninja_price(key)
             return
         amount, currency = parts
-        self.poe_ninja_price_label.setText("カレンシー交換 直近価格")
+        self.poe_ninja_price_label.setText("Currency Exchange latest price")
         route = getattr(official_price, "selected_route", None)
-        route_label = "Divine直接" if route == "direct_divine" else (
-            "Chaos直接" if self.poe_version == POE1 else "Exalted直接"
+        route_label = "Divine direct" if route == "direct_divine" else (
+            "Chaos direct" if self.poe_version == POE1 else "Exalted direct"
         )
         self.poe_ninja_price_label.setToolTip(
-            "公式Currency Exchangeで直近24時間以内に取引が成立した"
-            "最新1時間の平均価格"
-            f"（{route_label}）"
+            "Average price over the latest hour in which trades completed "
+            "on the official Currency Exchange within the past 24 hours"
+            f" ({route_label})"
         )
         self.poe_ninja_price_value.setText(amount)
         icon_path = _asset_icon_path(
@@ -4182,8 +4182,8 @@ class PoetoreWindow(QWidget):
         if ninja_price is not None:
             trend = ninja_price.trend_summary()
             self.poe_ninja_trend_label.setText(
-                f"{trend[0]} {trend[1]}\npoe.ninja 7日推移"
-                if trend else "poe.ninja 7日データなし"
+                f"{trend[0]} {trend[1]}\npoe.ninja 7-day trend"
+                if trend else "No poe.ninja 7-day data"
             )
         self.poe_ninja_price_panel.show()
 
@@ -4196,7 +4196,7 @@ class PoetoreWindow(QWidget):
         trace = self._poe_ninja_performance_traces.pop(key, None) if key is not None else None
         if trace is not None:
             trace.mark("poe_ninja_result_unavailable")
-        self.poe_ninja_price_label.setText("poe.ninja 参考価格")
+        self.poe_ninja_price_label.setText("poe.ninja reference price")
         self.poe_ninja_price_label.setToolTip("")
         self.poe_ninja_price_panel.hide()
         self.poe_ninja_price_value.setText("—")
@@ -4214,8 +4214,8 @@ class PoetoreWindow(QWidget):
         self.related_items_tree.clear()
         current = result.get("current")
         for title, rows in (
-            (str(result.get("query_label") or "関連素材・同系統"), result.get("query", ())),
-            ("報酬・派生品", result.get("items", ())),
+            (str(result.get("query_label") or "Related materials and similar"), result.get("query", ())),
+            ("Rewards and derivatives", result.get("items", ())),
         ):
             if not rows:
                 continue
@@ -4233,9 +4233,9 @@ class PoetoreWindow(QWidget):
                 if price is not None:
                     child.setToolTip(
                         1,
-                        "カレンシー交換 直近価格"
+                        "Currency Exchange latest price"
                         if getattr(price, "source", "poe_ninja") == "official"
-                        else "poe.ninja 参考価格",
+                        else "poe.ninja reference price",
                     )
                 parent.addChild(child)
             parent.setExpanded(True)
@@ -4320,7 +4320,7 @@ class PoetoreWindow(QWidget):
         enabled = bool(enabled)
         was_enabled = getattr(self, "_obs_streaming_mode", False)
         self._obs_streaming_mode = enabled
-        self.setWindowTitle("ぽえとれ - 検索結果ウィンドウ" if enabled else "ぽえとれ")
+        self.setWindowTitle("PoETore - Search Results" if enabled else "PoETore")
         if enabled:
             if not was_enabled:
                 # OBSはQt.Toolウィンドウを列挙しない環境がある。配信モードへ
@@ -4583,17 +4583,17 @@ class PoetoreWindow(QWidget):
         message.setObjectName("poetoreCaptureError")
         message.setIcon(QMessageBox.Icon.Warning)
         message.setText(
-            "アイテムを取得できませんでした。\n"
-            "PoEがアクティブでない可能性があります。\n"
-            "PoEを前面にしてアイテムへカーソルを合わせ、\n"
-            f"もう一度 {hotkey} を押してください。"
+            "Could not get the item.\n"
+            "PoE may not be the active window.\n"
+            "Bring PoE to the front, hover over the item,\n"
+            f"and press {hotkey} again."
         )
         message.setStandardButtons(QMessageBox.StandardButton.Ok)
         parse_error = str(getattr(self, "_last_capture_parse_error", "") or "").strip()
         if parse_error:
-            message.setDetailedText(f"解析エラー: {parse_error}")
+            message.setDetailedText(f"Parse error: {parse_error}")
         # QMessageBox may reset an empty application title while configuring its buttons.
-        message.setWindowTitle("取り込めませんでした")
+        message.setWindowTitle("Could not import")
         message.setStyleSheet("""
             QMessageBox {
                 background-color: #111111;
@@ -4684,7 +4684,7 @@ class PoetoreWindow(QWidget):
             if trace is not None:
                 trace.mark("initial_search_deferred")
             self._pending_performance_trace = None
-            self._set_price_status("検索条件を確認して「検索」を押してください。")
+            self._set_price_status("Check the conditions and press \"Search\".")
             self.price_button.setEnabled(True)
             return
         self.search_current_item()
@@ -4895,7 +4895,7 @@ class PoetoreWindow(QWidget):
         except (ItemParseError, ValueError) as exc:
             if trace is not None:
                 trace.mark("ui_parse_failed")
-            QMessageBox.warning(self, "解析できませんでした", str(exc))
+            QMessageBox.warning(self, "Could not parse", str(exc))
             return
         if trace is not None:
             trace.mark("ui_parse_completed", modifiers=len(item.modifiers))
@@ -4926,13 +4926,13 @@ class PoetoreWindow(QWidget):
         self._update_item_header(item)
         self.result_tree.clear()
         for label, value in (
-            ("アイテムクラス", item.item_class), ("レアリティ", item.rarity),
-            ("名前", item.name), ("ベースタイプ", item.base_type),
-            ("カテゴリ", item.category), ("アイテムレベル", item.item_level),
-            ("状態", ", ".join(item.flags) or "なし"),
+            ("Item class", item.item_class), ("Rarity", item.rarity),
+            ("Name", item.name), ("Base type", item.base_type),
+            ("Category", item.category), ("Item level", item.item_level),
+            ("State", ", ".join(item.flags) or "None"),
         ):
             QTreeWidgetItem(self.result_tree, [label, "" if value is None else str(value)])
-        properties = QTreeWidgetItem(self.result_tree, ["プロパティ", str(len(item.properties))])
+        properties = QTreeWidgetItem(self.result_tree, ["Properties", str(len(item.properties))])
         for label, value in item.properties.items():
             QTreeWidgetItem(properties, [label, value])
         modifiers = QTreeWidgetItem(self.result_tree, ["Mod", str(len(item.modifiers))])
@@ -4962,9 +4962,9 @@ class PoetoreWindow(QWidget):
             warnings = ()
         if self.poe_version == POE2 and warnings:
             preview = " / ".join(warnings[:3])
-            suffix = f" ほか{len(warnings) - 3}件" if len(warnings) > 3 else ""
+            suffix = f" and{len(warnings) - 3} more" if len(warnings) > 3 else ""
             self.mod_warning.setText(
-                f"⚠ メタデータ未解決 {len(warnings)}件（検索時に公式API照合を試行）: {preview}{suffix}"
+                f"⚠ Unresolved metadata: {len(warnings)} (will try matching with the official API on search): {preview}{suffix}"
             )
             self.mod_warning.show()
         elif self.poe_version == POE2:
@@ -4972,8 +4972,8 @@ class PoetoreWindow(QWidget):
             self.mod_warning.hide()
         if _is_poe2_exchange_price_item(item, self.poe_version):
             self.search_scope_notice.setText(
-                "ℹ 「カレンシー交換」の対象品です。通常トレード出品検索は行わず、"
-                "カレンシー交換の直近価格を優先して表示します。"
+                "ℹ This item is traded on Currency Exchange. Instead of a normal trade listing search, "
+                "the latest Currency Exchange price is shown."
             )
             self.search_scope_notice.show()
             self.price_button.setEnabled(True)
@@ -4983,14 +4983,14 @@ class PoetoreWindow(QWidget):
             or item.properties.get("Map Completion Reward")
         ):
             self.search_scope_notice.setText(
-                "⚠ Valdo Mapの報酬条件を使った検索は初版では対応していません。"
-                "報酬を除く条件で検索します。"
+                "⚠ Searching by Valdo Map reward is not supported in this version. "
+                "Searching without the reward condition."
             )
             self.search_scope_notice.show()
             self.price_button.setEnabled(True)
         elif self.poe_version != POE2 and is_inscribed_ultimatum(item):
             self.search_scope_notice.setText(
-                "⚠ チャレンジタイプ・報酬種類・必要なアイテム・報酬などの条件を使った検索には対応しておりません。"
+                "⚠ Searching by challenge type, reward type, required items, or rewards is not supported."
             )
             self.search_scope_notice.show()
             self.price_button.setEnabled(True)
@@ -5015,9 +5015,9 @@ class PoetoreWindow(QWidget):
         )
         if warnings:
             preview = " / ".join(warnings[:3])
-            suffix = f" ほか{len(warnings) - 3}件" if len(warnings) > 3 else ""
+            suffix = f" and{len(warnings) - 3} more" if len(warnings) > 3 else ""
             self.mod_warning.setText(
-                f"⚠ メタデータ未解決 {len(warnings)}件（検索時に公式API照合を試行）: {preview}{suffix}"
+                f"⚠ Unresolved metadata: {len(warnings)} (will try matching with the official API on search): {preview}{suffix}"
             )
             self.mod_warning.show()
         else:
@@ -5047,8 +5047,8 @@ class PoetoreWindow(QWidget):
             self.additional_results_button.hide()
             self.price_list.clear()
             self._set_price_status(
-                "「カレンシー交換」の対象品のため、カレンシー交換の直近価格を"
-                "優先して表示します。"
+                "This item is traded on Currency Exchange, so the latest Currency Exchange price "
+                "is shown."
             )
             self._current_performance_trace = None
             return
@@ -5113,10 +5113,10 @@ class PoetoreWindow(QWidget):
             if self.tablet_rarity_combo.isVisible() else None
         )
         league = self._selected_trade_league()
-        league_label = league or "現行SC（自動）"
+        league_label = league or "Current SC (auto)"
         self._set_price_status(
-            f"{league_label}で「{preset_label} / {trade_status_label} / "
-            f"{trade_currency_label} / {listed_within_label}」を検索中…"
+            f"{league_label}: searching for \"{preset_label} / {trade_status_label} / "
+            f"{trade_currency_label} / {listed_within_label}\"…"
         )
         filters = self._selected_stat_filters()
         needs_initial_filters = self.mod_filter_tree.topLevelItemCount() == 0
@@ -5177,7 +5177,7 @@ class PoetoreWindow(QWidget):
                         self._trade_signals.unique_candidates_ready.emit(candidates)
                         return
                     if not candidates:
-                        raise TradeApiError("未鑑定ユニークの候補を公式データから特定できませんでした。")
+                        raise TradeApiError("Could not identify unidentified unique candidates from official data.")
                     resolved_trade_name = candidates[0].name
                 else:
                     resolved_trade_name = trade_name
@@ -5270,23 +5270,23 @@ class PoetoreWindow(QWidget):
         rarity = (item.rarity or "").strip().casefold()
         self.trade_preset_combo.setItemData(0, PRESET_FINISHED)
         self.trade_preset_combo.setItemData(1, PRESET_BASE)
-        self.trade_preset_combo.setItemText(1, "ベースアイテム")
+        self.trade_preset_combo.setItemText(1, "Base item")
         if dedicated_exact and rarity in {"normal", "ノーマル"}:
-            primary_label = "ベースアイテム"
+            primary_label = "Base item"
         elif dedicated_exact:
-            primary_label = "専用検索"
+            primary_label = "Dedicated search"
         else:
-            primary_label = "完成品"
+            primary_label = "Finished item"
         self.trade_preset_combo.setItemText(0, primary_label)
         self.trade_preset_combo.setSecondAvailable(PRESET_BASE in presets)
         self.trade_preset_combo.setCurrentIndex(0)
         if dedicated_exact:
             self.trade_preset_combo.setToolTip(
-                "このアイテム種別に必要な条件だけを使う専用検索です。"
+                "A dedicated search that uses only the conditions this item type needs."
             )
         else:
             self.trade_preset_combo.setToolTip(
-                "未完成でクラフト価値がある装備は、完成品とベースアイテムを切り替えて検索できます。"
+                "For unfinished gear worth crafting, you can switch between searching as a finished item or a base item."
             )
         has_choice = len(presets) > 1
         self.trade_preset_combo.setEnabled(has_choice)
@@ -5314,7 +5314,7 @@ class PoetoreWindow(QWidget):
             and rarity in {"normal", "ノーマル", "magic", "マジック", "rare", "レア", "unique", "ユニーク"}
         )
         self.magic_rarity_toggle.setItemText(
-            0, "非ユニーク" if self.poe_version == POE2 else "ユニーク以外",
+            0, "Non-unique" if self.poe_version == POE2 else "Non-unique",
         )
         self.magic_rarity_toggle.setVisible(magic_base_search)
         tablet_rarity_search = bool(
@@ -5337,13 +5337,13 @@ class PoetoreWindow(QWidget):
                     "レア": "rare",
                 }.get(rarity, rarity)
                 rarity_label = {
-                    "normal": "ノーマル限定",
-                    "magic": "マジック限定",
-                    "rare": "レア限定",
+                    "normal": "Normal only",
+                    "magic": "Magic only",
+                    "rare": "Rare only",
                 }[detected_rarity]
                 self.tablet_rarity_combo.setOptions((
                     (rarity_label, detected_rarity, False),
-                    ("非ユニーク", "nonunique", False),
+                    ("Non-unique", "nonunique", False),
                 ))
         else:
             self._tablet_rarity_item_key = None
@@ -5354,12 +5354,12 @@ class PoetoreWindow(QWidget):
             )
         elif is_poe2_search_rarity:
             if rarity in {"unique", "ユニーク"}:
-                label = "ユニーク"
+                label = "Unique"
             elif (rarity in {"normal", "ノーマル"}
                   and uses_dedicated_exact_preset(item)):
-                label = "ノーマル"
+                label = "Normal"
             else:
-                label = "非ユニーク"
+                label = "Non-unique"
             self.rarity_condition_chip.setText(label)
 
     def _configure_item_state_filters(self, item):
@@ -5491,7 +5491,7 @@ class PoetoreWindow(QWidget):
     def _set_item_level_filter_enabled(self, enabled: bool):
         self._item_level_filter_enabled = bool(enabled)
         self.item_level_tag.setProperty("active", self._item_level_filter_enabled)
-        self.item_level_toggle.setText("☑ ilvl：" if self._item_level_filter_enabled else "☐ ilvl：")
+        self.item_level_toggle.setText("☑ ilvl: " if self._item_level_filter_enabled else "☐ ilvl: ")
         for editor in (self.item_level_edit, self.item_level_max_edit):
             font = editor.font()
             font.setStrikeOut(not self._item_level_filter_enabled)
@@ -5499,9 +5499,9 @@ class PoetoreWindow(QWidget):
         self.item_level_tag.style().unpolish(self.item_level_tag)
         self.item_level_tag.style().polish(self.item_level_tag)
         self.item_level_toggle.setToolTip(
-            "クリックしてアイテムレベル条件を無効にします"
+            "Click to disable the item level condition"
             if self._item_level_filter_enabled else
-            "クリックしてアイテムレベル条件を有効にします"
+            "Click to enable the item level condition"
         )
 
     def _selected_item_level_range(self) -> tuple[int | None, int | None]:
@@ -5544,7 +5544,7 @@ class PoetoreWindow(QWidget):
         self._gem_level_filter_enabled = bool(enabled)
         self.gem_level_tag.setProperty("active", self._gem_level_filter_enabled)
         self.gem_level_toggle.setText(
-            "☑ ジェムLv：" if self._gem_level_filter_enabled else "☐ ジェムLv："
+            "☑ Gem Lv: " if self._gem_level_filter_enabled else "☐ Gem Lv: "
         )
         font = self.gem_level_edit.font()
         font.setStrikeOut(not self._gem_level_filter_enabled)
@@ -5552,9 +5552,9 @@ class PoetoreWindow(QWidget):
         self.gem_level_tag.style().unpolish(self.gem_level_tag)
         self.gem_level_tag.style().polish(self.gem_level_tag)
         self.gem_level_toggle.setToolTip(
-            "クリックしてジェムレベル条件を無効にします"
+            "Click to disable the gem level condition"
             if self._gem_level_filter_enabled else
-            "クリックしてジェムレベル条件を有効にします"
+            "Click to enable the gem level condition"
         )
 
     def _selected_gem_level(self) -> int | None:
@@ -5624,7 +5624,7 @@ class PoetoreWindow(QWidget):
         self._gem_quality_filter_enabled = bool(enabled)
         self.gem_quality_tag.setProperty("active", self._gem_quality_filter_enabled)
         self.gem_quality_toggle.setText(
-            "☑ 品質：" if self._gem_quality_filter_enabled else "☐ 品質："
+            "☑ Quality: " if self._gem_quality_filter_enabled else "☐ Quality: "
         )
         font = self.gem_quality_edit.font()
         font.setStrikeOut(not self._gem_quality_filter_enabled)
@@ -5632,9 +5632,9 @@ class PoetoreWindow(QWidget):
         self.gem_quality_tag.style().unpolish(self.gem_quality_tag)
         self.gem_quality_tag.style().polish(self.gem_quality_tag)
         self.gem_quality_toggle.setToolTip(
-            "クリックして品質条件を無効にします"
+            "Click to disable the quality condition"
             if self._gem_quality_filter_enabled else
-            "クリックして品質条件を有効にします"
+            "Click to enable the quality condition"
         )
 
     def _selected_quality(self) -> int | None:
@@ -5668,7 +5668,7 @@ class PoetoreWindow(QWidget):
         self._gem_socket_filter_enabled = bool(enabled)
         self.gem_socket_tag.setProperty("active", self._gem_socket_filter_enabled)
         self.gem_socket_toggle.setText(
-            "☑ Gem Socket：" if self._gem_socket_filter_enabled else "☐ Gem Socket："
+            "☑ Gem Socket: " if self._gem_socket_filter_enabled else "☐ Gem Socket: "
         )
         font = self.gem_socket_edit.font()
         font.setStrikeOut(not self._gem_socket_filter_enabled)
@@ -5706,15 +5706,15 @@ class PoetoreWindow(QWidget):
     def _set_links_filter_enabled(self, enabled: bool):
         self._links_filter_enabled = bool(enabled)
         self.links_tag.setProperty("active", self._links_filter_enabled)
-        self.links_toggle.setText("☑ リンク：" if enabled else "☐ リンク：")
+        self.links_toggle.setText("☑ Links: " if enabled else "☐ Links: ")
         font = self.links_edit.font()
         font.setStrikeOut(not enabled)
         self.links_edit.setFont(font)
         self.links_tag.style().unpolish(self.links_tag)
         self.links_tag.style().polish(self.links_tag)
         self.links_toggle.setToolTip(
-            "クリックしてリンク条件を無効にします" if enabled
-            else "クリックしてリンク条件を有効にします"
+            "Click to disable the link condition" if enabled
+            else "Click to enable the link condition"
         )
 
     def _selected_links(self) -> int | None:
@@ -5765,7 +5765,7 @@ class PoetoreWindow(QWidget):
             label, stat_id, _item_flag = _INFLUENCE_CHIPS[influence]
             if stat_id is None:
                 continue
-            rows.append(TradeStatFilter(stat_id, f"{label}影響", None, "influence", True))
+            rows.append(TradeStatFilter(stat_id, f"{label} influence", None, "influence", True))
         return tuple(rows)
 
     def _selected_eldritch_influences(self) -> tuple[bool | None, bool | None]:
@@ -5807,14 +5807,14 @@ class PoetoreWindow(QWidget):
             info = gem_metadata(self._trade_base_type or item.base_type)
             identity = f"{item.name} {item.base_type}".casefold()
             if info.get("transfigured"):
-                variant = "変容ジェム"
+                variant = "Transfigured gem"
             elif info.get("vaal") or "vaal " in identity or "ヴァール" in identity:
-                variant = "ヴァールジェム"
+                variant = "Vaal gem"
             elif "awakened " in identity or "覚醒" in identity:
-                variant = "覚醒ジェム"
+                variant = "Awakened gem"
             else:
-                variant = "通常ジェム"
-            self.gem_variant_chip.setText(f"Variant：{variant}")
+                variant = "Normal gem"
+            self.gem_variant_chip.setText(f"Variant: {variant}")
 
         self._configure_logbook_areas(item)
 
@@ -5854,7 +5854,7 @@ class PoetoreWindow(QWidget):
         if job is not None:
             job_name = _HEIST_JOB_LABELS.get(job.stat_id)
             self.heist_job_chip.setLabel(
-                f"Job Lv（{job_name}）" if job_name else "Job Lv"
+                f"Job Lv ({job_name})" if job_name else "Job Lv"
             )
             self.heist_job_chip.setValues(job.min_value, job.max_value)
             self.heist_job_chip.setActive(job.enabled)
@@ -5875,7 +5875,7 @@ class PoetoreWindow(QWidget):
         self._cluster_enchant_rows = enchants if item.category == "cluster_jewel" else ()
         self.cluster_enchant_chip.setVisible(bool(self._cluster_enchant_rows))
         self.cluster_enchant_chip.setText(
-            "Enchant効果：" + " / ".join(row.text for row in self._cluster_enchant_rows)
+            "Enchant effect: " + " / ".join(row.text for row in self._cluster_enchant_rows)
             if self._cluster_enchant_rows else ""
         )
         socket_mod = next((mod for mod in item.modifiers
@@ -5883,7 +5883,7 @@ class PoetoreWindow(QWidget):
         self.cluster_socket_chip.setVisible(socket_mod is not None)
         if socket_mod is not None:
             count = int(socket_mod.values[0]) if socket_mod.values else 0
-            self.cluster_socket_chip.setText(f"ジュエルソケット：{count}")
+            self.cluster_socket_chip.setText(f"Jewel sockets: {count}")
 
         blight = by_id.get("property.map_uberblighted") or by_id.get("property.map_blighted")
         self.blighted_chip.setVisible(blight is not None)
@@ -5947,10 +5947,10 @@ class PoetoreWindow(QWidget):
                 continue
             faction = next((mod.text for mod in mods if mod.stat_id and
                             mod.stat_id.startswith("pseudo.pseudo_logbook_faction_")), None)
-            groups.append((group, faction or f"エリア{len(groups) + 1}"))
+            groups.append((group, faction or f"Area {len(groups) + 1}"))
         self._logbook_area_groups = tuple(groups[:5])
         self.logbook_area_selector.setLabels(
-            tuple(f"エリア{index + 1}：{label}" for index, (_group, label)
+            tuple(f"Area {index + 1}: {label}" for index, (_group, label)
                   in enumerate(self._logbook_area_groups))
         )
         self.logbook_area_container.setVisible(bool(self._logbook_area_groups))
@@ -5996,14 +5996,14 @@ class PoetoreWindow(QWidget):
             self._update_mod_warning(item)
         if preset == PRESET_BASE:
             self._set_price_status(
-                "ベースアイテムとして、ベースタイプとアイテムレベルを中心に検索します。"
+                "Searches as a base item, focusing on base type and item level."
             )
         elif item is not None and uses_dedicated_exact_preset(item):
             self._set_price_status(
-                "アイテム種別に合わせた専用条件で検索します。"
+                "Searches with dedicated conditions for the item type."
             )
         else:
-            self._set_price_status("完成品として、実際の性能を中心に検索します。")
+            self._set_price_status("Searches as a finished item, focusing on actual stats.")
 
     def _reset_unique_candidates(self):
         while self.unique_name_layout.count():
@@ -6043,7 +6043,7 @@ class PoetoreWindow(QWidget):
             self.disenchant_dust_panel.setToolTip("")
             self.disenchant_dust_panel.hide()
             return
-        tooltip = f"解呪ダスト（推定）：{value:,}"
+        tooltip = f"Disenchant dust (est.): {value:,}"
         self.disenchant_dust_value.setText(_compact_dust_amount(value))
         self.disenchant_dust_panel.setToolTip(tooltip)
         self.disenchant_dust_label.setToolTip(tooltip)
@@ -6109,7 +6109,7 @@ class PoetoreWindow(QWidget):
         self.unique_name_container.show()
         self.unique_name_scroll.show()
         self._set_price_status(
-            f"同じベースの未鑑定ユニークが{len(candidates)}種類あります。候補を選んで「価格を検索」を押してください。"
+            f"There are{len(candidates)} unidentified uniques with this base. Choose one and press \"Search price\"."
         )
 
     def _unique_icon_downloaded(self, reply: QNetworkReply):
@@ -6137,7 +6137,7 @@ class PoetoreWindow(QWidget):
         self.unique_variant_label.show()
         self.unique_variant_combo.show()
         self._set_price_status(
-            f"同名ユニークに{len(variants)}種類のVariantがあります。候補を選んで再検索してください。"
+            f"This unique has{len(variants)} variants. Choose one and search again."
         )
 
     def _selected_stat_filters(self) -> tuple[TradeStatFilter, ...]:
@@ -6291,7 +6291,7 @@ class PoetoreWindow(QWidget):
                     heading = QLabel(
                         stat_filter.source_headings[source_index]
                         if source_index < len(stat_filter.source_headings)
-                        else "元Mod"
+                        else "Source mod"
                     )
                     heading.setStyleSheet(
                         "color: #7F8A86; font-style: italic;"
@@ -6315,7 +6315,7 @@ class PoetoreWindow(QWidget):
             )
             checkbox = QCheckBox()
             checkbox.setObjectName("modFilterCheckbox")
-            checkbox.setToolTip("この条件を価格検索に使用する")
+            checkbox.setToolTip("Use this condition in the price search")
             Styles.apply_checkbox_style(checkbox, checked_color="#257A64")
             checkbox.setChecked(stat_filter.enabled)
             checkbox.stateChanged.connect(self._mark_search_dirty)
@@ -6356,7 +6356,7 @@ class PoetoreWindow(QWidget):
             editor = QLineEdit(value)
             editor.setProperty("wheelStepNumeric", True)
             editor.installEventFilter(self)
-            editor.setPlaceholderText("最小")
+            editor.setPlaceholderText("Min")
             self._apply_mod_value_editor_size(editor, leading_gap=True)
             editor.setEnabled(stat_filter.option_value is None)
             editor.textEdited.connect(self._mark_search_dirty)
@@ -6367,7 +6367,7 @@ class PoetoreWindow(QWidget):
             max_editor = QLineEdit(maximum)
             max_editor.setProperty("wheelStepNumeric", True)
             max_editor.installEventFilter(self)
-            max_editor.setPlaceholderText("最大")
+            max_editor.setPlaceholderText("Max")
             self._apply_mod_value_editor_size(max_editor)
             max_editor.setEnabled(stat_filter.option_value is None)
             max_editor.textEdited.connect(self._mark_search_dirty)
@@ -6497,7 +6497,7 @@ class PoetoreWindow(QWidget):
             return
         search_generation = self._search_generation
         self.additional_results_button.setEnabled(False)
-        self.additional_results_button.setText("取得中…")
+        self.additional_results_button.setText("Fetching…")
 
         def run():
             try:
@@ -6523,7 +6523,7 @@ class PoetoreWindow(QWidget):
     def _additional_results_failed(self, message: str, search_generation: int):
         if search_generation != self._search_generation:
             return
-        self.additional_results_button.setText("次の10件を取得")
+        self.additional_results_button.setText("Load next 10")
         self.additional_results_button.setEnabled(True)
         self._set_price_status(_user_facing_trade_error(message))
 
@@ -6538,22 +6538,22 @@ class PoetoreWindow(QWidget):
             and self.poe_version == POE2
             and bool(result.next_result_ids)
         )
-        self.additional_results_button.setText("次の10件を取得")
+        self.additional_results_button.setText("Load next 10")
         self.additional_results_button.setEnabled(show_additional)
         self.additional_results_button.setVisible(show_additional)
         self.price_list.clear()
-        cache_note = " / キャッシュ" if result.cached else ""
+        cache_note = " / cached" if result.cached else ""
         if not result.listings:
             self._set_price_status(
-                f"{result.league}: 検索候補{result.total}件{cache_note}。"
-                "価格付き出品は取得できませんでした。"
+                f"{result.league}: candidates{result.total} more{cache_note}。"
+                "Could not get any priced listings."
             )
             return
-        progress_note = "取得中 / " if partial else ""
+        progress_note = "Fetching / " if partial else ""
         fetched_count = result.fetched_count or len(result.listings)
         self._set_price_status(
-            f"{result.league}: {progress_note}候補{result.total}件 / "
-            f"取得{fetched_count}件{cache_note}",
+            f"{result.league}: {progress_note}Candidates {result.total} / "
+            f" fetched{fetched_count} more{cache_note}",
             compact=not partial,
         )
         item = getattr(self, "_parsed_item", None)
@@ -6572,18 +6572,18 @@ class PoetoreWindow(QWidget):
             self, "_active_trade_status", self.trade_status_combo.currentData()
         ))
         show_pricing_method = trade_status not in {"instant", "online"}
-        columns = ["価格"]
+        columns = ["Price"]
         if show_stock:
-            columns.append("在庫")
+            columns.append("Stock")
         if show_ilvl:
             columns.append("ilvl")
         if show_gem:
-            columns.append("ジェムLv")
+            columns.append("Gem Lv")
         if show_quality:
             columns.append("品質")
-        columns.append("出品日時")
+        columns.append("Listed")
         if show_pricing_method:
-            columns.append("取引方式")
+            columns.append("Trade type")
         # QTreeWidget#setHeaderLabels()は既存より列数が少ない場合に、
         # 余った末尾列を削除しない。Gem→武器などで固有列が減る時は
         # 先に列数を確定し、前カテゴリのヘッダーを残さない。
@@ -6600,7 +6600,7 @@ class PoetoreWindow(QWidget):
 
         for listing in result.listings:
             price_text = (
-                "値段なし"
+                "No price"
                 if listing.pricing_method == "unpriced"
                 else f"{listing.amount:g} {listing.currency}"
             )
@@ -6618,9 +6618,9 @@ class PoetoreWindow(QWidget):
             values.append(self._relative_listing_time(listing.indexed))
             if show_pricing_method:
                 values.append({
-                    "instant": "インスタント",
-                    "unpriced": "値段なし",
-                }.get(listing.pricing_method, "対面"))
+                    "instant": "Instant",
+                    "unpriced": "No price",
+                }.get(listing.pricing_method, "In person"))
             row = QTreeWidgetItem(self.price_list, values)
             price_widget = self._price_list_currency_widget(listing)
             if price_widget is not None:
@@ -6808,7 +6808,7 @@ class PoetoreWindow(QWidget):
         virtual = payload.get("virtual")
         if virtual is not None:
             self.virtual_augment_cost_label.setText(
-                "仮挿入オーグメントの参考費用　"
+                "Reference cost of inserted augments "
                 f"{compact_exalted(virtual.total_exalted)} ex"
             )
             self.virtual_augment_cost_label.show()
@@ -6817,14 +6817,14 @@ class PoetoreWindow(QWidget):
             difference = recovery.difference_exalted
             sign = "+" if difference >= 0 else "−"
             self.installed_augment_recovery_value.setText(
-                "装着済みオーグメントの回収参考価値　"
+                "Reference value of recovering socketed augments "
                 f"{compact_exalted(recovery.recovery_exalted)} ex"
             )
             self.installed_augment_recovery_comparison.setText(
-                f"出品最安 {compact_exalted(recovery.cheapest_listing_exalted)} ex より "
+                f"Cheapest listing {compact_exalted(recovery.cheapest_listing_exalted)} ex vs "
                 f"{sign}{compact_exalted(abs(difference))} ex"
-                f"（素材 {compact_exalted(recovery.materials_exalted)} − "
-                f"抽出 {compact_exalted(recovery.extraction_exalted)}）"
+                f" (materials {compact_exalted(recovery.materials_exalted)} − "
+                f"extraction {compact_exalted(recovery.extraction_exalted)})"
             )
             self.installed_augment_recovery_hint.setVisible(
                 recovery.extraction_may_be_worthwhile
@@ -6896,20 +6896,20 @@ class PoetoreWindow(QWidget):
             timestamp = timestamp.replace(tzinfo=timezone.utc)
         seconds = max(0, int((current.astimezone(timezone.utc) - timestamp.astimezone(timezone.utc)).total_seconds()))
         if seconds < 60:
-            return "たった今"
+            return "just now"
         minutes = seconds // 60
         if minutes < 60:
-            return f"{minutes}分前"
+            return f"{minutes}m ago"
         hours = minutes // 60
         if hours < 24:
-            return f"{hours}時間前"
+            return f"{hours}h ago"
         days = hours // 24
         if days < 30:
-            return f"{days}日前"
+            return f"{days}d ago"
         months = days // 30
         if months < 12:
-            return f"{months}か月前"
-        return f"{days // 365}年前"
+            return f"{months}mo ago"
+        return f"{days // 365}y ago"
 
     def _show_price_error(self, message: str, search_generation: int):
         trace = self._search_performance_traces.pop(search_generation, None)

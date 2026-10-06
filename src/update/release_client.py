@@ -24,7 +24,7 @@ class ReleaseInfo:
 def parse_version(value: str) -> tuple[int, int, int]:
     match = VERSION_PATTERN.fullmatch(value.strip())
     if not match:
-        raise ValueError(f"不正なバージョン形式です: {value}")
+        raise ValueError(f"Invalid version format: {value}")
     return tuple(int(part) for part in match.groups())
 
 
@@ -57,7 +57,7 @@ def parse_latest_release(
 
     return ReleaseInfo(
         version=".".join(str(part) for part in latest),
-        notes=str(payload.get("body") or "変更内容はリリースページで確認できます。"),
+        notes=str(payload.get("body") or "See the release page for details of the changes."),
         page_url=str(
             payload.get("html_url")
             or "https://github.com/buri34/poenavi/releases/latest"

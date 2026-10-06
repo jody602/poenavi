@@ -29,9 +29,9 @@ ATTR_COLORS = {
 
 # type別のアイコン
 TYPE_LABELS = {
-    "quest": "報酬",
-    "vendor": "購入",
-    "lilly": "購入",
+    "quest": "Reward",
+    "vendor": "Buy",
+    "lilly": "Buy",
 }
 
 
@@ -46,7 +46,7 @@ class PoBImportDialog(QDialog):
     
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("PoBコードインポート")
+        self.setWindowTitle("Import PoB Code")
         self.setFixedSize(500, 350)
         self.setStyleSheet(f"""
             QDialog {{
@@ -61,8 +61,8 @@ class PoBImportDialog(QDialog):
         
         # 説明
         desc = QLabel(
-            "Path of Building のエクスポートコードを貼り付けてください。\n"
-            "PoBで「Export」→「Copy」でクリップボードにコピーできます。"
+            "Paste your Path of Building export code.\n"
+            "In PoB, use \"Export\" → \"Copy\" to copy it to the clipboard."
         )
         desc.setStyleSheet(f"color: {Styles.TEXT_COLOR}; font-size: 13px;")
         desc.setWordWrap(True)
@@ -70,7 +70,7 @@ class PoBImportDialog(QDialog):
         
         # テキスト入力
         self.text_edit = QTextEdit()
-        self.text_edit.setPlaceholderText("PoBコード（Base64）をここに貼り付け...")
+        self.text_edit.setPlaceholderText("Paste PoB code (Base64) here...")
         self.text_edit.setStyleSheet(f"""
             QTextEdit {{
                 background: #2a2a2a;
@@ -88,7 +88,7 @@ class PoBImportDialog(QDialog):
         btn_layout = QHBoxLayout()
         btn_layout.addStretch()
         
-        cancel_btn = QPushButton("キャンセル")
+        cancel_btn = QPushButton("Cancel")
         cancel_btn.setStyleSheet(f"""
             QPushButton {{
                 background: transparent; color: #888;
@@ -100,7 +100,7 @@ class PoBImportDialog(QDialog):
         cancel_btn.clicked.connect(self.reject)
         btn_layout.addWidget(cancel_btn)
         
-        import_btn = QPushButton("インポート")
+        import_btn = QPushButton("Import")
         import_btn.setStyleSheet(f"""
             QPushButton {{
                 background: #4488ff; color: #ffffff;
@@ -123,7 +123,7 @@ class PoBSkillSetSelectionDialog(QDialog):
 
     def __init__(self, skill_sets: list[dict], parent=None):
         super().__init__(parent)
-        self.setWindowTitle("Skill set選択")
+        self.setWindowTitle("Select Skill Sets")
         self.setFixedSize(420, 420)
         self._checkboxes = []
         self.setStyleSheet(f"""
@@ -138,8 +138,8 @@ class PoBSkillSetSelectionDialog(QDialog):
         layout.setSpacing(10)
 
         desc = QLabel(
-            "ジェム取得支援に取り込むSkill setを選んでください。\n"
-            "Act中に不要なEndgame用セットなどはチェックを外せます。"
+            "Choose the skill sets to import into the gem tracker.\n"
+            "You can uncheck endgame sets you don't need during the campaign."
         )
         desc.setStyleSheet(f"color: {Styles.TEXT_COLOR}; font-size: 13px;")
         desc.setWordWrap(True)
@@ -157,7 +157,7 @@ class PoBSkillSetSelectionDialog(QDialog):
             title = skill_set.get("title", "") or f"Skill set {skill_set.get('index', 0) + 1}"
             label = f"{title}"
             if skill_set.get("active"):
-                label += "  （現在選択中）"
+                label += "  (currently selected)"
             cb = QCheckBox(label)
             cb.setChecked(True)
             cb.setProperty("skill_set_id", str(skill_set.get("id", "")))
@@ -173,9 +173,9 @@ class PoBSkillSetSelectionDialog(QDialog):
         layout.addWidget(scroll, stretch=1)
 
         quick_layout = QHBoxLayout()
-        all_btn = QPushButton("すべて選択")
-        act_btn = QPushButton("Actっぽいもの")
-        clear_btn = QPushButton("すべて解除")
+        all_btn = QPushButton("Select All")
+        act_btn = QPushButton("Campaign-like ")
+        clear_btn = QPushButton("Deselect All")
         for btn in (all_btn, act_btn, clear_btn):
             btn.setStyleSheet(self._small_btn_style())
             quick_layout.addWidget(btn)
@@ -187,12 +187,12 @@ class PoBSkillSetSelectionDialog(QDialog):
 
         btn_layout = QHBoxLayout()
         btn_layout.addStretch()
-        cancel_btn = QPushButton("キャンセル")
+        cancel_btn = QPushButton("Cancel")
         cancel_btn.setStyleSheet(self._cancel_btn_style())
         cancel_btn.clicked.connect(self.reject)
         btn_layout.addWidget(cancel_btn)
 
-        import_btn = QPushButton("選択してインポート")
+        import_btn = QPushButton("Import Selected")
         import_btn.setStyleSheet(self._primary_btn_style())
         import_btn.clicked.connect(self._accept_if_any_selected)
         btn_layout.addWidget(import_btn)
@@ -231,7 +231,7 @@ class PoBSkillSetSelectionDialog(QDialog):
 
     def _accept_if_any_selected(self):
         if not self.selected_skill_set_ids():
-            QMessageBox.warning(self, "Skill set未選択", "少なくとも1つSkill setを選択してください。")
+            QMessageBox.warning(self, "No Skill Set Selected", "Select at least one skill set.")
             return
         self.accept()
 
@@ -356,7 +356,7 @@ class GemTrackerWidget(QWidget):
         
         # 未インポート時の案内
         self._empty_label = QLabel(
-            "PoBコードをインポートすると\nジェム取得タイミングが表示されます"
+            "Import a PoB code to see\nwhen to get each gem"
         )
         self._empty_label.setStyleSheet("color: #666; font-size: 11px;")
         self._empty_label.setAlignment(Qt.AlignCenter)
@@ -460,7 +460,7 @@ class GemTrackerWidget(QWidget):
         act_entries = [e for e in self._acquisition_plan if e["act"] == self._current_act]
         
         if not act_entries:
-            no_gem_label = QLabel("このActで取得するジェムはありません")
+            no_gem_label = QLabel("No gems to get in this act")
             no_gem_label.setStyleSheet("color: #666; font-size: 11px;")
             no_gem_label.setAlignment(Qt.AlignCenter)
             self._gem_list_layout.addWidget(no_gem_label)
@@ -473,7 +473,7 @@ class GemTrackerWidget(QWidget):
             quest_ja = entry.get("quest_ja", quest_key)
             # 内部的に breaking some eggs1/2 のような枝番を付けているクエストは、表示では枝番を外す
             quest_en = format_quest_english_name(quest_key)
-            quest_display = f"{quest_ja}（{quest_en}）" if quest_ja != quest_en else quest_ja
+            quest_display = f"{quest_ja}({quest_en})" if quest_ja != quest_en else quest_ja
             npc_ja = entry.get("npc_ja", entry["npc"])
             
             type_label = TYPE_LABELS.get(entry["gems"][0]["type"] if entry["gems"] else "vendor", "")
@@ -539,7 +539,7 @@ class GemTrackerWidget(QWidget):
                 # ジェム名（色分け）
                 name_label = QLabel(display_name)
                 checked_style = "text-decoration: line-through; " if gem_name in self._checked_gems else ""
-                name_label.setToolTip("クリックでPoE検索欄へ入力")
+                name_label.setToolTip("Click to enter into the PoE search box")
                 name_label.setCursor(Qt.PointingHandCursor)
                 name_label.setStyleSheet(
                     f"color: {attr_color}; font-size: 12px; {checked_style}"
@@ -552,7 +552,7 @@ class GemTrackerWidget(QWidget):
                 # 英語名表示（日本語名がある場合のみ）
                 if gem_name_ja:
                     en_label = QLabel(gem_name.title())
-                    en_label.setToolTip("クリックでPoE検索欄へ入力")
+                    en_label.setToolTip("Click to enter into the PoE search box")
                     en_label.setCursor(Qt.PointingHandCursor)
                     en_label.setStyleSheet("color: #666; font-size: 9px;")
                     en_label.mousePressEvent = lambda _event, text=gem_name.title(): self.gem_search_requested.emit(text)

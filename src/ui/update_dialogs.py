@@ -22,13 +22,13 @@ class UpdateAvailableDialog(QDialog):
     ):
         super().__init__(parent)
         self.release = release
-        self.setWindowTitle("ぽえなび アップデート")
+        self.setWindowTitle("PoENavi Update")
         self.setMinimumSize(480, 360)
         self.setStyleSheet(Styles.MAIN_WINDOW)
 
         layout = QVBoxLayout(self)
         title = QLabel(
-            f"新しいバージョン v{release.version} を利用できます。"
+            f"New version v{release.version} is available."
         )
         title.setWordWrap(True)
         layout.addWidget(title)
@@ -39,13 +39,13 @@ class UpdateAvailableDialog(QDialog):
 
         buttons = QDialogButtonBox()
         update = buttons.addButton(
-            "今すぐアップデート"
+            "Update Now"
             if auto_update_supported
-            else "リリースページを開く",
+            else "Open Release Page",
             QDialogButtonBox.ButtonRole.AcceptRole,
         )
         later = buttons.addButton(
-            "後で",
+            "Later",
             QDialogButtonBox.ButtonRole.RejectRole,
         )
         update.clicked.connect(self.accept)
@@ -58,13 +58,13 @@ class UpdateProgressDialog(QDialog):
 
     def __init__(self, version: str, parent=None):
         super().__init__(parent)
-        self.setWindowTitle("ぽえなび アップデート")
+        self.setWindowTitle("PoENavi Update")
         self.setModal(True)
 
         layout = QVBoxLayout(self)
-        self.label = QLabel(f"v{version} をダウンロードしています…")
+        self.label = QLabel(f"v{version}: downloading…")
         self.progress = QProgressBar()
-        self.cancel_button = QPushButton("キャンセル")
+        self.cancel_button = QPushButton("Cancel")
         self.cancel_button.clicked.connect(self.cancel_requested.emit)
         layout.addWidget(self.label)
         layout.addWidget(self.progress)
@@ -75,9 +75,9 @@ class UpdateProgressDialog(QDialog):
         self.progress.setValue(done)
         if total:
             text = (
-                f"ダウンロード中: {done / 1024 / 1024:.1f} / "
+                f"Downloading: {done / 1024 / 1024:.1f} / "
                 f"{total / 1024 / 1024:.1f} MB"
             )
         else:
-            text = f"ダウンロード中: {done / 1024 / 1024:.1f} MB"
+            text = f"Downloading: {done / 1024 / 1024:.1f} MB"
         self.label.setText(text)

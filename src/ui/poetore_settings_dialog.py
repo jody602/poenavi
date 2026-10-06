@@ -103,7 +103,7 @@ class PoetoreSettingsDialog(QDialog):
         self._league_refresh_started = False
         self._league_signals = _LeagueSignals(self)
         self._league_signals.ready.connect(self._show_trade_leagues)
-        self.setWindowTitle("設定")
+        self.setWindowTitle("Settings")
         self.setObjectName("poetoreSettingsDialog")
         self.setMinimumSize(540, 620)
         self.resize(560, 760)
@@ -113,7 +113,7 @@ class PoetoreSettingsDialog(QDialog):
         root = QVBoxLayout(self)
         root.setContentsMargins(18, 18, 18, 14)
         root.setSpacing(12)
-        self.title_label = QLabel("設定")
+        self.title_label = QLabel("Settings")
         self.title_label.setProperty("uiRole", "title")
         root.addWidget(self.title_label)
         tabs = QTabWidget()
@@ -122,9 +122,9 @@ class PoetoreSettingsDialog(QDialog):
         basic_layout.setContentsMargins(12, 12, 12, 12)
         basic_layout.setSpacing(12)
 
-        startup_group = QGroupBox("起動設定")
+        startup_group = QGroupBox("Launch Settings")
         startup_layout = QVBoxLayout(startup_group)
-        startup_layout.addWidget(QLabel("PoEバージョン"))
+        startup_layout.addWidget(QLabel("PoE Version"))
         self.poe_version_group = QButtonGroup(self)
         self.poe_version_radios = {}
         for version in POE_VERSION_ORDER:
@@ -140,29 +140,29 @@ class PoetoreSettingsDialog(QDialog):
 
         startup = self.current_config.get("startup")
         startup = startup if isinstance(startup, dict) else {}
-        startup_layout.addWidget(QLabel("起動モード"))
+        startup_layout.addWidget(QLabel("Launch Mode"))
         preferred = normalize_app_mode(
             startup.get("preferred_mode", POETORE_MODE)
         )
         self.app_mode_group = QButtonGroup(self)
         self.app_mode_radios = {}
         for mode, label in (
-            (POENAVI_MODE, "ぽえなび"),
-            (POETORE_MODE, "ぽえとれ"),
+            (POENAVI_MODE, "PoENavi"),
+            (POETORE_MODE, "PoETore"),
         ):
             radio = QRadioButton(label)
             radio.setChecked(mode == preferred)
             self.app_mode_group.addButton(radio)
             self.app_mode_radios[mode] = radio
             startup_layout.addWidget(radio)
-        self.skip_startup_selector_checkbox = QCheckBox("次回からこの設定で直接起動")
+        self.skip_startup_selector_checkbox = QCheckBox("Launch directly with these settings next time")
         self.skip_startup_selector_checkbox.setChecked(
             saved_version_mode in POE_VERSION_ORDER
             and not bool(startup.get("show_mode_selector", True))
         )
         startup_layout.addWidget(self.skip_startup_selector_checkbox)
         self.startup_change_note = QLabel(
-            "PoEバージョン・起動モードの変更は、次回起動時から適用されます。"
+            "Changes to the PoE version and launch mode take effect on the next launch."
         )
         self.startup_change_note.setObjectName("startupChangeNote")
         self.startup_change_note.setProperty("uiRole", "muted")
@@ -170,14 +170,14 @@ class PoetoreSettingsDialog(QDialog):
         startup_layout.addWidget(self.startup_change_note)
         startup_layout.addSpacing(13)
         self.windows_autostart_poetore_checkbox = QCheckBox(
-            "Windowsログイン時にぽえとれを自動起動"
+            "Start PoETore automatically when you sign in to Windows"
         )
         self.windows_autostart_poetore_checkbox.setChecked(
             bool(startup.get("windows_autostart_poetore", False))
         )
         startup_layout.addWidget(self.windows_autostart_poetore_checkbox)
         self.windows_autostart_note = QLabel(
-            "有効にすると、次回のWindowsログイン時からぽえとれを自動起動します。"
+            "When enabled, PoETore starts automatically from your next Windows sign-in."
         )
         self.windows_autostart_note.setObjectName("windowsAutostartNote")
         self.windows_autostart_note.setProperty("uiRole", "muted")
@@ -188,7 +188,7 @@ class PoetoreSettingsDialog(QDialog):
 
         hotkeys = self.current_config.get("hotkeys")
         hotkeys = hotkeys if isinstance(hotkeys, dict) else {}
-        hotkey_group = QGroupBox("共通・ぽえとれホットキー")
+        hotkey_group = QGroupBox("Shared and PoETore Hotkeys")
         hotkey_form = QFormLayout(hotkey_group)
         self.exit_hotkey = HotkeyButton(hotkeys.get("exit", "F5"))
         self.monastery_hotkey = HotkeyButton(hotkeys.get("monastery", "F12"))
@@ -220,22 +220,22 @@ class PoetoreSettingsDialog(QDialog):
             button.setStyleSheet("")
         self.capture_hotkey.key_button.setStyleSheet("")
         self.auto_hide_hotkey.key_button.setStyleSheet("")
-        hotkey_form.addRow("キャラクター選択へ戻る:", self.exit_hotkey)
-        self.monastery_label = QLabel("修道院へ移動（/monastery）:")
+        hotkey_form.addRow("Return to character select:", self.exit_hotkey)
+        self.monastery_label = QLabel("Go to monastery (/monastery):")
         hotkey_form.addRow(self.monastery_label, self.monastery_hotkey)
-        hotkey_form.addRow("ぽえとれ検索（操作モード）:", self.capture_hotkey)
-        hotkey_form.addRow("ぽえとれ検索（AUTO-HIDE）:", self.auto_hide_hotkey)
-        self.map_check_label = QLabel("Map Modチェック:")
+        hotkey_form.addRow("PoETore search (interactive mode):", self.capture_hotkey)
+        hotkey_form.addRow("PoETore search (AUTO-HIDE):", self.auto_hide_hotkey)
+        self.map_check_label = QLabel("Map mod check:")
         hotkey_form.addRow(self.map_check_label, self.map_check_hotkey)
-        hotkey_form.addRow("Cheat sheets表示:", self.cheat_hotkey)
+        hotkey_form.addRow("Show cheat sheets:", self.cheat_hotkey)
         basic_layout.addWidget(hotkey_group)
 
-        error_group = QGroupBox("検索時のエラー処理")
+        error_group = QGroupBox("Search Error Handling")
         error_layout = QVBoxLayout(error_group)
         poetore = self.current_config.get("poetore")
         poetore = poetore if isinstance(poetore, dict) else {}
         self.capture_error_notification_cb = QCheckBox(
-            "アイテムを取得できなかったときに通知する"
+            "Notify when an item could not be read"
         )
         self.capture_error_notification_cb.setChecked(
             bool(poetore.get("capture_error_notification_enabled", False))
@@ -245,17 +245,17 @@ class PoetoreSettingsDialog(QDialog):
 
         self._refresh_version_specific_controls()
 
-        common_group = QGroupBox("共通機能")
+        common_group = QGroupBox("Shared Features")
         common_layout = QVBoxLayout(common_group)
         self.stash_tab_scroll_cb = QCheckBox(
-            "Ctrl＋マウスホイールでスタッシュタブを切り替える"
+            "Switch stash tabs with Ctrl + mouse wheel"
         )
         self.stash_tab_scroll_cb.setChecked(
             bool(self.current_config.get("stash_tab_scroll_enabled", True))
         )
         self.stash_tab_scroll_cb.setToolTip(
-            "Awakened PoE Tradeと同じ補助機能です。スタッシュ内ではPoE本体の操作に任せ、\n"
-            "カーソルがスタッシュ外にある時だけ左右キーを送信します。PoEが最前面の時だけ有効です。"
+            "Same helper as in Awakened PoE Trade. Inside the stash, PoE handles it itself;\n"
+            "left/right keys are sent only when the cursor is outside the stash. Only active while PoE is in the foreground."
         )
         common_layout.addWidget(self.stash_tab_scroll_cb)
         basic_layout.addWidget(common_group)
@@ -263,17 +263,17 @@ class PoetoreSettingsDialog(QDialog):
         hideout_settings = normalize_hideout_notification_settings(
             poetore.get("hideout_notification")
         )
-        hideout_group = QGroupBox("隠れ家滞在通知")
+        hideout_group = QGroupBox("Hideout Alert")
         hideout_layout = QVBoxLayout(hideout_group)
         hideout_form = QFormLayout()
         duration_row = QHBoxLayout()
         self.hideout_minutes_spin = QSpinBox()
         self.hideout_minutes_spin.setRange(0, 60)
-        self.hideout_minutes_spin.setSuffix(" 分")
+        self.hideout_minutes_spin.setSuffix(" min")
         self.hideout_minutes_spin.setButtonSymbols(QAbstractSpinBox.NoButtons)
         self.hideout_seconds_spin = QSpinBox()
         self.hideout_seconds_spin.setRange(0, 59)
-        self.hideout_seconds_spin.setSuffix(" 秒")
+        self.hideout_seconds_spin.setSuffix(" sec")
         self.hideout_seconds_spin.setButtonSymbols(QAbstractSpinBox.NoButtons)
         minutes, seconds = divmod(hideout_settings["duration_seconds"], 60)
         self.hideout_minutes_spin.setValue(minutes)
@@ -282,13 +282,13 @@ class PoetoreSettingsDialog(QDialog):
             self.hideout_minutes_spin,
             prefix="minutes",
             step_seconds=60,
-            step_label="1分",
+            step_label="1 min",
         )
         seconds_control = self._build_hideout_duration_control(
             self.hideout_seconds_spin,
             prefix="seconds",
             step_seconds=1,
-            step_label="1秒",
+            step_label="1 sec",
         )
         self.hideout_minutes_spin.valueChanged.connect(
             self._limit_hideout_duration
@@ -300,8 +300,8 @@ class PoetoreSettingsDialog(QDialog):
         duration_row.addWidget(minutes_control)
         duration_row.addWidget(seconds_control)
         duration_row.addStretch()
-        hideout_form.addRow("通知までの時間:", duration_row)
-        self.hideout_repeat_cb = QCheckBox("通知を繰り返す")
+        hideout_form.addRow("Time before alert:", duration_row)
+        self.hideout_repeat_cb = QCheckBox("Repeat alert")
         self.hideout_repeat_cb.setChecked(hideout_settings["repeat"])
         hideout_form.addRow("", self.hideout_repeat_cb)
         self._hideout_audio_source = hideout_settings["audio_source"]
@@ -315,17 +315,17 @@ class PoetoreSettingsDialog(QDialog):
         self.hideout_sound_combo.currentIndexChanged.connect(
             self._on_hideout_sound_changed
         )
-        hideout_form.addRow("通知音:", self.hideout_sound_combo)
+        hideout_form.addRow("Alert sound:", self.hideout_sound_combo)
         custom_sound_row = QHBoxLayout()
         self.hideout_custom_sound_name = QLabel()
         self._refresh_hideout_custom_sound_name()
         custom_sound_row.addWidget(self.hideout_custom_sound_name, 1)
-        self.hideout_audio_select_button = QPushButton("選択")
+        self.hideout_audio_select_button = QPushButton("Choose")
         self.hideout_audio_select_button.clicked.connect(
             self._select_hideout_audio
         )
         custom_sound_row.addWidget(self.hideout_audio_select_button)
-        hideout_form.addRow("カスタム音:", custom_sound_row)
+        hideout_form.addRow("Custom sound:", custom_sound_row)
         volume_row = QHBoxLayout()
         self.hideout_volume_slider = QSlider(Qt.Horizontal)
         self.hideout_volume_slider.setRange(0, 100)
@@ -337,30 +337,30 @@ class PoetoreSettingsDialog(QDialog):
         self._refresh_hideout_volume_label()
         volume_row.addWidget(self.hideout_volume_slider, 1)
         volume_row.addWidget(self.hideout_volume_label)
-        hideout_form.addRow("音量:", volume_row)
+        hideout_form.addRow("Volume:", volume_row)
         log_paths = self.current_config.get("client_log_paths")
         log_paths = log_paths if isinstance(log_paths, dict) else {}
         log_row = QHBoxLayout()
         self.hideout_log_path_edit = QLineEdit(
             str(log_paths.get(self.poe_version, "") or "")
         )
-        self.hideout_log_path_edit.setPlaceholderText("Client.txtを選択")
+        self.hideout_log_path_edit.setPlaceholderText("Select Client.txt")
         log_row.addWidget(self.hideout_log_path_edit, 1)
-        self.hideout_log_path_button = QPushButton("参照")
+        self.hideout_log_path_button = QPushButton("Browse")
         self.hideout_log_path_button.clicked.connect(
             self._select_hideout_log_path
         )
         log_row.addWidget(self.hideout_log_path_button)
         hideout_form.addRow("Client.txt:", log_row)
         hideout_layout.addLayout(hideout_form)
-        self.hideout_preview_button = QPushButton("試聴")
+        self.hideout_preview_button = QPushButton("Preview")
         self.hideout_preview_button.clicked.connect(self._preview_hideout_audio)
         hideout_layout.addWidget(self.hideout_preview_button)
         self.hideout_note = QLabel(
-            "集中モード中、隠れ家に設定時間滞在すると通知音でお知らせします。\n"
-            "通知音は、同梱音から選択できます。\n"
-            "選択ボタンから任意のWAVまたはMP3ファイルにも変更可能です。\n"
-            "音量50が音本来の大きさで、50より上は増幅します。"
+            "In focus mode, plays an alert sound when you stay in your hideout for the set time.\n"
+            "You can choose from the bundled sounds.\n"
+            "You can also pick any WAV or MP3 file with the Choose button.\n"
+            "Volume 50 is the original loudness; above 50 amplifies it."
         )
         self.hideout_note.setProperty("uiRole", "muted")
         self.hideout_note.setWordWrap(True)
@@ -368,13 +368,13 @@ class PoetoreSettingsDialog(QDialog):
         self._hideout_preview_player = None
         basic_layout.addWidget(hideout_group)
 
-        trade_group = QGroupBox("価格データ")
+        trade_group = QGroupBox("Price Data")
         trade_layout = QVBoxLayout(trade_group)
         trade_form = QFormLayout()
         self.league_combo = QComboBox()
         self.league_combo.setEditable(True)
         self.league_combo.setToolTip(
-            "一覧から選択、またはプライベートリーグ名を直接入力"
+            "Choose from the list, or type a private league name"
         )
         league_key = "league_poe2" if self.poe_version == POE2 else "league"
         saved_league = str(poetore.get(league_key, "auto")).strip() or "auto"
@@ -384,12 +384,12 @@ class PoetoreSettingsDialog(QDialog):
                 default_pc_league as poe2_default_pc_league,
             )
             auto_league = poe2_default_pc_league(FALLBACK_LEAGUES)
-            self.league_combo.addItem(f"自動（現行SC: {auto_league}）", "auto")
+            self.league_combo.addItem(f"Auto (current SC: {auto_league})", "auto")
             for league in FALLBACK_LEAGUES:
-                label = f"{league.id}（HC）" if league.hardcore else league.id
+                label = f"{league.id} (HC)" if league.hardcore else league.id
                 self.league_combo.addItem(label, league.id)
         else:
-            self.league_combo.addItem("自動（現行SCを取得中）", "auto")
+            self.league_combo.addItem("Auto (fetching current SC)", "auto")
         if saved_league != "auto" and self.league_combo.findData(saved_league) < 0:
             self.league_combo.addItem(saved_league, saved_league)
         if saved_league != "auto":
@@ -398,18 +398,18 @@ class PoetoreSettingsDialog(QDialog):
         league_row.setContentsMargins(0, 0, 0, 0)
         league_row.setSpacing(6)
         league_row.addWidget(self.league_combo, 1)
-        self.league_refresh_button = QPushButton("再取得")
+        self.league_refresh_button = QPushButton("Refresh")
         self.league_refresh_button.setObjectName("leagueRefreshButton")
-        self.league_refresh_button.setToolTip("公式サイトからリーグ一覧を再取得")
+        self.league_refresh_button.setToolTip("Re-fetch the league list from the official site")
         self.league_refresh_button.setFixedWidth(72)
         self.league_refresh_button.clicked.connect(
             lambda: self._refresh_trade_leagues(force_refresh=True)
         )
         league_row.addWidget(self.league_refresh_button)
-        trade_form.addRow("リーグ:", league_row)
+        trade_form.addRow("League:", league_row)
         trade_layout.addLayout(trade_form)
         league_note = QLabel(
-            "プライベートリーグで使う場合は、リーグ名を直接手打ちで入力してください。"
+            "For a private league, type the league name directly."
         )
         league_note.setObjectName("privateLeagueNote")
         league_note.setProperty("uiRole", "muted")
@@ -417,12 +417,12 @@ class PoetoreSettingsDialog(QDialog):
         trade_layout.addWidget(league_note)
         basic_layout.addWidget(trade_group)
 
-        display_group = QGroupBox("検索結果・マップチェック画面")
+        display_group = QGroupBox("Search Results and Map Check Window")
         display_form = QFormLayout(display_group)
         self.result_font_size_combo = QComboBox()
-        self.result_font_size_combo.addItem("小", "small")
-        self.result_font_size_combo.addItem("中", "medium")
-        self.result_font_size_combo.addItem("大", "large")
+        self.result_font_size_combo.addItem("Small", "small")
+        self.result_font_size_combo.addItem("Medium", "medium")
+        self.result_font_size_combo.addItem("Large", "large")
         saved_result_font_size = str(
             poetore.get("result_font_size", "medium")
         ).casefold()
@@ -433,18 +433,18 @@ class PoetoreSettingsDialog(QDialog):
             result_font_index if result_font_index >= 0
             else self.result_font_size_combo.findData("medium")
         )
-        display_form.addRow("フォントサイズ:", self.result_font_size_combo)
+        display_form.addRow("Font size:", self.result_font_size_combo)
         display_note = QLabel(
-            "文字に合わせてボタンや入力欄、検索結果ウィンドウの大きさも調整します。"
+            "Buttons, input fields, and the results window are resized to match the text."
         )
         display_note.setObjectName("resultFontSizeNote")
         display_note.setProperty("uiRole", "muted")
         display_note.setWordWrap(True)
         display_form.addRow("", display_note)
         self._reset_result_positions = False
-        self.reset_result_positions_button = QPushButton("手動位置をリセット")
+        self.reset_result_positions_button = QPushButton("Reset Manual Position")
         self.reset_result_positions_button.setToolTip(
-            "スタッシュ側・インベントリ側に保存した検索結果位置を両方消去します"
+            "Clears both saved result positions (stash side and inventory side)"
         )
         self.reset_result_positions_button.clicked.connect(
             self._mark_result_positions_for_reset
@@ -455,15 +455,15 @@ class PoetoreSettingsDialog(QDialog):
         reset_row.addWidget(self.reset_result_positions_button)
         reset_row.addWidget(self.result_positions_reset_note)
         reset_row.addStretch()
-        display_form.addRow("検索結果の位置:", reset_row)
+        display_form.addRow("Results position:", reset_row)
         basic_layout.addWidget(display_group)
 
         obs_streaming = poetore.get("obs_streaming", {})
         obs_streaming = obs_streaming if isinstance(obs_streaming, dict) else {}
-        obs_group = QGroupBox("OBS配信")
+        obs_group = QGroupBox("OBS Streaming")
         obs_layout = QVBoxLayout(obs_group)
         self.obs_streaming_enabled_cb = QCheckBox(
-            "検索結果ウィンドウをOBS配信用にする"
+            "Use the results window for OBS streaming"
         )
         self.obs_streaming_enabled_cb.setObjectName("obsStreamingEnabled")
         self.obs_streaming_enabled_cb.setChecked(
@@ -472,18 +472,18 @@ class PoetoreSettingsDialog(QDialog):
         obs_layout.addWidget(self.obs_streaming_enabled_cb)
         self.obs_title_bar_opacity_slider = self._slider_row(
             obs_layout,
-            "透過率:",
+            "Transparency:",
             obs_streaming.get("title_bar_opacity", 100),
             0,
         )
         self.obs_title_bar_opacity_slider.setObjectName("obsTitleBarOpacity")
         self.obs_title_bar_opacity_slider.setToolTip(
-            "待機中に表示される「ぽえとれ検索ウィンドウ」バーの透過率"
+            "Transparency of the \"PoETore search window\" bar shown while idle"
         )
         obs_note = QLabel(
-            "待機中はタイトルバーだけを表示し、検索すると検索結果を当該タイトルバーの下に"
-            "展開します。OBSでは「ぽえとれ - 検索結果ウィンドウ」として認識されます。\n"
-            "待機中のタイトルバーは透過率を変更できます。"
+            "While idle, only the title bar is shown; when you search, results expand below "
+            "that title bar. OBS sees it as \"PoETore - Search Results\".\n"
+            "You can change the transparency of the idle title bar."
         )
         obs_note.setObjectName("obsStreamingNote")
         obs_note.setProperty("uiRole", "muted")
@@ -491,21 +491,21 @@ class PoetoreSettingsDialog(QDialog):
         obs_layout.addWidget(obs_note)
         basic_layout.addWidget(obs_group)
 
-        window_group = QGroupBox("ウィンドウ設定（本体・共通UI）")
+        window_group = QGroupBox("Window Settings (main and shared UI)")
         window_layout = QVBoxLayout(window_group)
         self.opacity_slider = self._slider_row(
-            window_layout, "透過率:", self.current_config.get("window_opacity", 100), 5
+            window_layout, "Transparency:", self.current_config.get("window_opacity", 100), 5
         )
         self.text_opacity_slider = self._slider_row(
-            window_layout, "文字透過率:", self.current_config.get("text_opacity", 100), 0
+            window_layout, "Text transparency:", self.current_config.get("text_opacity", 100), 0
         )
-        self.window_lock_check = QCheckBox("ウィンドウの移動・リサイズを禁止する")
+        self.window_lock_check = QCheckBox("Lock window position and size")
         self.window_lock_check.setChecked(self.current_config.get("window_locked", False))
         window_layout.addWidget(self.window_lock_check)
-        self.always_on_top_check = QCheckBox("常に最前面に表示する")
+        self.always_on_top_check = QCheckBox("Always on top")
         self.always_on_top_check.setChecked(self.current_config.get("always_on_top", True))
         window_layout.addWidget(self.always_on_top_check)
-        self.snap_right_edge_cb = QCheckBox("起動時にモニター右端に配置")
+        self.snap_right_edge_cb = QCheckBox("Place at the right edge of the monitor on launch")
         self.snap_right_edge_cb.setChecked(
             self.current_config.get("snap_to_right_edge", False)
         )
@@ -516,22 +516,22 @@ class PoetoreSettingsDialog(QDialog):
         screens = QApplication.screens()
         for index, screen in enumerate(screens):
             geometry = screen.geometry()
-            name = f"モニター {index + 1}（{geometry.width()}x{geometry.height()}）"
+            name = f"Monitor {index + 1} ({geometry.width()}x{geometry.height()})"
             if screen == QApplication.primaryScreen():
-                name += " [メイン]"
+                name += " [Primary]"
             self.monitor_combo.addItem(name, index)
         current_monitor = int(self.current_config.get("display_monitor", 0))
         if 0 <= current_monitor < len(screens):
             self.monitor_combo.setCurrentIndex(current_monitor)
-        monitor_row.addRow("起動時の配置先:", self.monitor_combo)
+        monitor_row.addRow("Launch position:", self.monitor_combo)
         window_layout.addLayout(monitor_row)
         self.monitor_combo.setEnabled(self.snap_right_edge_cb.isChecked())
         self.snap_right_edge_cb.toggled.connect(self.monitor_combo.setEnabled)
         basic_layout.addWidget(window_group)
 
         note = QLabel(
-            "変更は保存後すぐ反映されます。起動モードを変更した場合は、"
-            "保存後に再起動を確認します。"
+            "Changes take effect as soon as you save. If you changed the launch mode, "
+            "you will be asked to restart after saving."
         )
         note.setWordWrap(True)
         note.setObjectName("settingsNote")
@@ -542,24 +542,24 @@ class PoetoreSettingsDialog(QDialog):
         basic_scroll.setWidgetResizable(True)
         basic_scroll.setFrameShape(QScrollArea.NoFrame)
         basic_scroll.setWidget(basic_tab)
-        tabs.addTab(basic_scroll, "基本設定")
+        tabs.addTab(basic_scroll, "General")
         self.custom_commands_widget = CustomCommandSettingsWidget(
             self.current_config.get("custom_commands", []), theme=self.theme
         )
-        tabs.insertTab(1, self.custom_commands_widget, "任意コマンド設定")
+        tabs.insertTab(1, self.custom_commands_widget, "Custom Commands")
         self.app_info_widget = AppInfoWidget(
             self.theme,
             update_check_callback=self.update_check_callback,
         )
-        tabs.addTab(self.app_info_widget, "アプリ情報")
+        tabs.addTab(self.app_info_widget, "About")
         root.addWidget(tabs)
 
         self.footer_layout = QHBoxLayout()
         self.footer_layout.addStretch()
-        self.cancel_button = QPushButton("キャンセル")
+        self.cancel_button = QPushButton("Cancel")
         self.cancel_button.setProperty("buttonRole", "secondary")
         self.cancel_button.clicked.connect(self.reject)
-        self.save_button = QPushButton("保存")
+        self.save_button = QPushButton("Save")
         self.save_button.setProperty("buttonRole", "primary")
         self.save_button.setDefault(True)
         self.save_button.clicked.connect(self.accept)
@@ -607,7 +607,7 @@ class PoetoreSettingsDialog(QDialog):
             return
         self._league_refresh_started = True
         self.league_refresh_button.setEnabled(False)
-        self.league_refresh_button.setText("取得中…")
+        self.league_refresh_button.setText("Fetching…")
 
         def run():
             try:
@@ -631,7 +631,7 @@ class PoetoreSettingsDialog(QDialog):
     def _show_trade_leagues(self, leagues):
         self._league_refresh_started = False
         self.league_refresh_button.setEnabled(True)
-        self.league_refresh_button.setText("再取得")
+        self.league_refresh_button.setText("Refresh")
         saved = self._league_selection_value()
         if self.poe_version == POE2:
             from src.poetore.poe2.trade import (
@@ -642,9 +642,9 @@ class PoetoreSettingsDialog(QDialog):
             auto_league = default_pc_league(tuple(leagues))
         self.league_combo.blockSignals(True)
         self.league_combo.clear()
-        self.league_combo.addItem(f"自動（現行SC: {auto_league}）", "auto")
+        self.league_combo.addItem(f"Auto (current SC: {auto_league})", "auto")
         for league in leagues:
-            label = f"{league.id}（HC）" if league.hardcore else league.id
+            label = f"{league.id} (HC)" if league.hardcore else league.id
             self.league_combo.addItem(label, league.id)
         if saved != "auto" and self.league_combo.findData(saved) < 0:
             self.league_combo.addItem(saved, saved)
@@ -697,7 +697,7 @@ class PoetoreSettingsDialog(QDialog):
         supported = is_feature_supported(POETORE, self.poe_version)
         poetore_radio = self.app_mode_radios[POETORE_MODE]
         poetore_radio.setEnabled(supported)
-        poetore_radio.setToolTip("" if supported else "PoE2版は現在テスト中です")
+        poetore_radio.setToolTip("" if supported else "The PoE2 version is currently in testing")
         if not supported:
             if poetore_radio.isChecked():
                 self.app_mode_radios[POENAVI_MODE].setChecked(True)
@@ -819,7 +819,7 @@ class PoetoreSettingsDialog(QDialog):
             button.setIcon(_duration_step_icon(direction, self.theme))
             button.setIconSize(QSize(16, 16))
             button.setAccessibleName(
-                f"{step_label}{'増やす' if delta > 0 else '減らす'}"
+                f"{step_label}{'Increase' if delta > 0 else 'Decrease'}"
             )
             button.setToolTip(button.accessibleName())
             button.clicked.connect(
@@ -867,7 +867,7 @@ class PoetoreSettingsDialog(QDialog):
     def _refresh_hideout_volume_label(self, *_args):
         value = self.hideout_volume_slider.value()
         self.hideout_volume_label.setText(
-            f"{value}（標準）" if value == 50 else str(value)
+            f"{value} (default)" if value == 50 else str(value)
         )
 
     def _refresh_hideout_sound_combo(self):
@@ -877,7 +877,7 @@ class PoetoreSettingsDialog(QDialog):
             self.hideout_sound_combo.addItem(label, sound_id)
         if self._hideout_audio_file:
             self.hideout_sound_combo.addItem(
-                f"カスタム音：{self._hideout_audio_display_name}", "custom"
+                f"Custom sound: {self._hideout_audio_display_name}", "custom"
             )
         selected = (
             "custom"
@@ -891,7 +891,7 @@ class PoetoreSettingsDialog(QDialog):
         self.hideout_sound_combo.blockSignals(False)
 
     def _refresh_hideout_custom_sound_name(self):
-        name = self._hideout_audio_display_name or "未選択"
+        name = self._hideout_audio_display_name or "None selected"
         self.hideout_custom_sound_name.setText(name)
         self.hideout_custom_sound_name.setToolTip(name)
 
@@ -906,7 +906,7 @@ class PoetoreSettingsDialog(QDialog):
 
     def _select_hideout_audio(self):
         source, _selected_filter = QFileDialog.getOpenFileName(
-            self, "通知音を選択", "", "音ファイル (*.wav *.mp3)"
+            self, "Choose Alert Sound", "", "Audio files (*.wav *.mp3)"
         )
         if not source:
             return
@@ -923,7 +923,7 @@ class PoetoreSettingsDialog(QDialog):
 
     def _select_hideout_log_path(self):
         source, _selected_filter = QFileDialog.getOpenFileName(
-            self, "Client.txtを選択", "", "PoEクライアントログ (Client.txt)"
+            self, "Select Client.txt", "", "PoE client log (Client.txt)"
         )
         if source:
             self.hideout_log_path_edit.setText(source)
@@ -952,7 +952,7 @@ class PoetoreSettingsDialog(QDialog):
 
     def _show_hideout_audio_message(self, icon, text):
         message = QMessageBox(self)
-        message.setWindowTitle("通知音")
+        message.setWindowTitle("Alert sound")
         message.setIcon(icon)
         message.setText(str(text))
         message.setStandardButtons(QMessageBox.Ok)
@@ -966,7 +966,7 @@ class PoetoreSettingsDialog(QDialog):
 
     def _mark_result_positions_for_reset(self):
         self._reset_result_positions = True
-        self.result_positions_reset_note.setText("保存時にリセットします")
+        self.result_positions_reset_note.setText("Will reset on save")
         self.reset_result_positions_button.setEnabled(False)
 
     def accept(self):
@@ -992,15 +992,15 @@ class PoetoreSettingsDialog(QDialog):
         duplicates = find_duplicate_hotkeys(hotkeys)
         if duplicates:
             labels = {
-                "exit": "キャラクター選択へ戻る",
-                "monastery": "修道院へ移動",
-                "poetore_capture": "ぽえとれ検索（操作モード）",
-                "poetore_auto_hide": "ぽえとれ検索（AUTO-HIDE）",
-                "expedition_reward_ocr": "エクスペディション報酬読取",
-                "desecration_tier_ocr": "アビス冒涜Modティア読取",
-                "heist_curio_ocr": "ハイスト報酬読取",
-                "map_check": "Map Modチェック",
-                "cheat_sheets_toggle": "Cheat sheets表示",
+                "exit": "Return to character select",
+                "monastery": "Go to monastery",
+                "poetore_capture": "PoETore search (interactive mode)",
+                "poetore_auto_hide": "PoETore search (AUTO-HIDE)",
+                "expedition_reward_ocr": "Expedition reward capture",
+                "desecration_tier_ocr": "Abyss desecrated mod tier capture",
+                "heist_curio_ocr": "Heist reward capture",
+                "map_check": "Map mod check",
+                "cheat_sheets_toggle": "Show cheat sheets",
             }
             details = "\n".join(
                 f"{key}: {'、'.join(labels[action] for action in actions)}"
@@ -1008,8 +1008,8 @@ class PoetoreSettingsDialog(QDialog):
             )
             QMessageBox.warning(
                 self,
-                "ホットキー重複",
-                f"同じキーが複数の操作に設定されています。\n\n{details}",
+                "Duplicate Hotkey",
+                f"The same key is assigned to multiple actions.\n\n{details}",
             )
             return
         super().accept()

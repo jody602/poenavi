@@ -182,7 +182,7 @@ def load_curio_items(path: Path | None = None) -> tuple[CurioItem, ...]:
     source = path or curio_dictionary_path()
     payload = json.loads(source.read_text(encoding="utf-8"))
     if payload.get("schema_version") != 1:
-        raise ValueError("未対応のハイスト報酬辞書です。")
+        raise ValueError("Unsupported Heist reward dictionary.")
     items = tuple(
         CurioItem(
             stable_id=str(row["stable_id"]),
@@ -201,7 +201,7 @@ def load_curio_items(path: Path | None = None) -> tuple[CurioItem, ...]:
         for row in payload.get("items", ())
     )
     if not items or len({item.stable_id for item in items}) != len(items):
-        raise ValueError("ハイスト報酬辞書が空か、安定IDが重複しています。")
+        raise ValueError("The Heist reward dictionary is empty or has duplicate stable IDs.")
     return items
 
 
@@ -212,7 +212,7 @@ def load_curio_unique_mod_templates(
     source = path or curio_unique_mod_templates_path()
     payload = json.loads(source.read_text(encoding="utf-8"))
     if payload.get("schema_version") != 1:
-        raise ValueError("未対応のハイストユニークMod辞書です。")
+        raise ValueError("Unsupported Heist unique mod dictionary.")
     templates = {
         str(row["stable_id"]): CurioUniqueModTemplate(
             stable_id=str(row["stable_id"]),
@@ -223,7 +223,7 @@ def load_curio_unique_mod_templates(
         for row in payload.get("items", ())
     }
     if len(templates) != 101:
-        raise ValueError("ハイストユニークMod辞書は101件である必要があります。")
+        raise ValueError("The Heist unique mod dictionary must have 101 entries.")
     return templates
 
 
@@ -241,7 +241,7 @@ def load_trinket_mod_definitions(
     source = path or trinket_mod_dictionary_path()
     payload = json.loads(source.read_text(encoding="utf-8"))
     if payload.get("schema_version") != 1:
-        raise ValueError("未対応の盗賊のトリンケットMod辞書です。")
+        raise ValueError("Unsupported Rogue's Trinket mod dictionary.")
     rows = tuple(payload.get("mods", ()))
     normalized = tuple(normalize_trinket_mod_text(row["text_ja"]) for row in rows)
     definitions = tuple(
@@ -261,12 +261,12 @@ def load_trinket_mod_definitions(
         for index, row in enumerate(rows)
     )
     if len(definitions) != 39 or len({row.stat_id for row in definitions}) != 39:
-        raise ValueError("盗賊のトリンケットMod辞書は39種類である必要があります。")
+        raise ValueError("The Rogue's Trinket mod dictionary must have 39 entries.")
     if any(
         not row.valid_values or not normalize_trinket_mod_text(row.text_ja)
         for row in definitions
     ):
-        raise ValueError("盗賊のトリンケットMod辞書に不完全な項目があります。")
+        raise ValueError("The Rogue's Trinket mod dictionary has incomplete entries.")
     return definitions
 
 
@@ -360,7 +360,7 @@ def trinket_mod_filters(matches: Sequence[TrinketModMatch]):
             kind="explicit",
             enabled=False,
             max_value=None,
-            selection_reason="盗賊のトリンケットOCR",
+            selection_reason="Rogue's Trinket OCR",
         )
         for match in matches
     )
@@ -385,7 +385,7 @@ def curio_unique_mod_filters(stable_id: str):
             inverted=bool(row.get("inverted", False)),
             better=(int(row["better"]) if row.get("better") is not None else None),
             decimal=bool(row.get("decimal", False)),
-            selection_reason="ハイストユニーク固定Mod候補",
+            selection_reason="Heist unique fixed mod candidate",
         )
         for row in template.filters
     )
@@ -662,10 +662,10 @@ def image_bytes(image: QImage, image_format: str = "BMP") -> bytes:
     data = QByteArray()
     buffer = QBuffer(data)
     if not buffer.open(QIODevice.OpenModeFlag.WriteOnly):
-        raise RuntimeError("OCR画像用メモリを開けませんでした。")
+        raise RuntimeError("Could not open memory for the OCR image.")
     try:
         if not image.save(buffer, image_format):
-            raise RuntimeError("OCR画像をメモリへ変換できませんでした。")
+            raise RuntimeError("Could not convert the OCR image in memory.")
     finally:
         buffer.close()
     return bytes(data)
@@ -673,7 +673,7 @@ def image_bytes(image: QImage, image_format: str = "BMP") -> bytes:
 
 def prepare_curio_ocr_image(image: QImage) -> bytes:
     if image.isNull():
-        raise ValueError("読取画像が空です。")
+        raise ValueError("The captured image is empty.")
     scaled = image.scaled(
         image.width() * CURIO_OCR_SCALE,
         image.height() * CURIO_OCR_SCALE,
@@ -715,7 +715,7 @@ class CurioRegionSelector(QDialog):
         self.client_rect = QRect(client_rect)
         self._origin: QPoint | None = None
         self._selection = QRect()
-        self.setWindowTitle("ハイスト報酬の読取範囲を指定")
+        self.setWindowTitle("Set the Heist Reward Capture Area")
         self.setWindowFlags(
             Qt.WindowType.Dialog
             | Qt.WindowType.FramelessWindowHint
@@ -761,8 +761,8 @@ class CurioRegionSelector(QDialog):
             if self.selected_rect is None:
                 QMessageBox.warning(
                     self,
-                    "範囲を確認してください",
-                    "報酬名・ベースタイプ・青いModを含む範囲を選択してください。",
+                    "Check the Area",
+                    "Select an area that includes the reward name, base type, and blue mods.",
                 )
                 return
             self.accept()
@@ -786,8 +786,8 @@ class CurioRegionSelector(QDialog):
         painter.drawText(
             self.rect().adjusted(20, 20, -20, -20),
             Qt.AlignmentFlag.AlignTop | Qt.AlignmentFlag.AlignHCenter,
-            "報酬名・ベースタイプ・青いMod全体を囲んでください\n"
-            "ドラッグ終了: 確定 / Esc: キャンセル",
+            "Select the reward name, base type, and all blue mods\n"
+            "Release to confirm / Esc: Cancel",
         )
 
 
@@ -852,11 +852,11 @@ class HeistCurioController(QObject):
         if self._scan_coordinator is not None and not self._scan_coordinator.try_begin(
             "heist_curio"
         ):
-            self.failed.emit("別の画面読み取り処理中です。")
+            self.failed.emit("Another screen read is in progress.")
             return False
         client_rect = path_of_exile_client_rect()
         if client_rect is None:
-            self._finish_error("Path of Exileのゲーム画面が見つかりませんでした。")
+            self._finish_error("Could not find the Path of Exile game window.")
             return False
         self._running = True
         self._generation += 1
@@ -871,14 +871,14 @@ class HeistCurioController(QObject):
         QGuiApplication.processEvents()
         image = self._grab(capture_rect)
         if image.isNull():
-            self._finish_error("ゲーム画面をキャプチャできませんでした。")
+            self._finish_error("Could not capture the game screen.")
             return False
         try:
             payload = prepare_curio_ocr_image(image)
         except Exception as exc:  # noqa: BLE001 - image conversion errors are user-facing
             self._finish_error(str(exc))
             return False
-        self.status.emit("ハイスト報酬を読み取っています…")
+        self.status.emit("Reading Heist reward…")
         threading.Thread(
             target=self._process,
             args=(payload, placement, capture_rect, generation),
@@ -942,8 +942,8 @@ class HeistCurioController(QObject):
                     self.high_accuracy_finished.emit()
             if match is None:
                 raise RuntimeError(
-                    "報酬名を安全に特定できませんでした。"
-                    "範囲を変えてもう一度お試しください。"
+                    "Could not reliably identify the reward name. "
+                    "Adjust the area and try again."
                 )
             if match.item.category == "trinket":
                 match = replace(
@@ -985,15 +985,15 @@ class HeistCurioController(QObject):
 
             self._high_accuracy_overlay = HighAccuracyOcrStatusOverlay()
         lines = [
-            "通常の読み取りだけでは報酬を安全に確認できませんでした",
+            "Standard reading could not reliably confirm the reward",
             (
-                "高精度OCRを準備しています…"
+                "Preparing high-accuracy OCR…"
                 if cold_start
-                else "高精度OCRで再確認しています…"
+                else "Rechecking with high-accuracy OCR…"
             ),
         ]
         if cold_start:
-            lines.append("初回のみ10～15秒ほどかかります")
+            lines.append("The first run takes about 10–15 seconds")
         self._high_accuracy_overlay.show_status(client_rect, capture_rect, lines)
 
     def _hide_high_accuracy_status(self) -> None:

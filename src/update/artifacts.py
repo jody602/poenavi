@@ -32,7 +32,7 @@ def _validate_url(url: str) -> None:
 
     parsed = urlparse(url)
     if parsed.scheme != "https" or parsed.hostname not in GITHUB_HOSTS:
-        raise ValueError("GitHub 管理外のダウンロード URL です")
+        raise ValueError("Download URL is not hosted on GitHub")
 
 
 class _GitHubRedirectHandler(urllib.request.HTTPRedirectHandler):
@@ -86,7 +86,7 @@ def download_file(
 def parse_checksum(text: str, filename: str = "PoENavi.zip") -> str:
     match = CHECKSUM_PATTERN.fullmatch(text.strip())
     if not match or Path(match.group(2)).name != filename:
-        raise ValueError("チェックサムファイルの形式が不正です")
+        raise ValueError("Invalid checksum file format")
     return match.group(1).lower()
 
 
@@ -119,7 +119,7 @@ def validate_update_archive(
         entries = archive.infolist()
         if len(entries) > max_entries:
             raise ValueError(
-                f"更新 ZIP のファイル数が上限を超えています: {len(entries)}"
+                f"Update ZIP contains too many files: {len(entries)}"
             )
 
         names = set()
@@ -134,24 +134,24 @@ def validate_update_archive(
                 or pure_path.is_absolute()
                 or re.match(r"^[A-Za-z]:", name)
             ):
-                raise ValueError(f"危険な ZIP エントリーです: {name}")
+                raise ValueError(f"Unsafe ZIP entry: {name}")
             unix_mode = info.external_attr >> 16
             if unix_mode and (unix_mode & 0o170000) == 0o120000:
-                raise ValueError(f"リンクを含む ZIP は使用できません: {name}")
+                raise ValueError(f"ZIPs containing links are not allowed: {name}")
 
             if info.file_size > max_single_file_size:
                 raise ValueError(
-                    f"更新 ZIP 内のファイルがサイズ上限を超えています: {name}"
+                    f"A file in the update ZIP exceeds the size limit: {name}"
                 )
             total_size += info.file_size
             if total_size > max_total_size:
-                raise ValueError("更新 ZIP の展開後サイズが上限を超えています")
+                raise ValueError("Extracted size of the update ZIP exceeds the limit")
 
             if info.file_size >= min_ratio_check_size:
                 ratio = info.file_size / max(info.compress_size, 1)
                 if ratio > max_compression_ratio:
                     raise ValueError(
-                        f"更新 ZIP に異常な圧縮率のファイルがあります: {name}"
+                        f"Update ZIP contains a file with an abnormal compression ratio: {name}"
                     )
             names.add(name.rstrip("/"))
 
@@ -159,6 +159,6 @@ def validate_update_archive(
     has_root_layout = root_required <= names
     if has_wrapped_layout == has_root_layout:
         raise ValueError(
-            "更新 ZIP の配置が不正です: PoENavi.exe と "
-            "PoENaviUpdater.exe が同じ階層に必要です"
+            "Invalid update ZIP layout: PoENavi.exe and "
+            "PoENaviUpdater.exe must be in the same folder"
         )

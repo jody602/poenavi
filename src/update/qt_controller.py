@@ -106,7 +106,7 @@ class UpdateController(QObject):
                 )
                 if not verify_sha256(archive, expected):
                     raise ValueError(
-                        "ダウンロードした ZIP の SHA-256 が一致しません。"
+                        "SHA-256 of the downloaded ZIP does not match."
                     )
                 validate_update_archive(archive)
                 self._ready_archive = archive
@@ -148,13 +148,13 @@ class UpdateController(QObject):
     def launch_updater(self, archive: Path) -> None:
         if not getattr(sys, "frozen", False) or sys.platform != "win32":
             raise RuntimeError(
-                "自動更新は Windows exe 版でのみ利用できます。"
+                "Auto-update is only available in the Windows exe version."
             )
 
         install_dir = Path(sys.executable).resolve().parent
         source = install_dir / "PoENaviUpdater.exe"
         if not source.is_file():
-            raise RuntimeError("PoENaviUpdater.exe が見つかりません。")
+            raise RuntimeError("PoENaviUpdater.exe was not found.")
 
         updater_work = Path(tempfile.mkdtemp(prefix="PoENavi-Updater-"))
         updater_work.mkdir(parents=True, exist_ok=True)

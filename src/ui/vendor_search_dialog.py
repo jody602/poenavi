@@ -37,10 +37,10 @@ class VendorSearchPresetDialog(QDialog):
     """ベンダー検索プリセット編集ダイアログ"""
 
     DEFAULT_PRESETS = [
-        {"name": "新規プリセット", "query": "", "enabled": True},
+        {"name": "New preset", "query": "", "enabled": True},
     ]
     POE1_DEFAULT_PRESETS = [
-        {"name": "3リンク（色問わず）", "query": r"-\w-", "enabled": True},
+        {"name": "3-link (any color)", "query": r"-\w-", "enabled": True},
     ]
     MAX_SEARCH_QUERY_LENGTH = 250
 
@@ -105,7 +105,7 @@ class VendorSearchPresetDialog(QDialog):
         title_layout = QHBoxLayout(title_bar)
         title_layout.setContentsMargins(4, 0, 4, 0)
         self.title_label = QLabel(
-            "🔍 PoE1 店売り検索プリセット" if self.poe_version == POE1 else "🔍 PoE2 店売り・スタッシュ検索プリセット"
+            "🔍 PoE1 Vendor Search Presets" if self.poe_version == POE1 else "🔍 PoE2 Vendor and Stash Search Presets"
         )
         self.title_label.setStyleSheet(f"color: {Styles.TEXT_COLOR}; font-size: 15px; font-weight: bold; border: none;")
         title_layout.addWidget(self.title_label)
@@ -120,9 +120,9 @@ class VendorSearchPresetDialog(QDialog):
         title_layout.addWidget(self.close_button)
         container_layout.addWidget(title_bar)
 
-        hint_text = "左は一覧表示です。表示名・検索文字列は右側の編集枠で調整します。有効にチェックをつけたプリセットだけが検索ホットキー時のメニューに表示されます。"
+        hint_text = "The list is on the left; edit the display name and search text in the panel on the right. Only presets marked Enabled appear in the search hotkey menu."
         if self.poe_version == POE1:
-            hint_text += " PoE1ではAct中の3リンク装備購入など、ベンダー検索向けのプリセットを管理します。"
+            hint_text += " In PoE1, manage presets for vendor searches, such as buying 3-link gear during the campaign."
         self.hint_label = QLabel(hint_text)
         self.hint_label.setStyleSheet("color: #aaaaaa; font-size: 13px; border: none;")
         self.hint_label.setWordWrap(True)
@@ -142,7 +142,7 @@ class VendorSearchPresetDialog(QDialog):
         body_layout.addWidget(left_panel, stretch=9)
 
         self.table = QTableWidget(0, 3)
-        self.table.setHorizontalHeaderLabels(["有効", "表示名", "検索文字列"])
+        self.table.setHorizontalHeaderLabels(["Enabled", "Display Name", "Search Text"])
         self.table.setSelectionBehavior(QAbstractItemView.SelectRows)
         self.table.setSelectionMode(QAbstractItemView.SingleSelection)
         self.table.setAlternatingRowColors(True)
@@ -177,10 +177,10 @@ class VendorSearchPresetDialog(QDialog):
         btn_row.setSpacing(6)
         self.row_buttons = {}
         for label, handler in [
-            ("追加", self._add_row),
-            ("削除", self._delete_selected),
-            ("上へ", lambda: self._move_selected(-1)),
-            ("下へ", lambda: self._move_selected(1)),
+            ("Add", self._add_row),
+            ("Delete", self._delete_selected),
+            ("Up", lambda: self._move_selected(-1)),
+            ("Down", lambda: self._move_selected(1)),
         ]:
             btn = QPushButton(label)
             btn.setStyleSheet(Styles.BUTTON)
@@ -199,7 +199,7 @@ class VendorSearchPresetDialog(QDialog):
         right_layout.setSpacing(8)
         body_layout.addWidget(right_panel, stretch=16)
 
-        self.editor_title = QLabel("編集")
+        self.editor_title = QLabel("Edit")
         self.editor_title.setStyleSheet(f"color: {Styles.TEXT_COLOR}; font-size: 16px; font-weight: bold; border: none;")
         right_layout.addWidget(self.editor_title)
 
@@ -212,7 +212,7 @@ class VendorSearchPresetDialog(QDialog):
             }}
         """
 
-        name_label = QLabel("表示名")
+        name_label = QLabel("Display Name")
         name_label.setStyleSheet(label_style)
         right_layout.addWidget(name_label)
         self.name_edit = QLineEdit()
@@ -222,25 +222,25 @@ class VendorSearchPresetDialog(QDialog):
 
         query_header = QHBoxLayout()
         query_header.setContentsMargins(0, 0, 0, 0)
-        query_label = QLabel("検索文字列")
+        query_label = QLabel("Search Text")
         query_label.setStyleSheet(label_style)
         query_header.addWidget(query_label)
-        clear_query_btn = QPushButton("クリア")
+        clear_query_btn = QPushButton("Clear")
         clear_query_btn.setFixedHeight(24)
         clear_query_btn.setStyleSheet(Styles.BUTTON)
         clear_query_btn.clicked.connect(self._clear_query)
         query_header.addWidget(clear_query_btn)
         if self.poe_version == POE1:
-            self.gem_shop_query_btn = QPushButton("現在Actのジェムを追加")
+            self.gem_shop_query_btn = QPushButton("Add Current Act Gems")
             self.gem_shop_query_btn.setFixedHeight(24)
             self.gem_shop_query_btn.setStyleSheet(Styles.BUTTON)
-            self.gem_shop_query_btn.setToolTip("現在Actで購入対象のジェムRegexを、選択中の検索文字列へ追加します")
+            self.gem_shop_query_btn.setToolTip("Adds the regex for gems to buy in the current act to the selected search text")
             self.gem_shop_query_btn.clicked.connect(self._append_current_act_gem_shop_query)
             query_header.addWidget(self.gem_shop_query_btn)
-            self.all_act_gem_shop_query_btn = QPushButton("全Actのジェムを追加")
+            self.all_act_gem_shop_query_btn = QPushButton("Add All Act Gems")
             self.all_act_gem_shop_query_btn.setFixedHeight(24)
             self.all_act_gem_shop_query_btn.setStyleSheet(Styles.BUTTON)
-            self.all_act_gem_shop_query_btn.setToolTip("全Actで購入対象のジェムRegexを、選択中の検索文字列へ追加します")
+            self.all_act_gem_shop_query_btn.setToolTip("Adds the regex for gems to buy in all acts to the selected search text")
             self.all_act_gem_shop_query_btn.clicked.connect(self._append_all_act_gem_shop_query)
             query_header.addWidget(self.all_act_gem_shop_query_btn)
         query_header.addStretch()
@@ -255,21 +255,21 @@ class VendorSearchPresetDialog(QDialog):
         right_layout.addWidget(self.query_edit)
 
         if self.poe_version == POE1:
-            self.include_current_act_gems_cb = QCheckBox("貼り付け時に現在Actのジェムを追加")
+            self.include_current_act_gems_cb = QCheckBox("Add current act gems when pasting")
             self.include_current_act_gems_cb.setToolTip(
-                "F4メニューで選択した時点のジェムRegexを、保存済みの検索文字列へ追加します"
+                "Adds the gem regex at the time you choose from the F4 menu to the saved search text"
             )
             Styles.apply_checkbox_style(self.include_current_act_gems_cb)
             self.include_current_act_gems_cb.toggled.connect(self._editor_changed)
             right_layout.addWidget(self.include_current_act_gems_cb)
 
         if self.poe_version != POE1:
-            limit_note = "PoE2の検索窓は250文字が上限です。超過すると貼り付けができません。"
+            limit_note = "The PoE2 search box is limited to 250 characters. Longer text cannot be pasted."
             self.query_limit_note = QLabel(limit_note)
             self.query_limit_note.setStyleSheet("color: #aaaaaa; font-size: 12px; border: none;")
             right_layout.addWidget(self.query_limit_note)
 
-        self.helper_title = QLabel("PoE1検索作成支援（チェックすると検索文字列に追加）" if self.poe_version == POE1 else "正規表現の作成支援（チェックすると検索文字列に追加）")
+        self.helper_title = QLabel("PoE1 search builder (check to add to the search text)" if self.poe_version == POE1 else "Regex builder (check to add to the search text)")
         self.helper_title.setStyleSheet(f"color: {Styles.TEXT_COLOR}; font-size: 15px; font-weight: bold; border: none; margin-top: 4px;")
         right_layout.addWidget(self.helper_title)
 
@@ -322,9 +322,9 @@ class VendorSearchPresetDialog(QDialog):
 
         self.footer_layout = QHBoxLayout()
         self.footer_layout.addStretch()
-        self.cancel_button = QPushButton("閉じる")
+        self.cancel_button = QPushButton("Close")
         self.cancel_button.clicked.connect(self.close)
-        self.save_btn = QPushButton("保存")
+        self.save_btn = QPushButton("Save")
         self.save_btn.clicked.connect(self._save_presets)
         self.footer_layout.addWidget(self.cancel_button)
         self.footer_layout.addWidget(self.save_btn)
@@ -377,8 +377,8 @@ class VendorSearchPresetDialog(QDialog):
             if button.property("buttonRole") is None:
                 button.setProperty("buttonRole", "secondary")
         self.close_button.setProperty("buttonRole", "danger")
-        self.row_buttons["追加"].setProperty("buttonRole", "primary")
-        self.row_buttons["削除"].setProperty("buttonRole", "danger")
+        self.row_buttons["Add"].setProperty("buttonRole", "primary")
+        self.row_buttons["Delete"].setProperty("buttonRole", "danger")
         self.cancel_button.setProperty("buttonRole", "secondary")
         self.save_btn.setProperty("buttonRole", "primary")
         self._update_query_length_label()
@@ -386,7 +386,7 @@ class VendorSearchPresetDialog(QDialog):
     def _set_dirty(self, dirty=True):
         self._dirty = bool(dirty)
         if hasattr(self, "save_btn"):
-            self.save_btn.setText("保存 *" if self._dirty else "保存")
+            self.save_btn.setText("Save *" if self._dirty else "Save")
 
     def _update_query_length_label(self):
         if not hasattr(self, "query_length_label"):
@@ -417,63 +417,63 @@ class VendorSearchPresetDialog(QDialog):
         # 有効チェックのON/OFFも保存対象。
         self._set_dirty(True)
 
-    WEAPON_BASE_AND_CATEGORY = "武器ベース"
-    WEAPON_BASE_OR_CATEGORY = "武器ベース（OR条件）"
+    WEAPON_BASE_AND_CATEGORY = "Weapon Base"
+    WEAPON_BASE_OR_CATEGORY = "Weapon Base (OR)"
     WEAPON_BASE_OPTIONS = [
-        ("弓", "弓$"),
-        ("クロスボウ", "ロスボウ$"),
-        ("槍（スピア）", "スピア$"),
-        ("クォータースタッフ", "タースタッフ$"),
-        ("ワンド", "ワンド$"),
-        ("スタッフ", "(^|[^ー])スタッフ$"),
-        ("セプター", "プター$"),
-        ("片手メイス", "片手メイス$"),
-        ("両手メイス", "両手メイス$"),
-        ("タリスマン", "スマン$"),
-        ("矢筒", "矢筒$"),
-        ("盾", "盾$"),
-        ("バックラー", "ックラー$"),
-        ("フォーカス", "ォーカス$"),
+        ("Bow", "弓$"),
+        ("Crossbow", "ロスボウ$"),
+        ("Spear", "スピア$"),
+        ("Quarterstaff", "タースタッフ$"),
+        ("Wand", "ワンド$"),
+        ("Staff", "(^|[^ー])スタッフ$"),
+        ("Sceptre", "プター$"),
+        ("One Hand Mace", "片手メイス$"),
+        ("Two Hand Mace", "両手メイス$"),
+        ("Talisman", "スマン$"),
+        ("Quiver", "矢筒$"),
+        ("Shield", "盾$"),
+        ("Buckler", "ックラー$"),
+        ("Focus", "ォーカス$"),
     ]
 
     REGEX_HELPER_GROUPS = [
         (
-            "共通",
+            "Common",
             [
-            ("移動スピード+", "動ス"),
-            ("最大ライフ+", "大ラ"),
-            ("耐性+", "耐"),
-            ("スピリット+", "ト +"),
-            ("筋力", "筋"),
-            ("器用さ", "器"),
-            ("知性", "知"),
+            ("Movement Speed+", "動ス"),
+            ("Maximum Life+", "大ラ"),
+            ("Resistances+", "耐"),
+            ("Spirit+", "ト +"),
+            ("Strength", "筋"),
+            ("Dexterity", "器"),
+            ("Intelligence", "知"),
         ],
         ),
         (
-            "ビルド別",
+            "Build-specific",
             [
-            ("全ての近接スキルのレベル+", "接スキ"),
-            ("全ての投射物スキルのレベル+", "物スキ"),
-            ("全てのスペルスキル+", "てのス"),
-            ("火スペルスキル+", "火スペ"),
-            ("冷気スペルスキル+", "気スペ"),
-            ("雷スペルスキル+", "雷スペ"),
-            ("混沌スペルスキル+", "沌スペ"),
-            ("物理スペルスキル+", "理スペ"),
-            ("ミニオンスキル+", "てのミ"),
-            ("物理ダメージが#%増加する", "理ダ.*増"),
-            ("#の物理ダメージを追加する", "理.*ジを追"),
-            ("#の火ダメージを追加する", "火.*ジを追"),
-            ("#の冷気ダメージを追加する", "気.*ジを追"),
-            ("#の雷ダメージを追加する", "雷.*ジを追"),
-            ("#の物理ダメージをアタックに追加する", "理ダ.*をア"),
-            ("#の火ダメージをアタックに追加する", "火ダ.*をア"),
-            ("#の冷気ダメージをアタックに追加する", "気ダ.*をア"),
-            ("#の雷ダメージをアタックに追加する", "雷ダ.*をア"),
-            ("スペルダメージが#%増加する ", "ルダ.*増"),
-            ("ダメージの#%を追加火ダメ獲得", "加火"),
-            ("ダメージの#%を追加冷気ダメ獲得", "加冷"),
-            ("ダメージの#%を追加雷ダメ獲", "加雷"),
+            ("+Level of all Melee Skills", "接スキ"),
+            ("+Level of all Projectile Skills", "物スキ"),
+            ("+Level of all Spell Skills", "てのス"),
+            ("+Level of Fire Spell Skills", "火スペ"),
+            ("+Level of Cold Spell Skills", "気スペ"),
+            ("+Level of Lightning Spell Skills", "雷スペ"),
+            ("+Level of Chaos Spell Skills", "沌スペ"),
+            ("+Level of Physical Spell Skills", "理スペ"),
+            ("+Level of Minion Skills", "てのミ"),
+            ("#% increased Physical Damage", "理ダ.*増"),
+            ("Adds # Physical Damage", "理.*ジを追"),
+            ("Adds # Fire Damage", "火.*ジを追"),
+            ("Adds # Cold Damage", "気.*ジを追"),
+            ("Adds # Lightning Damage", "雷.*ジを追"),
+            ("Adds # Physical Damage to Attacks", "理ダ.*をア"),
+            ("Adds # Fire Damage to Attacks", "火ダ.*をア"),
+            ("Adds # Cold Damage to Attacks", "気ダ.*をア"),
+            ("Adds # Lightning Damage to Attacks", "雷ダ.*をア"),
+            ("#% increased Spell Damage ", "ルダ.*増"),
+            ("Gain #% of Damage as Extra Fire", "加火"),
+            ("Gain #% of Damage as Extra Cold", "加冷"),
+            ("Gain #% of Damage as Extra Lightning", "加雷"),
         ],
         ),
         (WEAPON_BASE_AND_CATEGORY, WEAPON_BASE_OPTIONS),
@@ -540,7 +540,7 @@ class VendorSearchPresetDialog(QDialog):
                 ('+1 phys wand', 'Litho'),
                 ('+1 chaos wand', 'Lord'),
                 ('Physical damage', 'Glint|Heav'),
-                ('フラット元素ダメージ', 'Heat|roste|Humm'),
+                ('Flat elemental damage', 'Heat|roste|Humm'),
                 ('Fire DOT multi', 'Earn'),
                 ('Cold DOT multi', 'Incl'),
                 ('Chaos DOT multi', 'Wani'),
@@ -564,44 +564,44 @@ class VendorSearchPresetDialog(QDialog):
     ]
 
     POE1_REGEX_HELPER_CATEGORY_LABELS = {
-        'Any links': '任意リンク・任意ソケット',
-        'Link colors (2L)': 'リンク色（2リンク）',
-        'Link colors (3L)': 'リンク色（3リンク）',
-        'Misc': 'その他',
-        'Movement Speed': '移動速度',
-        'Other Links': 'その他リンク',
-        'Weapon Bases': '武器ベース（上記の条件とOR条件で絞り込み。チェックした武器は条件に依らず、すべてハイライトされます）',
+        'Any links': 'Any links / any sockets',
+        'Link colors (2L)': 'Link colors (2-link)',
+        'Link colors (3L)': 'Link colors (3-link)',
+        'Misc': 'Misc',
+        'Movement Speed': 'Movement speed',
+        'Other Links': 'Other links',
+        'Weapon Bases': 'Weapon bases (OR with the conditions above; checked weapons are always highlighted regardless of other conditions)',
     }
 
     POE1_REGEX_HELPER_LABELS = {
-        'フラット元素ダメージ': 'フラット元素ダメージ',
-        '+1 chaos wand': '全ての混沌スペルスキル+1',
-        '+1 cold wand': '全ての冷気スペルスキル+1',
-        '+1 fire wand': '全ての火スペルスキル+1',
-        '+1 lightning wand': '全ての雷スペルスキル+1',
-        '+1 phys wand': '全ての物理スペルスキル+1',
-        '+1 wand (any)': '全てのスペルスキル+1',
-        'Any 3 link': '3リンク',
-        'Any 4 link': '4リンク',
-        'Any 5 link': '5リンク',
-        'Any 6 link': '6リンク',
-        'Any 6 socket': '6ソケット',
-        'Axe': '斧',
-        'Bow': '弓',
-        'Chaos DOT multi': '混沌継続ダメージ',
-        'Claw': '鉤爪',
-        'Cold DOT multi': '冷気継続ダメージ',
-        'Dagger': '短剣',
-        'Fire DOT multi': '火継続ダメージ',
-        'Mace': 'メイス',
-        'Movement speed (10%)': '移動スピード10%',
-        'Movement speed (15%)': '移動スピード15%',
-        'Physical damage': '物理ダメージ',
-        'Sceptre': 'セプター',
-        'Shield': '盾',
-        'Staff': 'スタッフ',
-        'Sword': '剣',
-        'Wand': 'ワンド',
+        'Flat elemental damage': 'Flat elemental damage',
+        '+1 chaos wand': '+1 to Level of all Chaos Spell Skills',
+        '+1 cold wand': '+1 to Level of all Cold Spell Skills',
+        '+1 fire wand': '+1 to Level of all Fire Spell Skills',
+        '+1 lightning wand': '+1 to Level of all Lightning Spell Skills',
+        '+1 phys wand': '+1 to Level of all Physical Spell Skills',
+        '+1 wand (any)': '+1 to Level of all Spell Skills',
+        'Any 3 link': '3-link',
+        'Any 4 link': '4-link',
+        'Any 5 link': '5-link',
+        'Any 6 link': '6-link',
+        'Any 6 socket': '6-socket',
+        'Axe': 'Axe',
+        'Bow': 'Bow',
+        'Chaos DOT multi': 'Chaos DoT multiplier',
+        'Claw': 'Claw',
+        'Cold DOT multi': 'Cold DoT multiplier',
+        'Dagger': 'Dagger',
+        'Fire DOT multi': 'Fire DoT multiplier',
+        'Mace': 'Mace',
+        'Movement speed (10%)': 'Movement speed 10%',
+        'Movement speed (15%)': 'Movement speed 15%',
+        'Physical damage': 'Physical damage',
+        'Sceptre': 'Sceptre',
+        'Shield': 'Shield',
+        'Staff': 'Staff',
+        'Sword': 'Sword',
+        'Wand': 'Wand',
         'b**': 'B●-＊-＊',
         'bb': 'B●-B●',
         'bb*': 'B●-B●-＊',
@@ -665,16 +665,16 @@ class VendorSearchPresetDialog(QDialog):
             return
         groups = self._load_regex_helper_groups()
         if not groups:
-            note = QLabel("REGEX支援候補が空です。")
+            note = QLabel("No regex builder options.")
             note.setStyleSheet("color: #ffaaaa; font-size: 13px; border: none;")
             parent_layout.addWidget(note)
             return
         for group_title, options in groups:
             section_text = group_title
             if group_title == self.WEAPON_BASE_AND_CATEGORY:
-                section_text = "武器ベース（共通・ビルド別とAND条件で絞り込み。チェックすると特定の武器に限定した検索文字列になります）"
+                section_text = "Weapon base (AND with Common/Build-specific; checking one limits the search text to that weapon type)"
             elif group_title == self.WEAPON_BASE_OR_CATEGORY:
-                section_text = "武器ベース（共通・ビルド別とOR条件で絞り込み。チェックした武器は共通・ビルド別の条件に依らず、すべてハイライトされます）"
+                section_text = "Weapon base (OR with Common/Build-specific; checked weapons are always highlighted regardless of those conditions)"
             section = QLabel(section_text)
             section.setStyleSheet(section_style)
             parent_layout.addWidget(section)
@@ -689,19 +689,19 @@ class VendorSearchPresetDialog(QDialog):
             for index, (label, token) in enumerate(options):
                 position = index + row_offset
                 if (
-                    group_title == "ビルド別"
+                    group_title == "Build-specific"
                     and not added_damage_row_aligned
-                    and "ダメージを追加" in label
-                    and "アタック" not in label
+                    and "Adds #" in label
+                    and "Attacks" not in label
                 ):
                     if position % columns != 0:
                         row_offset += columns - (position % columns)
                         position = index + row_offset
                     added_damage_row_aligned = True
                 if (
-                    group_title == "ビルド別"
+                    group_title == "Build-specific"
                     and not attack_row_aligned
-                    and "アタックに追加" in label
+                    and "to Attacks" in label
                 ):
                     if position % columns != 0:
                         row_offset += columns - (position % columns)
@@ -842,7 +842,7 @@ class VendorSearchPresetDialog(QDialog):
         row.setContentsMargins(0, 0, 0, 0)
         row.setSpacing(8)
 
-        enable_cb = QCheckBox("有効化")
+        enable_cb = QCheckBox("Enable")
         enable_cb.setMinimumHeight(28)
         enable_cb.setStyleSheet(checkbox_style + """
             QCheckBox { padding: 4px 8px; }
@@ -1267,7 +1267,7 @@ class VendorSearchPresetDialog(QDialog):
         provider = getattr(self, "gem_shop_query_provider", None)
         gem_query = provider() if callable(provider) else ""
         if not gem_query:
-            QMessageBox.information(self, "ジェムRegex", "現在Actに追加できるジェムRegexがありません。")
+            QMessageBox.information(self, "Gem Regex", "There is no gem regex to add for the current act.")
             return
         self._append_gem_shop_query(gem_query)
 
@@ -1275,7 +1275,7 @@ class VendorSearchPresetDialog(QDialog):
         provider = getattr(self, "all_act_gem_shop_query_provider", None)
         gem_query = provider() if callable(provider) else ""
         if not gem_query:
-            QMessageBox.information(self, "ジェムRegex", "全Actに追加できるジェムRegexがありません。")
+            QMessageBox.information(self, "Gem Regex", "There is no gem regex to add for any act.")
             return
         self._append_gem_shop_query(gem_query)
 
@@ -1585,7 +1585,7 @@ class VendorSearchPresetDialog(QDialog):
         for cb, token, category in getattr(self, "option_checkboxes", []):
             if not cb.isChecked():
                 continue
-            if category in ("共通", "ビルド別"):
+            if category in ("Common", "Build-specific"):
                 selected["mod"].append(token)
             elif category == self.WEAPON_BASE_AND_CATEGORY:
                 selected["base"].append(token)
@@ -1657,7 +1657,7 @@ class VendorSearchPresetDialog(QDialog):
         or_base_tokens = self._or_base_tokens_from_query()
         for cb, token, category in getattr(self, "option_checkboxes", []):
             cb.blockSignals(True)
-            if category in ("共通", "ビルド別"):
+            if category in ("Common", "Build-specific"):
                 cb.setChecked(self._has_query_token(token) or token in query)
             elif category == self.WEAPON_BASE_AND_CATEGORY:
                 cb.setChecked(token in and_base_tokens)
@@ -1732,20 +1732,20 @@ class VendorSearchPresetDialog(QDialog):
             over_limit = self._find_over_limit_presets(presets)
             if over_limit:
                 details = "\n".join(
-                    f"{row}行目: {name or '（名称なし）'}（{length}文字）"
+                    f"Row {row}: {name or '(untitled)'} ({length} chars)"
                     for row, name, length in over_limit[:5]
                 )
                 if len(over_limit) > 5:
-                    details += f"\n...ほか{len(over_limit) - 5}件"
+                    details += f"\n...and{len(over_limit) - 5} more"
                 msg = QMessageBox(self)
-                msg.setWindowTitle("検索文字列が長すぎます")
+                msg.setWindowTitle("Search Text Too Long")
                 msg.setIcon(QMessageBox.Warning)
                 msg.setText(
-                    f"PoE2の検索窓は{self.MAX_SEARCH_QUERY_LENGTH}文字が上限です。\n"
-                    "上限を超えるプリセットは正しく貼り付けできないため、保存を中止しました。\n\n"
+                    f"The PoE2 search box is limited to{self.MAX_SEARCH_QUERY_LENGTH} characters.\n"
+                    "Presets over the limit cannot be pasted correctly, so saving was cancelled.\n\n"
                     f"{details}"
                 )
-                close_button = msg.addButton("閉じる", QMessageBox.AcceptRole)
+                close_button = msg.addButton("Close", QMessageBox.AcceptRole)
                 apply_dialog_theme(msg, self.theme)
                 close_button.setProperty("buttonRole", "secondary")
                 msg.exec()
@@ -1759,7 +1759,7 @@ class VendorSearchPresetDialog(QDialog):
             print(f"[VendorSearchPresetDialog] Failed to save presets: {e}")
 
     def _add_row(self):
-        self._append_preset({"name": "新規プリセット", "query": "", "enabled": True})
+        self._append_preset({"name": "New preset", "query": "", "enabled": True})
         self.table.selectRow(self.table.rowCount() - 1)
         self._set_dirty(True)
 
@@ -1850,12 +1850,12 @@ class VendorSearchPresetDialog(QDialog):
             event.accept()
             return
         msg = QMessageBox(self)
-        msg.setWindowTitle("未保存の変更")
-        msg.setText("保存していない変更があります。保存しますか？")
+        msg.setWindowTitle("Unsaved Changes")
+        msg.setText("You have unsaved changes. Save them?")
         msg.setIcon(QMessageBox.Question)
-        save_button = msg.addButton("保存", QMessageBox.AcceptRole)
-        discard_button = msg.addButton("保存せずに閉じる", QMessageBox.DestructiveRole)
-        cancel_button = msg.addButton("キャンセル", QMessageBox.RejectRole)
+        save_button = msg.addButton("Save", QMessageBox.AcceptRole)
+        discard_button = msg.addButton("Close Without Saving", QMessageBox.DestructiveRole)
+        cancel_button = msg.addButton("Cancel", QMessageBox.RejectRole)
         msg.setDefaultButton(save_button)
         apply_dialog_theme(msg, self.theme)
         save_button.setProperty("buttonRole", "primary")

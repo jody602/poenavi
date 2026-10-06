@@ -8,11 +8,11 @@ from datetime import datetime
 from pathlib import Path
 
 BUNDLED_SOUND_OPTIONS = (
-    ("standard_1", "標準音1", "hideout_focus_notification.wav"),
-    ("standard_2", "標準音2", "hideout_notification_2.wav"),
-    ("standard_3", "標準音3", "hideout_notification_3.wav"),
-    ("standard_4", "標準音4", "hideout_notification_4.wav"),
-    ("standard_5", "標準音5", "hideout_notification_5.mp3"),
+    ("standard_1", "Standard sound 1", "hideout_focus_notification.wav"),
+    ("standard_2", "Standard sound 2", "hideout_notification_2.wav"),
+    ("standard_3", "Standard sound 3", "hideout_notification_3.wav"),
+    ("standard_4", "Standard sound 4", "hideout_notification_4.wav"),
+    ("standard_5", "Standard sound 5", "hideout_notification_5.mp3"),
 )
 DEFAULT_BUNDLED_SOUND_ID = BUNDLED_SOUND_OPTIONS[0][0]
 _BUNDLED_SOUND_IDS = frozenset(option[0] for option in BUNDLED_SOUND_OPTIONS)
@@ -30,7 +30,7 @@ DEFAULT_HIDEOUT_NOTIFICATION_SETTINGS = {
 MIN_DURATION_SECONDS = 10
 MAX_DURATION_SECONDS = 60 * 60
 MAX_LOG_SCAN_BYTES = 128 * 1024 * 1024
-BUTTON_LABEL = "隠れ家滞在通知"
+BUTTON_LABEL = "Hideout alert"
 
 _LOG_TIMESTAMP = re.compile(
     r"(?P<date>\d{4}/\d{2}/\d{2})\s+(?P<time>\d{2}:\d{2}:\d{2})"
@@ -245,7 +245,7 @@ class HideoutTimerState:
         if not self.active:
             return f"{BUTTON_LABEL}\nOFF"
         if not self.zone_known:
-            return f"{BUTTON_LABEL}\nON（エリア待ち）"
+            return f"{BUTTON_LABEL}\nON (waiting for area)"
         if not self.in_hideout:
             return f"{BUTTON_LABEL}\nON"
         elapsed = self.elapsed_seconds(now)

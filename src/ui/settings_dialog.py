@@ -45,14 +45,14 @@ from src.utils.feature_support import POETORE, is_feature_supported
 def _flag_guide_header(zone_id: str) -> str:
     """編集画面上で、フラグ別ガイドに付随するルート条件も明示する。"""
     if zone_id in ("act8_area13", "act8_area14"):
-        return "🚩 フラグ別ガイド（通常ルート、かつ以下のフラグ成立時）"
-    return "🚩 フラグ別ガイド"
+        return "🚩 Flag-specific guide (standard route, when the flags below are set)"
+    return "🚩 Flag-specific guide"
 
 
 def _mini_navi_flag_section_title(zone_id: str, flag_key: str) -> str:
     if zone_id in ("act8_area13", "act8_area14"):
-        return f"通常ルート、かつフラグ成立時: {flag_key}"
-    return f"フラグ別: {flag_key}"
+        return f"Standard route, when flag is set: {flag_key}"
+    return f"By flag: {flag_key}"
 
 
 def _guide_dev_editor_enabled(poe_version: str, zone_id: str) -> bool:
@@ -156,7 +156,7 @@ def _spinbox_style(width=55, height=28):
 
 class HotkeyButton(QPushButton):
     def __init__(self, key_text):
-        super().__init__(key_text if key_text != "none" else "なし")
+        super().__init__(key_text if key_text != "none" else "None")
         self.key_text = key_text
         self.setCheckable(True)
         self.setStyleSheet(Styles.BUTTON)
@@ -167,7 +167,7 @@ class HotkeyButton(QPushButton):
             self.setText("Press any key...")
             self.grabKeyboard() # Qtの入力独占
         else:
-            self.setText(self.key_text if self.key_text != "none" else "なし")
+            self.setText(self.key_text if self.key_text != "none" else "None")
             self.releaseKeyboard()
 
     def keyPressEvent(self, event):
@@ -284,7 +284,7 @@ class AutoHideHotkeyWidget(QWidget):
             modifier_buttons.append(("shift", self.shift_button))
         self.no_modifier_button = None
         if self.allow_no_modifier:
-            self.no_modifier_button = QPushButton("なし")
+            self.no_modifier_button = QPushButton("Off")
             modifier_buttons.append(("none", self.no_modifier_button))
         for name, button in modifier_buttons:
             button.setObjectName(f"autoHide{name.title()}Modifier")
@@ -324,9 +324,9 @@ class AutoHideHotkeyWidget(QWidget):
         self.key_button = TriggerKeyButton(trigger)
         self.key_button.setObjectName("autoHideTriggerKey")
         self.key_button.setToolTip(
-            "通常キーを1つ入力してください（修飾キーは左で選択）"
+            "Press one regular key (choose modifiers on the left)"
             if self.allow_no_modifier
-            else "通常キーを1つ入力してください（Ctrl / Altは左で選択）"
+            else "Press one regular key (choose Ctrl / Alt on the left)"
         )
         layout.addWidget(self.key_button, 1)
 
@@ -453,22 +453,22 @@ class AreaNoteDialog(QDialog):
     """エリアに紐づく色付きエリアメモ編集画面。"""
 
     COLORS = [
-        ("#ff6666", "赤"),
-        ("#4488ff", "青"),
-        ("#ff8800", "オレンジ"),
-        ("#44cc44", "緑"),
-        ("#dddd44", "黄"),
-        ("#dd66ff", "紫"),
-        ("#ffffff", "白"),
+        ("#ff6666", "Red"),
+        ("#4488ff", "Blue"),
+        ("#ff8800", "Orange"),
+        ("#44cc44", "Green"),
+        ("#dddd44", "Yellow"),
+        ("#dd66ff", "Purple"),
+        ("#ffffff", "White"),
     ]
 
     def __init__(self, parent, zone_name: str, content: str):
         super().__init__(parent)
-        self.setWindowTitle(f"エリアメモ — {zone_name}")
+        self.setWindowTitle(f"Area Notes — {zone_name}")
         self.resize(520, 360)
 
         layout = QVBoxLayout(self)
-        self.title_label = QLabel(f"📝 {zone_name} のエリアメモ")
+        self.title_label = QLabel(f"📝 {zone_name} area notes")
         self.title_label.setStyleSheet(
             f"color: {Styles.TEXT_COLOR}; font-size: 14px; font-weight: bold;"
         )
@@ -486,8 +486,8 @@ class AreaNoteDialog(QDialog):
             )
             button.clicked.connect(lambda checked=False, color=color_code: self._set_color(color))
             toolbar.addWidget(button)
-        reset_button = QPushButton("標準色")
-        reset_button.setToolTip("選択範囲の文字色を標準色へ戻します")
+        reset_button = QPushButton("Default color")
+        reset_button.setToolTip("Reset the selected text to the default color")
         reset_button.clicked.connect(lambda: self._set_color(POENAVI_DIALOG_THEME.text))
         toolbar.addWidget(reset_button)
         toolbar.addStretch()
@@ -503,9 +503,9 @@ class AreaNoteDialog(QDialog):
 
         self.footer_layout = QHBoxLayout()
         self.footer_layout.addStretch()
-        self.cancel_button = QPushButton("キャンセル")
+        self.cancel_button = QPushButton("Cancel")
         self.cancel_button.clicked.connect(self.reject)
-        self.save_button = QPushButton("保存")
+        self.save_button = QPushButton("Save")
         self.save_button.setDefault(True)
         self.save_button.clicked.connect(self.accept)
         self.footer_layout.addWidget(self.cancel_button)
@@ -536,18 +536,18 @@ class GuideEditorDialog(QDialog):
     """個別エリアのガイドデータ編集ダイアログ"""
     
     COLORS = [
-        ("#ff6666", "赤"),
-        ("#4488ff", "青"),
-        ("#ff8800", "オレンジ"),
-        ("#44cc44", "緑"),
-        ("#dddd44", "黄"),
-        ("#dd66ff", "紫"),
-        ("#ffffff", "白"),
+        ("#ff6666", "Red"),
+        ("#4488ff", "Blue"),
+        ("#ff8800", "Orange"),
+        ("#44cc44", "Green"),
+        ("#dddd44", "Yellow"),
+        ("#dd66ff", "Purple"),
+        ("#ffffff", "White"),
     ]
     
     def __init__(self, parent, zone_name: str, guide: dict, guide_v2: dict = None, zone_id: str = "", route_guides: dict = None, flag_guides: dict = None):
         super().__init__(parent)
-        self.setWindowTitle(f"ガイド編集 — {zone_name}")
+        self.setWindowTitle(f"Edit Guide — {zone_name}")
         self.resize(550, 620)
         self.guide_v2 = guide_v2 or {}
         self._existing_mini_navi = guide.get("mini_navi") if isinstance(guide, dict) else None
@@ -563,7 +563,7 @@ class GuideEditorDialog(QDialog):
             self.guide_v2 = self.flag_guides.get(self.primary_flag_key, {})
         
         main_layout = QVBoxLayout(self)
-        self.title_label = QLabel(f"ガイド編集 — {zone_name}")
+        self.title_label = QLabel(f"Edit Guide — {zone_name}")
         main_layout.addWidget(self.title_label)
         
         # スクロール対応
@@ -609,7 +609,7 @@ class GuideEditorDialog(QDialog):
         self.direction_group = None
         if not is_poe2_zone:
             # ── 基本方向 ──
-            dir_group_box = QGroupBox("🧭 基本方向（シンプルなマップ向け）")
+            dir_group_box = QGroupBox("🧭 General direction (for simple maps)")
             dir_group_box.setStyleSheet(f"""
                 QGroupBox {{ color: {Styles.TEXT_COLOR}; border: 1px solid rgba(176,255,123,0.3); 
                     border-radius: 4px; margin-top: 8px; font-size: 11px; font-weight: bold; }}
@@ -636,7 +636,7 @@ class GuideEditorDialog(QDialog):
                 self.direction_group.addButton(rb)
                 dir_layout.addWidget(rb, row, col, Qt.AlignCenter)
             
-            dir_desc = QLabel("中央「—」= 該当なし（複雑なマップ → ガイド参照を表示）")
+            dir_desc = QLabel("Center \"—\" = none (complex map → show \"see guide\")")
             dir_desc.setStyleSheet("color: #888888; font-size: 10px;")
             dir_desc.setWordWrap(True)
             dir_layout.addWidget(dir_desc, 3, 0, 1, 3)
@@ -644,7 +644,7 @@ class GuideEditorDialog(QDialog):
             layout.addWidget(dir_group_box)
         
         # 目標
-        layout.addWidget(QLabel("📋 目標 / やること"))
+        layout.addWidget(QLabel("📋 Objectives / To do"))
         layout.itemAt(layout.count()-1).widget().setStyleSheet(label_style)
         self.objective_edit = QTextEdit()
         self.objective_edit.setPlainText(guide.get("objective", ""))
@@ -653,7 +653,7 @@ class GuideEditorDialog(QDialog):
         layout.addWidget(self.objective_edit)
         
         # レイアウト情報
-        layout.addWidget(QLabel("🗺️ レイアウト情報"))
+        layout.addWidget(QLabel("🗺️ Layout info"))
         layout.itemAt(layout.count()-1).widget().setStyleSheet(label_style)
         
         # ── ツールバー ──
@@ -679,7 +679,7 @@ class GuideEditorDialog(QDialog):
         # 色リセットボタン
         reset_color_btn = QPushButton("✕")
         reset_color_btn.setFixedSize(22, 22)
-        reset_color_btn.setToolTip("色をリセット")
+        reset_color_btn.setToolTip("Reset Color")
         reset_color_btn.setStyleSheet(f"""
             QPushButton {{ 
                 background: rgba(40,40,40,200); color: #888; 
@@ -702,7 +702,7 @@ class GuideEditorDialog(QDialog):
         self._active_editor = self.layout_edit  # ツールバーの対象
         
         # Tips
-        layout.addWidget(QLabel("💡 Tips / 注意点"))
+        layout.addWidget(QLabel("💡 Tips / Notes"))
         layout.itemAt(layout.count()-1).widget().setStyleSheet(label_style)
         tips_toolbar = QHBoxLayout()
         tips_toolbar.setSpacing(4)
@@ -722,7 +722,7 @@ class GuideEditorDialog(QDialog):
             tips_toolbar.addWidget(cbtn)
         reset_tips_color_btn = QPushButton("✕")
         reset_tips_color_btn.setFixedSize(22, 22)
-        reset_tips_color_btn.setToolTip("色をリセット")
+        reset_tips_color_btn.setToolTip("Reset Color")
         reset_tips_color_btn.setStyleSheet(f"""
             QPushButton {{ 
                 background: rgba(40,40,40,200); color: #888; 
@@ -749,14 +749,14 @@ class GuideEditorDialog(QDialog):
         # zone_idからPoE1/PoE2に応じた補助ガイド説明を動的生成
         is_poe2_zone = self.zone_id.startswith("poe2_") if self.zone_id else False
         if is_poe2_zone:
-            v2_label_closed = "▶ フラグ進行後のガイド"
-            v2_label_open = "▼ フラグ進行後のガイド"
+            v2_label_closed = "▶ Guide after flag progress"
+            v2_label_open = "▼ Guide after flag progress"
         else:
             act_num = int(self.zone_id.split("_")[0].replace("act", "")) if self.zone_id and self.zone_id.startswith("act") else 1
             act_range = "Act6-10" if act_num >= 6 else "Act1-5"
-            v2_desc = f"{act_range}の間で、このエリアに２回以上訪れた場合はこちらを表示"
-            v2_label_closed = f"▶ 2回目のガイド（{v2_desc}）"
-            v2_label_open = f"▼ 2回目のガイド（{v2_desc}）"
+            v2_desc = f"{act_range}: shown if you visit this area two or more times"
+            v2_label_closed = f"▶ 2nd visit guide ({v2_desc})"
+            v2_label_open = f"▼ 2nd visit guide ({v2_desc})"
         self._v2_label_closed = v2_label_closed
         self._v2_label_open = v2_label_open
         self.v2_toggle_btn = QPushButton(v2_label_open if self.guide_v2 else v2_label_closed)
@@ -776,7 +776,7 @@ class GuideEditorDialog(QDialog):
         self.v2_direction_group = None
         if not is_poe2_zone:
             # 基本方向（2回目）
-            v2_dir_group_box = QGroupBox("🧭 基本方向（2回目）")
+            v2_dir_group_box = QGroupBox("🧭 General direction (2nd visit)")
             v2_dir_group_box.setStyleSheet(f"""
                 QGroupBox {{ color: {Styles.TEXT_COLOR}; border: 1px solid rgba(176,255,123,0.3); 
                     border-radius: 4px; margin-top: 8px; font-size: 11px; font-weight: bold; }}
@@ -790,13 +790,13 @@ class GuideEditorDialog(QDialog):
                 (0, 0, "↖", "nw"), (0, 1, "↑", "n"), (0, 2, "↗", "ne"),
                 (1, 0, "←", "w"),  (1, 1, "—", "none"), (1, 2, "→", "e"),
                 (2, 0, "↙", "sw"), (2, 1, "↓", "s"), (2, 2, "↘", "se"),
-                (1, 3, "同上", "inherit"),
+                (1, 3, "Same", "inherit"),
             ]
             v2_current_dir = self.guide_v2.get("direction", "inherit")
             
             for row, col, label, value in v2_directions:
                 rb = QRadioButton(label)
-                rb.setStyleSheet(radio_style if label != "同上" else f"""
+                rb.setStyleSheet(radio_style if label != "Same" else f"""
                     QRadioButton {{ 
                         color: {Styles.TEXT_COLOR}; font-size: 11px; 
                         padding: 6px 8px; background: rgba(40,40,40,180);
@@ -813,13 +813,13 @@ class GuideEditorDialog(QDialog):
                 self.v2_direction_group.addButton(rb)
                 v2_dir_layout.addWidget(rb, row, col, Qt.AlignCenter)
             
-            v2_dir_desc = QLabel("「同上」= 1回目と同じ方向を使用")
+            v2_dir_desc = QLabel("\"Same\" = use the same direction as the 1st visit")
             v2_dir_desc.setStyleSheet("color: #888888; font-size: 10px;")
             v2_dir_layout.addWidget(v2_dir_desc, 3, 0, 1, 4)
             
             v2_layout.addWidget(v2_dir_group_box)
         
-        v2_layout.addWidget(QLabel("📋 目標 / やること"))
+        v2_layout.addWidget(QLabel("📋 Objectives / To do"))
         v2_layout.itemAt(v2_layout.count()-1).widget().setStyleSheet(label_style)
         self.v2_objective_edit = QTextEdit()
         self.v2_objective_edit.setPlainText(self.guide_v2.get("objective", ""))
@@ -827,7 +827,7 @@ class GuideEditorDialog(QDialog):
         self.v2_objective_edit.setStyleSheet(text_style)
         v2_layout.addWidget(self.v2_objective_edit)
         
-        v2_layout.addWidget(QLabel("🗺️ レイアウト情報"))
+        v2_layout.addWidget(QLabel("🗺️ Layout info"))
         v2_layout.itemAt(v2_layout.count()-1).widget().setStyleSheet(label_style)
         
         # ── カラーパレット（2回目用） ──
@@ -849,7 +849,7 @@ class GuideEditorDialog(QDialog):
             v2_toolbar.addWidget(cbtn)
         v2_reset_btn = QPushButton("✕")
         v2_reset_btn.setFixedSize(22, 22)
-        v2_reset_btn.setToolTip("色をリセット")
+        v2_reset_btn.setToolTip("Reset Color")
         v2_reset_btn.setStyleSheet(f"""
             QPushButton {{ 
                 background: rgba(40,40,40,200); color: #888; 
@@ -868,7 +868,7 @@ class GuideEditorDialog(QDialog):
         self.v2_layout_edit.setStyleSheet(text_style)
         v2_layout.addWidget(self.v2_layout_edit)
         
-        v2_layout.addWidget(QLabel("💡 Tips / 注意点"))
+        v2_layout.addWidget(QLabel("💡 Tips / Notes"))
         v2_layout.itemAt(v2_layout.count()-1).widget().setStyleSheet(label_style)
         tips_toolbar_v2 = QHBoxLayout()
         tips_toolbar_v2.setSpacing(4)
@@ -888,7 +888,7 @@ class GuideEditorDialog(QDialog):
             tips_toolbar_v2.addWidget(cbtn)
         reset_v2_tips_color_btn = QPushButton("✕")
         reset_v2_tips_color_btn.setFixedSize(22, 22)
-        reset_v2_tips_color_btn.setToolTip("色をリセット")
+        reset_v2_tips_color_btn.setToolTip("Reset Color")
         reset_v2_tips_color_btn.setStyleSheet(f"""
             QPushButton {{ 
                 background: rgba(40,40,40,200); color: #888; 
@@ -931,7 +931,7 @@ class GuideEditorDialog(QDialog):
                 fg_layout = QVBoxLayout(fg_box)
                 fg_layout.setSpacing(5)
 
-                f_dir_label = QLabel("🧭 基本方向")
+                f_dir_label = QLabel("🧭 General direction")
                 f_dir_label.setStyleSheet(label_style)
                 fg_layout.addWidget(f_dir_label)
                 f_dir_grid = QGridLayout()
@@ -941,12 +941,12 @@ class GuideEditorDialog(QDialog):
                     (0, 0, "↖", "nw"), (0, 1, "↑", "n"), (0, 2, "↗", "ne"),
                     (1, 0, "←", "w"),  (1, 1, "—", "none"), (1, 2, "→", "e"),
                     (2, 0, "↙", "sw"), (2, 1, "↓", "s"), (2, 2, "↘", "se"),
-                    (1, 3, "同上", "inherit"),
+                    (1, 3, "Same", "inherit"),
                 ]
                 f_current_dir = fguide.get("direction", "inherit")
                 for f_row, f_col, f_label, f_value in f_directions:
                     f_rb = QRadioButton(f_label)
-                    f_rb.setStyleSheet(radio_style if f_label != "同上" else f"""
+                    f_rb.setStyleSheet(radio_style if f_label != "Same" else f"""
                         QRadioButton {{
                             color: {Styles.TEXT_COLOR}; font-size: 11px;
                             padding: 6px 8px; background: rgba(40,40,40,180);
@@ -965,7 +965,7 @@ class GuideEditorDialog(QDialog):
                 fg_layout.addLayout(f_dir_grid)
 
 
-                fg_layout.addWidget(QLabel("📋 目標 / やること"))
+                fg_layout.addWidget(QLabel("📋 Objectives / To do"))
                 fg_layout.itemAt(fg_layout.count()-1).widget().setStyleSheet(label_style)
                 f_obj = QTextEdit()
                 f_obj.setPlainText(fguide.get("objective", ""))
@@ -973,7 +973,7 @@ class GuideEditorDialog(QDialog):
                 f_obj.setStyleSheet(text_style)
                 fg_layout.addWidget(f_obj)
 
-                fg_layout.addWidget(QLabel("🗺️ レイアウト"))
+                fg_layout.addWidget(QLabel("🗺️ Layout"))
                 fg_layout.itemAt(fg_layout.count()-1).widget().setStyleSheet(label_style)
                 f_lay = RichTextEdit()
                 f_lay.set_from_html(fguide.get("layout", ""))
@@ -981,7 +981,7 @@ class GuideEditorDialog(QDialog):
                 f_lay.setStyleSheet(text_style)
                 fg_layout.addWidget(f_lay)
 
-                fg_layout.addWidget(QLabel("💡 Tips / 注意点"))
+                fg_layout.addWidget(QLabel("💡 Tips / Notes"))
                 fg_layout.itemAt(fg_layout.count()-1).widget().setStyleSheet(label_style)
                 f_tips = RichTextEdit()
                 f_tips.set_from_html(fguide.get("tips", ""))
@@ -1001,16 +1001,16 @@ class GuideEditorDialog(QDialog):
             route_separator.setStyleSheet("color: rgba(176,255,123,0.5);")
             layout.addWidget(route_separator)
             
-            route_header = QLabel("📍 ルート別ガイド")
+            route_header = QLabel("📍 Route-specific guide")
             route_header.setStyleSheet(f"color: #ffc832; font-size: 13px; font-weight: bold;")
             layout.addWidget(route_header)
             
             # ルート名の表示マッピング
             route_display = {
-                "~library_detour": "図書館ルート 1回目",
-                "~library_detour@2": "図書館ルート 2回目",
-                "~underbelly": "裏道ルート 1回目",
-                "~underbelly@2": "裏道ルート 2回目",
+                "~library_detour": "Library route, 1st visit",
+                "~library_detour@2": "Library route, 2nd visit",
+                "~underbelly": "Underbelly route, 1st visit",
+                "~underbelly@2": "Underbelly route, 2nd visit",
             }
             
             for suffix, rguide in sorted(self.route_guides.items()):
@@ -1024,7 +1024,7 @@ class GuideEditorDialog(QDialog):
                 rg_layout = QVBoxLayout(rg_box)
                 rg_layout.setSpacing(5)
                 
-                rg_layout.addWidget(QLabel("📋 目標"))
+                rg_layout.addWidget(QLabel("📋 Objectives"))
                 rg_layout.itemAt(rg_layout.count()-1).widget().setStyleSheet(label_style)
                 r_obj = QTextEdit()
                 r_obj.setPlainText(rguide.get("objective", ""))
@@ -1032,7 +1032,7 @@ class GuideEditorDialog(QDialog):
                 r_obj.setStyleSheet(text_style)
                 rg_layout.addWidget(r_obj)
                 
-                rg_layout.addWidget(QLabel("🗺️ レイアウト"))
+                rg_layout.addWidget(QLabel("🗺️ Layout"))
                 rg_layout.itemAt(rg_layout.count()-1).widget().setStyleSheet(label_style)
                 r_lay = RichTextEdit()
                 r_lay.set_from_html(rguide.get("layout", ""))
@@ -1049,7 +1049,7 @@ class GuideEditorDialog(QDialog):
                 rg_layout.addWidget(r_tips)
                 
                 # 基本方向（9方向ラジオボタン）
-                r_dir_label = QLabel("🧭 基本方向")
+                r_dir_label = QLabel("🧭 General direction")
                 r_dir_label.setStyleSheet(label_style)
                 rg_layout.addWidget(r_dir_label)
                 r_dir_grid = QGridLayout()
@@ -1075,7 +1075,7 @@ class GuideEditorDialog(QDialog):
                 for flag_key, flag_guide in sorted(route_flags.items()):
                     if not isinstance(flag_guide, dict):
                         continue
-                    rf_box = QGroupBox(f"🚩 条件分岐: {flag_key}")
+                    rf_box = QGroupBox(f"🚩 Condition: {flag_key}")
                     rf_box.setStyleSheet(f"""
                         QGroupBox {{ color: {Styles.TEXT_COLOR}; border: 1px solid rgba(255,200,50,0.35);
                             border-radius: 4px; margin-top: 8px; font-size: 11px; font-weight: bold; }}
@@ -1084,7 +1084,7 @@ class GuideEditorDialog(QDialog):
                     rf_layout = QVBoxLayout(rf_box)
                     rf_layout.setSpacing(5)
 
-                    rf_layout.addWidget(QLabel("📋 目標"))
+                    rf_layout.addWidget(QLabel("📋 Objectives"))
                     rf_layout.itemAt(rf_layout.count()-1).widget().setStyleSheet(label_style)
                     rf_obj = QTextEdit()
                     rf_obj.setPlainText(flag_guide.get("objective", ""))
@@ -1092,7 +1092,7 @@ class GuideEditorDialog(QDialog):
                     rf_obj.setStyleSheet(text_style)
                     rf_layout.addWidget(rf_obj)
 
-                    rf_layout.addWidget(QLabel("🗺️ レイアウト"))
+                    rf_layout.addWidget(QLabel("🗺️ Layout"))
                     rf_layout.itemAt(rf_layout.count()-1).widget().setStyleSheet(label_style)
                     rf_lay = RichTextEdit()
                     rf_lay.set_from_html(flag_guide.get("layout", ""))
@@ -1108,7 +1108,7 @@ class GuideEditorDialog(QDialog):
                     rf_tips.setStyleSheet(text_style)
                     rf_layout.addWidget(rf_tips)
 
-                    rf_dir_label = QLabel("🧭 基本方向")
+                    rf_dir_label = QLabel("🧭 General direction")
                     rf_dir_label.setStyleSheet(label_style)
                     rf_layout.addWidget(rf_dir_label)
                     rf_dir_grid = QGridLayout()
@@ -1118,12 +1118,12 @@ class GuideEditorDialog(QDialog):
                         (0, 0, "↖", "nw"), (0, 1, "↑", "n"), (0, 2, "↗", "ne"),
                         (1, 0, "←", "w"),  (1, 1, "—", "none"), (1, 2, "→", "e"),
                         (2, 0, "↙", "sw"), (2, 1, "↓", "s"), (2, 2, "↘", "se"),
-                        (1, 3, "同上", "inherit"),
+                        (1, 3, "Same", "inherit"),
                     ]
                     rf_current_dir = flag_guide.get("direction", "inherit")
                     for rf_row, rf_col, rf_label, rf_value in rf_directions:
                         rf_rb = QRadioButton(rf_label)
-                        rf_rb.setStyleSheet(radio_style if rf_label != "同上" else f"""
+                        rf_rb.setStyleSheet(radio_style if rf_label != "Same" else f"""
                             QRadioButton {{ color: {Styles.TEXT_COLOR}; font-size: 11px; padding: 6px 8px;
                                 background: rgba(40,40,40,180); border: 1px solid rgba(176,255,123,0.2);
                                 border-radius: 4px; min-width: 36px; min-height: 28px; }}
@@ -1151,9 +1151,9 @@ class GuideEditorDialog(QDialog):
         # OK/Cancel
         self.footer_layout = QHBoxLayout()
         self.footer_layout.addStretch()
-        self.cancel_button = QPushButton("キャンセル")
+        self.cancel_button = QPushButton("Cancel")
         self.cancel_button.clicked.connect(self.reject)
-        self.save_button = QPushButton("保存")
+        self.save_button = QPushButton("Save")
         self.save_button.clicked.connect(self.accept)
         self.footer_layout.addWidget(self.cancel_button)
         self.footer_layout.addWidget(self.save_button)
@@ -1353,7 +1353,7 @@ class GuideSummaryEditorDialog(QDialog):
 
     def __init__(self, parent, zone_name: str, entry: dict):
         super().__init__(parent)
-        self.setWindowTitle(f"要約編集 — {zone_name}")
+        self.setWindowTitle(f"Edit Summary — {zone_name}")
         self.resize(520, 460)
 
         self.entry = entry if isinstance(entry, dict) else {}
@@ -1363,10 +1363,10 @@ class GuideSummaryEditorDialog(QDialog):
         self.summary_count_labels = {}
 
         main_layout = QVBoxLayout(self)
-        self.title_label = QLabel(f"要約編集 — {zone_name}")
+        self.title_label = QLabel(f"Edit Summary — {zone_name}")
         main_layout.addWidget(self.title_label)
 
-        self.hint_label = QLabel("中級者向け表示で使う要点だけを書きます。未入力の場合は通常ガイドを表示します。")
+        self.hint_label = QLabel("Write only the key points for the intermediate view. If left empty, the normal guide is shown.")
         self.hint_label.setStyleSheet("color: #888888; font-size: 11px;")
         self.hint_label.setWordWrap(True)
         main_layout.addWidget(self.hint_label)
@@ -1388,7 +1388,7 @@ class GuideSummaryEditorDialog(QDialog):
         body_layout = QVBoxLayout(body)
         body_layout.setSpacing(8)
 
-        default_header = self._build_summary_header("通常時 summary", "default", label_style)
+        default_header = self._build_summary_header("Default summary", "default", label_style)
         body_layout.addLayout(default_header)
         self.default_summary_edit = RichTextEdit()
         self.default_summary_edit.set_from_html(self.default_guide.get("summary", ""))
@@ -1402,7 +1402,7 @@ class GuideSummaryEditorDialog(QDialog):
         for flag_key, guide in self.flag_guides.items():
             if not isinstance(guide, dict):
                 continue
-            flag_header = self._build_summary_header(f"フラグ進行後 summary: {flag_key}", flag_key, label_style)
+            flag_header = self._build_summary_header(f"Summary after flag progress: {flag_key}", flag_key, label_style)
             body_layout.addLayout(flag_header)
             edit = RichTextEdit()
             edit.set_from_html(guide.get("summary", ""))
@@ -1420,10 +1420,10 @@ class GuideSummaryEditorDialog(QDialog):
 
         self.footer_layout = QHBoxLayout()
         self.footer_layout.addStretch()
-        self.cancel_button = QPushButton("キャンセル")
+        self.cancel_button = QPushButton("Cancel")
         self.cancel_button.clicked.connect(self.reject)
         self.footer_layout.addWidget(self.cancel_button)
-        self.save_button = QPushButton("保存")
+        self.save_button = QPushButton("Save")
         self.save_button.clicked.connect(self.accept)
         self.footer_layout.addWidget(self.save_button)
         main_layout.addLayout(self.footer_layout)
@@ -1445,7 +1445,7 @@ class GuideSummaryEditorDialog(QDialog):
         title_label.setStyleSheet(label_style)
         header.addWidget(title_label)
         header.addStretch()
-        count_label = QLabel("0文字")
+        count_label = QLabel("0 chars")
         count_label.setStyleSheet("color: #aaaaaa; font-size: 11px;")
         header.addWidget(count_label)
         self.summary_count_labels[key] = count_label
@@ -1462,7 +1462,7 @@ class GuideSummaryEditorDialog(QDialog):
             color = "#dddd44"
         else:
             color = "#ff8888"
-        label.setText(f"{count}文字")
+        label.setText(f"{count} chars")
         label.setStyleSheet(f"color: {color}; font-size: 11px; font-weight: {'bold' if count > 140 else 'normal'};")
 
     def _build_color_toolbar(self, editor):
@@ -1485,7 +1485,7 @@ class GuideSummaryEditorDialog(QDialog):
 
         reset_color_btn = QPushButton("✕")
         reset_color_btn.setFixedSize(22, 22)
-        reset_color_btn.setToolTip("色をリセット")
+        reset_color_btn.setToolTip("Reset Color")
         reset_color_btn.setStyleSheet(f"""
             QPushButton {{
                 background: rgba(40,40,40,200); color: #888;
@@ -1547,7 +1547,7 @@ class MiniNaviEditorDialog(QDialog):
 
     def __init__(self, parent, zone_name: str, sections: list[dict], *, show_direction: bool = True):
         super().__init__(parent)
-        self.setWindowTitle(f"みになび編集 — {zone_name}")
+        self.setWindowTitle(f"Edit MiniNavi — {zone_name}")
         self.resize(520, 560)
         self.setStyleSheet(Styles.MAIN_WINDOW)
         self.sections = sections
@@ -1606,7 +1606,7 @@ class MiniNaviEditorDialog(QDialog):
 
             direction_group = None
             if self.show_direction:
-                dir_label = QLabel("🧭 基本方向")
+                dir_label = QLabel("🧭 General direction")
                 dir_label.setStyleSheet(label_style)
                 layout.addWidget(dir_label)
                 dir_grid = QGridLayout()
@@ -1626,11 +1626,11 @@ class MiniNaviEditorDialog(QDialog):
                     )
                 )
                 if allow_inherit:
-                    directions.append((1, 3, "同上", "inherit"))
+                    directions.append((1, 3, "Same", "inherit"))
                 current_dir = mini.get("direction", guide.get("direction", "inherit" if allow_inherit else "none"))
                 for row, col, label, value in directions:
                     rb = QRadioButton(label)
-                    rb.setStyleSheet(radio_style if label != "同上" else f"""
+                    rb.setStyleSheet(radio_style if label != "Same" else f"""
                         QRadioButton {{ color: {Styles.TEXT_COLOR}; font-size: 11px; padding: 6px 8px;
                             background: rgba(40,40,40,180); border: 1px solid rgba(176,255,123,0.2);
                             border-radius: 4px; min-width: 36px; min-height: 28px; }}
@@ -1646,11 +1646,11 @@ class MiniNaviEditorDialog(QDialog):
                 layout.addLayout(dir_grid)
 
             text_header = QHBoxLayout()
-            text_label = QLabel("みになび本文")
+            text_label = QLabel("MiniNavi text")
             text_label.setStyleSheet(label_style)
             text_header.addWidget(text_label)
             text_header.addStretch()
-            count_label = QLabel("0文字")
+            count_label = QLabel("0 chars")
             count_label.setStyleSheet("color: #aaaaaa; font-size: 11px;")
             text_header.addWidget(count_label)
             layout.addLayout(text_header)
@@ -1677,11 +1677,11 @@ class MiniNaviEditorDialog(QDialog):
 
         button_row = QHBoxLayout()
         button_row.addStretch()
-        cancel_btn = QPushButton("キャンセル")
+        cancel_btn = QPushButton("Cancel")
         cancel_btn.setStyleSheet(Styles.BUTTON)
         cancel_btn.clicked.connect(self.reject)
         button_row.addWidget(cancel_btn)
-        save_btn = QPushButton("保存")
+        save_btn = QPushButton("Save")
         save_btn.setStyleSheet(Styles.BUTTON)
         save_btn.clicked.connect(self.accept)
         button_row.addWidget(save_btn)
@@ -1695,7 +1695,7 @@ class MiniNaviEditorDialog(QDialog):
             color = "#dddd44"
         else:
             color = "#ff8888"
-        label.setText(f"{count}文字")
+        label.setText(f"{count} chars")
         label.setStyleSheet(f"color: {color}; font-size: 11px; font-weight: {'bold' if count > 140 else 'normal'};")
 
     def _build_color_toolbar(self, editor):
@@ -1713,7 +1713,7 @@ class MiniNaviEditorDialog(QDialog):
             toolbar.addWidget(cbtn)
         reset_btn = QPushButton("✕")
         reset_btn.setFixedSize(22, 22)
-        reset_btn.setToolTip("色をリセット")
+        reset_btn.setToolTip("Reset Color")
         reset_btn.setStyleSheet(f"""
             QPushButton {{ background: rgba(40,40,40,200); color: #888;
                 border: 1px solid rgba(176,255,123,0.3); border-radius: 3px; font-size: 11px; }}
@@ -1808,9 +1808,9 @@ class GemShopSearchTermOverridesDialog(QWidget):
         layout = QVBoxLayout(self)
         layout.setContentsMargins(10, 10, 10, 10)
         hint = QLabel(
-            "ジェム取得支援機能において自動で生成するジェムのRegexについて、カスタマイズができます。"
-            "上書き欄が空欄なら自動短縮語を使います。"
-            "上書きは正式名に含まれる、他ジェムと重複しない4文字以上の語だけ保存できます。"
+            "Customize the gem regexes generated automatically by the gem tracker. "
+            "If the override field is empty, the automatic short term is used. "
+            "Overrides must be 4+ characters, contained in the full name, and unique among gems."
         )
         hint.setWordWrap(True)
         if self.theme is not None:
@@ -1820,15 +1820,15 @@ class GemShopSearchTermOverridesDialog(QWidget):
         layout.addWidget(hint)
 
         filters = QHBoxLayout()
-        filters.addWidget(QLabel("絞り込み:"))
+        filters.addWidget(QLabel("Filter:"))
         self.search_edit = QLineEdit()
-        self.search_edit.setPlaceholderText("正式名・自動短縮語・上書き短縮語を検索")
+        self.search_edit.setPlaceholderText("Search full names, automatic terms, and override terms")
         self.search_edit.textChanged.connect(self._apply_filter)
         filters.addWidget(self.search_edit, stretch=1)
-        self.changed_only_checkbox = QCheckBox("変更済みのみ")
+        self.changed_only_checkbox = QCheckBox("Changed only")
         self.changed_only_checkbox.toggled.connect(self._apply_filter)
         filters.addWidget(self.changed_only_checkbox)
-        self.reset_all_button = QPushButton("すべて自動へ戻す")
+        self.reset_all_button = QPushButton("Reset All to Auto")
         if self.theme is not None:
             self.reset_all_button.setProperty("buttonRole", "danger")
         self.reset_all_button.clicked.connect(self._reset_all_overrides)
@@ -1836,7 +1836,7 @@ class GemShopSearchTermOverridesDialog(QWidget):
         layout.addLayout(filters)
 
         table = QTableWidget(len(self._gem_names_en), 3)
-        table.setHorizontalHeaderLabels(["正式名", "自動短縮語", "上書き短縮語"])
+        table.setHorizontalHeaderLabels(["Full name", "Auto term", "Override term"])
         table.setEditTriggers(QAbstractItemView.NoEditTriggers)
         table.setSelectionBehavior(QAbstractItemView.SelectRows)
         table.setAlternatingRowColors(True)
@@ -1862,7 +1862,7 @@ class GemShopSearchTermOverridesDialog(QWidget):
             table.setItem(row, 0, name_item)
             table.setItem(row, 1, QTableWidgetItem(self._automatic_terms.get(gem_key, "")))
             term_edit = QLineEdit(self._term_overrides.get(gem_key, ""))
-            term_edit.setPlaceholderText("空欄: 自動")
+            term_edit.setPlaceholderText("Empty: auto")
             term_edit.textChanged.connect(self._apply_filter)
             table.setCellWidget(row, 2, term_edit)
             self._term_edits[gem_key] = term_edit
@@ -1902,8 +1902,8 @@ class GemShopSearchTermOverridesDialog(QWidget):
         if invalid_names:
             QMessageBox.warning(
                 self,
-                "短縮語を確認してください",
-                "次の短縮語は保存できません。正式名に含まれる、他ジェムと重複しない4文字以上の語を入力してください。\n\n"
+                "Check Short Terms",
+                "These short terms cannot be saved. Enter a term of 4+ characters that is contained in the full name and unique among gems.\n\n"
                 + "、".join(invalid_names[:10]),
             )
             return False
@@ -1925,8 +1925,8 @@ class GemShopSearchTermOverridesDialog(QWidget):
     def _reset_all_overrides(self):
         answer = QMessageBox.question(
             self,
-            "すべて自動へ戻す",
-            "すべての上書き短縮語を空欄に戻します。設定を保存するまで変更は反映されません。",
+            "Reset All to Auto",
+            "Clears all override terms. Changes won't apply until you save settings.",
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No,
         )
@@ -1950,7 +1950,7 @@ class SettingsDialog(QDialog):
         guide_progress_reset_callback=None,
     ):
         super().__init__(parent)
-        self.setWindowTitle("設定")
+        self.setWindowTitle("Settings")
         self.resize(630, 600)
         self.setObjectName("settingsDialog")
         self.theme = POENAVI_DIALOG_THEME
@@ -1997,7 +1997,7 @@ class SettingsDialog(QDialog):
         layout.setContentsMargins(16, 16, 16, 16)
         layout.setSpacing(12)
 
-        self.title_label = QLabel("設定")
+        self.title_label = QLabel("Settings")
         self.title_label.setProperty("uiRole", "title")
         layout.addWidget(self.title_label)
         
@@ -2017,7 +2017,7 @@ class SettingsDialog(QDialog):
         combo_style = ""
         
         # ━━━━━ 1. PoE ログファイル ━━━━━
-        log_group = QGroupBox("PoE ログファイル")
+        log_group = QGroupBox("PoE Log File")
         log_group.setStyleSheet(group_style)
         log_layout = QVBoxLayout(log_group)
 
@@ -2025,7 +2025,7 @@ class SettingsDialog(QDialog):
             POE1: QLineEdit(self.current_config.get("client_log_paths", {}).get(POE1, "")),
             POE2: QLineEdit(self.current_config.get("client_log_paths", {}).get(POE2, "")),
         }
-        for version, label_text in ((POE1, "PoE1ログファイル:"), (POE2, "PoE2ログファイル:")):
+        for version, label_text in ((POE1, "PoE1 log file:"), (POE2, "PoE2 log file:")):
             row = QHBoxLayout()
             label = QLabel(label_text)
             label.setStyleSheet(f"color: {theme.text}; font-size: 13px;")
@@ -2039,7 +2039,7 @@ class SettingsDialog(QDialog):
                 }}
             """)
             row.addWidget(edit)
-            browse_btn = QPushButton("参照")
+            browse_btn = QPushButton("Browse")
             browse_btn.setStyleSheet(Styles.BUTTON)
             browse_btn.clicked.connect(lambda checked, v=version: self.browse_log_file(v))
             row.addWidget(browse_btn)
@@ -2048,11 +2048,11 @@ class SettingsDialog(QDialog):
         general_layout.addWidget(log_group)
 
         # ━━━━━ 起動設定 ━━━━━
-        startup_group = QGroupBox("起動設定")
+        startup_group = QGroupBox("Launch Settings")
         startup_group.setStyleSheet(group_style)
         startup_layout = QVBoxLayout(startup_group)
 
-        version_label = QLabel("PoEバージョン")
+        version_label = QLabel("PoE Version")
         version_label.setStyleSheet(f"color: {theme.text}; font-size: 13px; font-weight: 600;")
         startup_layout.addWidget(version_label)
 
@@ -2068,7 +2068,7 @@ class SettingsDialog(QDialog):
             self.poe_version_group.addButton(radio)
             self.poe_version_radios[version] = radio
 
-        app_mode_label = QLabel("起動モード")
+        app_mode_label = QLabel("Launch Mode")
         app_mode_label.setStyleSheet(f"color: {theme.text}; font-size: 13px; font-weight: 600;")
         startup_layout.addWidget(app_mode_label)
         startup_config = self.current_config.get("startup")
@@ -2080,8 +2080,8 @@ class SettingsDialog(QDialog):
         self.app_mode_group = QButtonGroup(self)
         self.app_mode_radios = {}
         for mode, label in (
-            (POENAVI_MODE, "ぽえなび"),
-            (POETORE_MODE, "ぽえとれ"),
+            (POENAVI_MODE, "PoENavi"),
+            (POETORE_MODE, "PoETore"),
         ):
             radio = QRadioButton(label)
             radio.setChecked(mode == preferred_mode)
@@ -2090,7 +2090,7 @@ class SettingsDialog(QDialog):
             self.app_mode_group.addButton(radio)
             self.app_mode_radios[mode] = radio
 
-        self.skip_startup_selector_checkbox = QCheckBox("次回からこの設定で直接起動")
+        self.skip_startup_selector_checkbox = QCheckBox("Launch directly with these settings next time")
         self.skip_startup_selector_checkbox.setChecked(
             self.poe_version_mode in POE_VERSION_ORDER
             and not bool(startup_config.get("show_mode_selector", True))
@@ -2098,7 +2098,7 @@ class SettingsDialog(QDialog):
         Styles.apply_checkbox_style(self.skip_startup_selector_checkbox)
         startup_layout.addWidget(self.skip_startup_selector_checkbox)
         self.startup_change_note = QLabel(
-            "PoEバージョン・起動モードの変更は、次回起動時から適用されます。"
+            "Changes to the PoE version and launch mode take effect on the next launch."
         )
         self.startup_change_note.setWordWrap(True)
         self.startup_change_note.setStyleSheet(
@@ -2109,52 +2109,52 @@ class SettingsDialog(QDialog):
         self._refresh_app_mode_availability()
         
         # ━━━━━ 2. ホットキー ━━━━━
-        group = QGroupBox("ホットキー")
+        group = QGroupBox("Hotkeys")
         group.setStyleSheet(group_style)
         group_layout = QVBoxLayout(group)
         
-        hotkey_hint = QLabel("※ DeleteまたはBackspaceで解除できます")
+        hotkey_hint = QLabel("* Press Delete or Backspace to clear")
         hotkey_hint.setStyleSheet(f"color: {theme.muted_text}; font-size: 13px;")
         group_layout.addWidget(hotkey_hint)
         
         h_layout1 = QHBoxLayout()
-        h_layout1.addWidget(QLabel("開始/停止:"))
+        h_layout1.addWidget(QLabel("Start/Stop:"))
         self.start_stop_btn = HotkeyButton(self.hotkeys.get("start_stop", "F1"))
         h_layout1.addWidget(self.start_stop_btn)
         group_layout.addLayout(h_layout1)
         
         h_layout2 = QHBoxLayout()
-        h_layout2.addWidget(QLabel("リセット:"))
+        h_layout2.addWidget(QLabel("Reset:"))
         self.reset_btn = HotkeyButton(self.hotkeys.get("reset", "F2"))
         h_layout2.addWidget(self.reset_btn)
         group_layout.addLayout(h_layout2)
         
         h_layout3 = QHBoxLayout()
-        h_layout3.addWidget(QLabel("ラップ（次のAct）:"))
+        h_layout3.addWidget(QLabel("Lap (next act):"))
         self.lap_btn = HotkeyButton(self.hotkeys.get("lap", "none"))
         h_layout3.addWidget(self.lap_btn)
         group_layout.addLayout(h_layout3)
         
         h_layout4 = QHBoxLayout()
-        h_layout4.addWidget(QLabel("ラップ取消:"))
+        h_layout4.addWidget(QLabel("Undo lap:"))
         self.undo_lap_btn = HotkeyButton(self.hotkeys.get("undo_lap", "none"))
         h_layout4.addWidget(self.undo_lap_btn)
         group_layout.addLayout(h_layout4)
         
         h_layout5 = QHBoxLayout()
-        h_layout5.addWidget(QLabel("クリックスルー:"))
+        h_layout5.addWidget(QLabel("Click-through:"))
         self.click_through_btn = HotkeyButton(self.hotkeys.get("click_through", "F6"))
         h_layout5.addWidget(self.click_through_btn)
         group_layout.addLayout(h_layout5)
         
         h_layout6 = QHBoxLayout()
-        h_layout6.addWidget(QLabel("ログアウト（TCP切断）:"))
+        h_layout6.addWidget(QLabel("Logout (TCP disconnect):"))
         self.logout_btn = HotkeyButton(self.hotkeys.get("logout", "none"))
         h_layout6.addWidget(self.logout_btn)
         group_layout.addLayout(h_layout6)
 
         h_layout_exit = QHBoxLayout()
-        h_layout_exit.addWidget(QLabel("キャラクター選択へ戻る（/exit）:"))
+        h_layout_exit.addWidget(QLabel("Return to character select (/exit):"))
         self.exit_btn = HotkeyButton(self.hotkeys.get("exit", "F5"))
         h_layout_exit.addWidget(self.exit_btn)
         group_layout.addLayout(h_layout_exit)
@@ -2162,19 +2162,19 @@ class SettingsDialog(QDialog):
         self.monastery_row = QWidget()
         h_layout8 = QHBoxLayout(self.monastery_row)
         h_layout8.setContentsMargins(0, 0, 0, 0)
-        h_layout8.addWidget(QLabel("修道院へ移動（/monastery）:"))
+        h_layout8.addWidget(QLabel("Go to monastery (/monastery):"))
         self.monastery_btn = HotkeyButton(self.hotkeys.get("monastery", "F12"))
         h_layout8.addWidget(self.monastery_btn)
         group_layout.addWidget(self.monastery_row)
 
         h_layout9 = QHBoxLayout()
-        h_layout9.addWidget(QLabel("検索文字列の貼り付け:"))
+        h_layout9.addWidget(QLabel("Paste search text:"))
         self.search_string_test_btn = HotkeyButton(self.hotkeys.get("search_string_test", "F4"))
         h_layout9.addWidget(self.search_string_test_btn)
         group_layout.addLayout(h_layout9)
 
         h_layout10 = QHBoxLayout()
-        h_layout10.addWidget(QLabel("ぽえとれ検索（操作モード）:"))
+        h_layout10.addWidget(QLabel("PoETore search (interactive mode):"))
         self.poetore_capture_btn = AutoHideHotkeyWidget(
             self.hotkeys.get("poetore_capture", "alt+d"),
             theme=POENAVI_THEME,
@@ -2184,7 +2184,7 @@ class SettingsDialog(QDialog):
         group_layout.addLayout(h_layout10)
 
         poetore_auto_hide_layout = QHBoxLayout()
-        poetore_auto_hide_layout.addWidget(QLabel("ぽえとれ検索（AUTO-HIDE）:"))
+        poetore_auto_hide_layout.addWidget(QLabel("PoETore search (AUTO-HIDE):"))
         self.poetore_auto_hide_btn = AutoHideHotkeyWidget(
             self.hotkeys.get("poetore_auto_hide", "ctrl+d"),
             theme=POENAVI_THEME,
@@ -2195,7 +2195,7 @@ class SettingsDialog(QDialog):
         self.map_check_row = QWidget()
         map_check_layout = QHBoxLayout(self.map_check_row)
         map_check_layout.setContentsMargins(0, 0, 0, 0)
-        map_check_layout.addWidget(QLabel("Map Modチェック:"))
+        map_check_layout.addWidget(QLabel("Map mod check:"))
         self.map_check_btn = HotkeyButton(self.hotkeys.get("map_check", "alt+f"))
         map_check_layout.addWidget(self.map_check_btn)
         group_layout.addWidget(self.map_check_row)
@@ -2205,18 +2205,18 @@ class SettingsDialog(QDialog):
         gem_shop_search_settings_layout.setContentsMargins(0, 0, 0, 0)
 
         h_layout11 = QHBoxLayout()
-        h_layout11.addWidget(QLabel("ジェムショップ検索（長押し）:"))
+        h_layout11.addWidget(QLabel("Gem shop search (hold):"))
         self.gem_shop_search_btn = HotkeyButton(self.hotkeys.get("gem_shop_search", "F2"))
         h_layout11.addWidget(self.gem_shop_search_btn)
         gem_shop_search_settings_layout.addLayout(h_layout11)
 
         gem_search_hold_layout = QHBoxLayout()
-        gem_search_hold_layout.addWidget(QLabel("ジェムショップ検索の長押し時間:"))
+        gem_search_hold_layout.addWidget(QLabel("Gem shop search hold time:"))
         self.gem_shop_search_hold_seconds_spin = QDoubleSpinBox()
         self.gem_shop_search_hold_seconds_spin.setRange(0.2, 2.0)
         self.gem_shop_search_hold_seconds_spin.setSingleStep(0.1)
         self.gem_shop_search_hold_seconds_spin.setDecimals(1)
-        self.gem_shop_search_hold_seconds_spin.setSuffix(" 秒")
+        self.gem_shop_search_hold_seconds_spin.setSuffix(" sec")
         self.gem_shop_search_hold_seconds_spin.setValue(
             self.current_config.get("gem_shop_search_hold_seconds", 0.4)
         )
@@ -2225,7 +2225,7 @@ class SettingsDialog(QDialog):
         gem_search_hold_layout.addStretch()
         gem_shop_search_settings_layout.addLayout(gem_search_hold_layout)
 
-        self.gem_shop_search_include_reward_purchases_cb = QCheckBox("報酬から選ばなかったジェムをRegexに含める")
+        self.gem_shop_search_include_reward_purchases_cb = QCheckBox("Include gems not picked as quest rewards in the regex")
         self.gem_shop_search_include_reward_purchases_cb.setChecked(
             self.current_config.get("gem_shop_search_include_reward_purchases", True)
         )
@@ -2234,27 +2234,27 @@ class SettingsDialog(QDialog):
         group_layout.addWidget(self.gem_shop_search_settings)
         self._refresh_version_specific_controls()
         h_layout12 = QHBoxLayout()
-        h_layout12.addWidget(QLabel("Cheat sheets表示:"))
+        h_layout12.addWidget(QLabel("Show cheat sheets:"))
         self.cheat_sheets_toggle_btn = HotkeyButton(
             self.hotkeys.get("cheat_sheets_toggle", "shift+space")
         )
         h_layout12.addWidget(self.cheat_sheets_toggle_btn)
         group_layout.addLayout(h_layout12)
         
-        self.logout_enabled_cb = QCheckBox("ログアウト機能を有効にする（TCP切断）")
+        self.logout_enabled_cb = QCheckBox("Enable logout (TCP disconnect)")
         self.logout_enabled_cb.setChecked(self.current_config.get("logout_enabled", True))
         Styles.apply_checkbox_style(self.logout_enabled_cb)
         group_layout.addWidget(self.logout_enabled_cb)
 
         self.stash_tab_scroll_enabled_cb = QCheckBox(
-            "Ctrl＋マウスホイールでスタッシュタブを切り替える"
+            "Switch stash tabs with Ctrl + mouse wheel"
         )
         self.stash_tab_scroll_enabled_cb.setChecked(
             self.current_config.get("stash_tab_scroll_enabled", True)
         )
         self.stash_tab_scroll_enabled_cb.setToolTip(
-            "Awakened PoE Tradeと同じ補助機能です。スタッシュ内ではPoE本体の操作に任せ、\n"
-            "カーソルがスタッシュ外にある時だけ左右キーを送信します。PoE1が最前面の時だけ有効です。"
+            "Same helper as in Awakened PoE Trade. Inside the stash, PoE handles it itself;\n"
+            "left/right keys are sent only when the cursor is outside the stash. Only active while PoE1 is in the foreground."
         )
         Styles.apply_checkbox_style(self.stash_tab_scroll_enabled_cb)
         group_layout.addWidget(self.stash_tab_scroll_enabled_cb)
@@ -2262,21 +2262,21 @@ class SettingsDialog(QDialog):
         general_layout.addWidget(group)
         
         # ━━━━━ 3. タイマー表示 ━━━━━
-        timer_group = QGroupBox("タイマー表示")
+        timer_group = QGroupBox("Timer Display")
         timer_group.setStyleSheet(group_style)
         timer_layout = QVBoxLayout(timer_group)
         
         # タイマーサイズ
         timer_size_row = QHBoxLayout()
-        timer_size_label = QLabel("タイマーサイズ:")
+        timer_size_label = QLabel("Timer size:")
         timer_size_label.setStyleSheet(f"color: {theme.text}; font-size: 12px;")
         timer_size_row.addWidget(timer_size_label)
         
         self.timer_size_combo = QComboBox()
-        self.timer_size_combo.addItem("大", "large")
-        self.timer_size_combo.addItem("中", "medium")
-        self.timer_size_combo.addItem("小", "small")
-        self.timer_size_combo.addItem("オフ", "off")
+        self.timer_size_combo.addItem("Large", "large")
+        self.timer_size_combo.addItem("Medium", "medium")
+        self.timer_size_combo.addItem("Small", "small")
+        self.timer_size_combo.addItem("Off", "off")
         self.timer_size_combo.setFixedWidth(100)
         self.timer_size_combo.setStyleSheet(combo_style)
         current_timer_size = self.current_config.get("timer_size", "large")
@@ -2288,7 +2288,7 @@ class SettingsDialog(QDialog):
         timer_layout.addLayout(timer_size_row)
         
         # リセット確認ダイアログ
-        self.confirm_reset_cb = QCheckBox("タイマーリセット時に確認ダイアログを表示する")
+        self.confirm_reset_cb = QCheckBox("Ask for confirmation when resetting the timer")
         self.confirm_reset_cb.setChecked(self.current_config.get("confirm_reset", True))
         Styles.apply_checkbox_style(self.confirm_reset_cb)
         timer_layout.addWidget(self.confirm_reset_cb)
@@ -2296,12 +2296,12 @@ class SettingsDialog(QDialog):
         general_layout.addWidget(timer_group)
         
         # ━━━━━ 4. ガイド表示 ━━━━━
-        font_group = QGroupBox("ガイド表示")
+        font_group = QGroupBox("Guide Display")
         font_group.setStyleSheet(group_style)
         font_group_layout = QVBoxLayout(font_group)
         
         font_row = QHBoxLayout()
-        font_label = QLabel("フォントサイズ:")
+        font_label = QLabel("Font size:")
         font_label.setStyleSheet(f"color: {theme.text}; font-size: 12px;")
         font_row.addWidget(font_label)
         
@@ -2327,15 +2327,15 @@ class SettingsDialog(QDialog):
             }
         """
         poe1_route_act3_row = QHBoxLayout()
-        route_poe1_tag = QLabel("PoE1専用")
+        route_poe1_tag = QLabel("PoE1 only")
         route_poe1_tag.setStyleSheet(poe1_only_tag_style)
         poe1_route_act3_row.addWidget(route_poe1_tag)
-        poe1_route_act3_label = QLabel("Act3 ルート:")
+        poe1_route_act3_label = QLabel("Act 3 route:")
         poe1_route_act3_label.setStyleSheet(f"color: {theme.text}; font-size: 12px;")
         poe1_route_act3_row.addWidget(poe1_route_act3_label)
         self.poe1_route_act3_combo = QComboBox()
-        self.poe1_route_act3_combo.addItem("通常ルート（図書館スキップ）", "standard")
-        self.poe1_route_act3_combo.addItem("図書館寄り道ルート", "library_detour")
+        self.poe1_route_act3_combo.addItem("Standard route (skip the Library)", "standard")
+        self.poe1_route_act3_combo.addItem("Library detour route", "library_detour")
         self.poe1_route_act3_combo.setStyleSheet(combo_style)
         cur3 = ConfigManager.effective_poe1_route_act3(self.current_config)
         idx3 = self.poe1_route_act3_combo.findData(cur3)
@@ -2346,15 +2346,15 @@ class SettingsDialog(QDialog):
         font_group_layout.addLayout(poe1_route_act3_row)
         
         poe1_route_act8_row = QHBoxLayout()
-        route_poe1_tag2 = QLabel("PoE1専用")
+        route_poe1_tag2 = QLabel("PoE1 only")
         route_poe1_tag2.setStyleSheet(poe1_only_tag_style)
         poe1_route_act8_row.addWidget(route_poe1_tag2)
-        poe1_route_act8_label = QLabel("Act8 ルート:")
+        poe1_route_act8_label = QLabel("Act 8 route:")
         poe1_route_act8_label.setStyleSheet(f"color: {theme.text}; font-size: 12px;")
         poe1_route_act8_row.addWidget(poe1_route_act8_label)
         self.poe1_route_act8_combo = QComboBox()
-        self.poe1_route_act8_combo.addItem("通常ルート", "standard")
-        self.poe1_route_act8_combo.addItem("隠れた裏道（The Hidden Underbelly）ルート", "underbelly")
+        self.poe1_route_act8_combo.addItem("Standard route", "standard")
+        self.poe1_route_act8_combo.addItem("The Hidden Underbelly route", "underbelly")
         self.poe1_route_act8_combo.setStyleSheet(combo_style)
         cur8 = ConfigManager.effective_poe1_route_act8(self.current_config)
         idx8 = self.poe1_route_act8_combo.findData(cur8)
@@ -2367,36 +2367,36 @@ class SettingsDialog(QDialog):
         general_layout.addWidget(font_group)
         
         # ━━━━━ 5. マップ表示 ━━━━━
-        map_group = QGroupBox("マップ表示")
+        map_group = QGroupBox("Map Display")
         map_group.setStyleSheet(group_style)
         map_layout = QVBoxLayout(map_group)
 
-        self.auto_open_map_check = QCheckBox("エリア移動時にマップレイアウトの拡大画像を自動で開く")
+        self.auto_open_map_check = QCheckBox("Automatically open the enlarged map layout when changing areas")
         Styles.apply_checkbox_style(self.auto_open_map_check)
         self.auto_open_map_check.setChecked(self.current_config.get("auto_open_map", False))
         map_layout.addWidget(self.auto_open_map_check)
 
-        self.auto_position_map_check = QCheckBox("マップレイアウトの拡大画像を開く際、ぽえなびの隣に自動配置する")
+        self.auto_position_map_check = QCheckBox("Place the enlarged map layout next to PoENavi when it opens")
         Styles.apply_checkbox_style(self.auto_position_map_check)
         self.auto_position_map_check.setChecked(self.current_config.get("auto_position_map", True))
         map_layout.addWidget(self.auto_position_map_check)
 
         general_layout.addWidget(map_group)
 
-        self.voicevox_group = QGroupBox("VOICEVOX読み上げ")
+        self.voicevox_group = QGroupBox("VOICEVOX Narration")
         self.voicevox_group.setStyleSheet(group_style)
         voicevox_layout = QVBoxLayout(self.voicevox_group)
         voicevox_config = self.current_config.get("voicevox", {})
         if not isinstance(voicevox_config, dict):
             voicevox_config = {}
-        self.voicevox_enabled_cb = QCheckBox("エリアのガイドをVOICEVOXで読み上げる")
+        self.voicevox_enabled_cb = QCheckBox("Read area guides aloud with VOICEVOX")
         Styles.apply_checkbox_style(self.voicevox_enabled_cb)
         self.voicevox_enabled_cb.setChecked(voicevox_config.get("enabled", False))
         voicevox_layout.addWidget(self.voicevox_enabled_cb)
         for label_text, attr_name, key, minimum, maximum, default, step, decimals, suffix in (
-            ("読み上げ速度:", "voicevox_speed_spin", "speed_scale", 0.5, 2.0, 1.2, 0.05, 2, " 倍"),
+            ("Speech speed:", "voicevox_speed_spin", "speed_scale", 0.5, 2.0, 1.2, 0.05, 2, "x"),
             (
-                "読点の無音時間の長さ:",
+                "Pause length at commas:",
                 "voicevox_pause_length_spin",
                 "pause_length_scale",
                 0.0,
@@ -2404,10 +2404,10 @@ class SettingsDialog(QDialog):
                 1.5,
                 0.05,
                 2,
-                " 倍",
+                "x",
             ),
             (
-                "文末の無音時間の長さ:",
+                "Pause length at sentence end:",
                 "voicevox_post_phoneme_spin",
                 "post_phoneme_length",
                 0.0,
@@ -2415,9 +2415,9 @@ class SettingsDialog(QDialog):
                 0.3,
                 0.01,
                 2,
-                " 秒",
+                " sec",
             ),
-            ("読み上げ音量:", "voicevox_volume_spin", "volume_scale", 0.0, 2.0, 1.0, 0.1, 1, " 倍"),
+            ("Speech volume:", "voicevox_volume_spin", "volume_scale", 0.0, 2.0, 1.0, 0.1, 1, "x"),
         ):
             row = QHBoxLayout()
             label = QLabel(label_text)
@@ -2434,7 +2434,7 @@ class SettingsDialog(QDialog):
             row.addWidget(spin)
             row.addStretch()
             voicevox_layout.addLayout(row)
-        note = QLabel("VOICEVOXを起動してから使用してください。接続できない場合、読み上げだけをスキップします。")
+        note = QLabel("Start VOICEVOX before using this. If it cannot connect, only narration is skipped.")
         note.setWordWrap(True)
         note.setStyleSheet(f"color: {theme.muted_text}; font-size: 13px;")
         voicevox_layout.addWidget(note)
@@ -2442,14 +2442,14 @@ class SettingsDialog(QDialog):
         general_layout.addWidget(self.voicevox_group)
         
         # ━━━━━ 6. ウィンドウ設定 ━━━━━
-        window_group = QGroupBox("ウィンドウ設定（本体）")
+        window_group = QGroupBox("Window Settings (main)")
         window_group.setStyleSheet(group_style)
         window_layout = QVBoxLayout(window_group)
         window_layout.setSpacing(10)
         
         # 透過率
         opacity_row = QHBoxLayout()
-        opacity_label = QLabel("透過率:")
+        opacity_label = QLabel("Transparency:")
         opacity_label.setStyleSheet(f"color: {theme.text}; font-size: 12px;")
         opacity_row.addWidget(opacity_label)
 
@@ -2474,7 +2474,7 @@ class SettingsDialog(QDialog):
         
         # 文字透過率
         text_opacity_row = QHBoxLayout()
-        text_opacity_label = QLabel("文字透過率:")
+        text_opacity_label = QLabel("Text transparency:")
         text_opacity_label.setStyleSheet(f"color: {theme.text}; font-size: 12px;")
         text_opacity_row.addWidget(text_opacity_label)
 
@@ -2498,26 +2498,26 @@ class SettingsDialog(QDialog):
         window_layout.addLayout(text_opacity_row)
         
         # ウィンドウロック
-        self.window_lock_check = QCheckBox("ウィンドウの移動・リサイズを禁止する")
+        self.window_lock_check = QCheckBox("Lock window position and size")
         Styles.apply_checkbox_style(self.window_lock_check)
         self.window_lock_check.setChecked(self.current_config.get("window_locked", False))
         window_layout.addWidget(self.window_lock_check)
 
         # 常に最前面表示
-        self.always_on_top_check = QCheckBox("常に最前面に表示する")
+        self.always_on_top_check = QCheckBox("Always on top")
         Styles.apply_checkbox_style(self.always_on_top_check)
         self.always_on_top_check.setChecked(self.current_config.get("always_on_top", True))
         window_layout.addWidget(self.always_on_top_check)
         
         # 右端配置チェックボックス
-        self.snap_right_edge_cb = QCheckBox("起動時にモニター右端に配置")
+        self.snap_right_edge_cb = QCheckBox("Place at the right edge of the monitor on launch")
         self.snap_right_edge_cb.setChecked(self.current_config.get("snap_to_right_edge", False))
         Styles.apply_checkbox_style(self.snap_right_edge_cb)
         window_layout.addWidget(self.snap_right_edge_cb)
         
         # モニター選択
         monitor_row = QHBoxLayout()
-        monitor_label = QLabel("起動時の配置先:")
+        monitor_label = QLabel("Launch position:")
         monitor_label.setStyleSheet(f"color: {theme.text}; font-size: 12px;")
         monitor_row.addWidget(monitor_label)
         self.monitor_combo = QComboBox()
@@ -2527,9 +2527,9 @@ class SettingsDialog(QDialog):
         current_monitor = self.current_config.get("display_monitor", 0)
         for i, screen in enumerate(screens):
             geo = screen.geometry()
-            name = f"モニター {i + 1}（{geo.width()}x{geo.height()}）"
+            name = f"Monitor {i + 1} ({geo.width()}x{geo.height()})"
             if screen == QApplication.primaryScreen():
-                name += " [メイン]"
+                name += " [Primary]"
             self.monitor_combo.addItem(name, i)
         if 0 <= current_monitor < len(screens):
             self.monitor_combo.setCurrentIndex(current_monitor)
@@ -2551,19 +2551,19 @@ class SettingsDialog(QDialog):
         general_layout.addWidget(window_group)
 
         # ━━━━━ 7. みになびウィンドウ設定 ━━━━━
-        mini_navi_window_group = QGroupBox("ウィンドウ設定（みになび）")
+        mini_navi_window_group = QGroupBox("Window Settings (MiniNavi)")
         mini_navi_window_group.setStyleSheet(group_style)
         mini_navi_window_layout = QVBoxLayout(mini_navi_window_group)
         mini_navi_window_layout.setSpacing(10)
 
         mini_navi_config = self.current_config.get("mini_guide_overlay", {})
         mini_navi_display_mode_row = QHBoxLayout()
-        mini_navi_display_mode_label = QLabel("表示形式:")
+        mini_navi_display_mode_label = QLabel("Display style:")
         mini_navi_display_mode_label.setStyleSheet(f"color: {theme.text}; font-size: 12px;")
         mini_navi_display_mode_row.addWidget(mini_navi_display_mode_label)
         self.mini_navi_display_mode_combo = QComboBox()
-        self.mini_navi_display_mode_combo.addItem("標準", "standard")
-        self.mini_navi_display_mode_combo.addItem("コンパクト", "compact")
+        self.mini_navi_display_mode_combo.addItem("Standard", "standard")
+        self.mini_navi_display_mode_combo.addItem("Compact", "compact")
         display_mode = mini_navi_config.get("display_mode", "standard") if isinstance(mini_navi_config, dict) else "standard"
         self.mini_navi_display_mode_combo.setCurrentIndex(
             max(0, self.mini_navi_display_mode_combo.findData(display_mode))
@@ -2576,13 +2576,13 @@ class SettingsDialog(QDialog):
 
         mini_navi_font_size = int(mini_navi_config.get("font_size", 15)) if isinstance(mini_navi_config, dict) else 15
         mini_navi_font_row = QHBoxLayout()
-        mini_navi_font_label = QLabel("フォントサイズ:")
+        mini_navi_font_label = QLabel("Font size:")
         mini_navi_font_label.setStyleSheet(f"color: {theme.text}; font-size: 12px;")
         mini_navi_font_row.addWidget(mini_navi_font_label)
         self.mini_navi_font_size_combo = QComboBox()
-        self.mini_navi_font_size_combo.addItem("小", 15)
-        self.mini_navi_font_size_combo.addItem("中", 18)
-        self.mini_navi_font_size_combo.addItem("大", 22)
+        self.mini_navi_font_size_combo.addItem("Small", 15)
+        self.mini_navi_font_size_combo.addItem("Medium", 18)
+        self.mini_navi_font_size_combo.addItem("Large", 22)
         self.mini_navi_font_size_combo.setFixedWidth(100)
         self.mini_navi_font_size_combo.setStyleSheet(combo_style)
         if mini_navi_font_size <= 16:
@@ -2597,7 +2597,7 @@ class SettingsDialog(QDialog):
 
         # みになび専用のウィンドウ透過率
         mini_navi_window_opacity_row = QHBoxLayout()
-        mini_navi_window_opacity_label = QLabel("ウィンドウ透過率:")
+        mini_navi_window_opacity_label = QLabel("Window transparency:")
         mini_navi_window_opacity_label.setStyleSheet(f"color: {theme.text}; font-size: 12px;")
         mini_navi_window_opacity_row.addWidget(mini_navi_window_opacity_label)
         self.mini_navi_window_opacity_slider = QSlider(Qt.Horizontal)
@@ -2619,7 +2619,7 @@ class SettingsDialog(QDialog):
 
         # みになび専用の文字透過率
         mini_navi_text_opacity_row = QHBoxLayout()
-        mini_navi_text_opacity_label = QLabel("文字透過率:")
+        mini_navi_text_opacity_label = QLabel("Text transparency:")
         mini_navi_text_opacity_label.setStyleSheet(f"color: {theme.text}; font-size: 12px;")
         mini_navi_text_opacity_row.addWidget(mini_navi_text_opacity_label)
         self.mini_navi_text_opacity_slider = QSlider(Qt.Horizontal)
@@ -2640,17 +2640,17 @@ class SettingsDialog(QDialog):
         mini_navi_window_layout.addLayout(mini_navi_text_opacity_row)
 
         mini_navi_topmost_row = QHBoxLayout()
-        mini_navi_topmost_label = QLabel("前面表示:")
+        mini_navi_topmost_label = QLabel("Stay on top:")
         mini_navi_topmost_label.setStyleSheet(
             f"color: {theme.text}; font-size: 12px;"
         )
         mini_navi_topmost_row.addWidget(mini_navi_topmost_label)
         self.mini_navi_topmost_mode_combo = QComboBox()
         self.mini_navi_topmost_mode_combo.addItem(
-            "PoEがアクティブな時だけ最前面", MINI_TOPMOST_POE_ONLY
+            "On top only while PoE is active", MINI_TOPMOST_POE_ONLY
         )
-        self.mini_navi_topmost_mode_combo.addItem("常に最前面", MINI_TOPMOST_ALWAYS)
-        self.mini_navi_topmost_mode_combo.addItem("最前面にしない", MINI_TOPMOST_NEVER)
+        self.mini_navi_topmost_mode_combo.addItem("Always on top", MINI_TOPMOST_ALWAYS)
+        self.mini_navi_topmost_mode_combo.addItem("Never on top", MINI_TOPMOST_NEVER)
         current_topmost_mode = mini_topmost_mode_from_config(self.current_config)
         current_topmost_index = self.mini_navi_topmost_mode_combo.findData(current_topmost_mode)
         self.mini_navi_topmost_mode_combo.setCurrentIndex(max(0, current_topmost_index))
@@ -2660,7 +2660,7 @@ class SettingsDialog(QDialog):
         mini_navi_topmost_row.addStretch()
         mini_navi_window_layout.addLayout(mini_navi_topmost_row)
 
-        self.mini_navi_fade_enabled_cb = QCheckBox("一定時間経過で薄く表示する（自動フェード。ウィンドウロック中のみ）")
+        self.mini_navi_fade_enabled_cb = QCheckBox("Fade after a while (auto-fade; only while the window is locked)")
         self.mini_navi_fade_enabled_cb.setChecked(bool(mini_navi_config.get("fade_enabled", True)) if isinstance(mini_navi_config, dict) else True)
         Styles.apply_checkbox_style(self.mini_navi_fade_enabled_cb)
         mini_navi_window_layout.addWidget(self.mini_navi_fade_enabled_cb)
@@ -2668,11 +2668,11 @@ class SettingsDialog(QDialog):
         general_layout.addWidget(mini_navi_window_group)
         
         # 街エリア設定
-        town_group = QGroupBox("街エリア（ガイド更新スキップ）")
+        town_group = QGroupBox("Town Areas (skip guide updates)")
         town_group.setStyleSheet(group.styleSheet())
         town_layout = QVBoxLayout(town_group)
         
-        town_desc = QLabel("ここに登録したエリアに入った時、攻略ガイドは更新されません（前のエリアのガイドを維持）")
+        town_desc = QLabel("Entering an area listed here won't update the guide (the previous area's guide stays)")
         town_desc.setStyleSheet(f"color: {theme.muted_text}; font-size: 13px;")
         town_desc.setWordWrap(True)
         town_layout.addWidget(town_desc)
@@ -2695,8 +2695,8 @@ class SettingsDialog(QDialog):
         town_group.setVisible(False)  # 一般ユーザーには非表示（機能は残す）
         general_layout.addWidget(town_group)
         settings_note = QLabel(
-            "変更は保存後すぐ反映されます。起動モードを変更した場合は、"
-            "保存後に再起動を確認します。"
+            "Changes take effect as soon as you save. If you changed the launch mode, "
+            "you will be asked to restart after saving."
         )
         settings_note.setObjectName("generalSettingsSaveNote")
         settings_note.setStyleSheet(f"color: {theme.muted_text}; font-size: 13px;")
@@ -2704,12 +2704,12 @@ class SettingsDialog(QDialog):
         general_layout.addWidget(settings_note)
         general_layout.addStretch()
         
-        tabs.addTab(general_tab, "基本設定")
+        tabs.addTab(general_tab, "General")
         from src.ui.custom_command_settings import CustomCommandSettingsWidget
         self.custom_commands_widget = CustomCommandSettingsWidget(
             self.current_config.get("custom_commands", []), theme=self.theme
         )
-        tabs.insertTab(1, self.custom_commands_widget, "任意コマンド設定")
+        tabs.insertTab(1, self.custom_commands_widget, "Custom Commands")
         
         # ── Tab 2: Zone Info ──
         zone_tab = QWidget()
@@ -2732,14 +2732,14 @@ class SettingsDialog(QDialog):
         self.zone_scroll.setWidget(self.zone_scroll_widget)
         zone_layout.addWidget(self.zone_scroll)
         
-        tabs.addTab(zone_tab, "エリア情報")
+        tabs.addTab(zone_tab, "Area Info")
 
         # === その他タブ ===
         other_tab = QWidget()
         other_layout = QVBoxLayout(other_tab)
         other_layout.setContentsMargins(20, 20, 20, 20)
 
-        guide_reset_group = QGroupBox("ガイド進行のリセット")
+        guide_reset_group = QGroupBox("Reset Guide Progress")
         guide_reset_group.setStyleSheet(group_style)
         guide_reset_layout = QVBoxLayout(guide_reset_group)
         self.guide_reset_description = QLabel()
@@ -2749,7 +2749,7 @@ class SettingsDialog(QDialog):
         self._update_guide_reset_description()
         guide_reset_layout.addWidget(self.guide_reset_description)
 
-        self.guide_progress_reset_btn = QPushButton("ガイド進行を初期状態に戻す")
+        self.guide_progress_reset_btn = QPushButton("Reset guide progress")
         self.guide_progress_reset_btn.setObjectName("guideProgressResetButton")
         self.guide_progress_reset_btn.setStyleSheet(Styles.BUTTON)
         self.guide_progress_reset_btn.setEnabled(self.guide_progress_reset_callback is not None)
@@ -2784,11 +2784,11 @@ class SettingsDialog(QDialog):
 
         # OK/Cancel
         self.footer_layout = QHBoxLayout()
-        self.ok_btn = QPushButton("保存")
+        self.ok_btn = QPushButton("Save")
         self.ok_btn.setProperty("buttonRole", "primary")
         self.ok_btn.clicked.connect(self.accept)
 
-        self.cancel_btn = QPushButton("キャンセル")
+        self.cancel_btn = QPushButton("Cancel")
         self.cancel_btn.setProperty("buttonRole", "secondary")
         self.cancel_btn.clicked.connect(self.reject)
 
@@ -2826,17 +2826,17 @@ class SettingsDialog(QDialog):
 
     def _update_guide_reset_description(self):
         description = (
-            "ガイド進行制御に用いるフラグ等の状態は、新しいキャラクターの開始時に"
-            "自動で検知して、初期状態にするため、通常は操作不要です。\n"
-            "にもかかわらず、フラグ等の状態が前のキャラクターから残っていると思われる場合は、"
-            "以下のボタンを押して初期状態に戻してください。タイマーの記録やぽえなびの設定は"
-            "変更されません。"
+            "Flags and other state used to track guide progress are detected and reset "
+            "automatically when you start a new character, so you normally don't need to do anything.\n"
+            "If flags or other state still seem to carry over from a previous character, "
+            "press the button below to reset them. Timer records and PoENavi settings "
+            "are not changed."
         )
         if self.poe_version == POE1:
             description += (
-                "\n\nなお、Act 6以降を攻略中の場合、リセット後にぽえなび本体のガイドタイル右側に"
-                "表示されている「Act 1-5」のトグルをクリックして「Act 6-10」表示へ"
-                "切り替えてください。"
+                "\n\nIf you are in Act 6 or later, after resetting, click the \"Act 1-5\" toggle "
+                "on the right of the guide tile in the main PoENavi window to switch to "
+                "\"Act 6-10\"."
             )
         self.guide_reset_description.setText(description)
 
@@ -2846,17 +2846,17 @@ class SettingsDialog(QDialog):
             if index >= 0:
                 self.settings_tabs.removeTab(index)
         if self.poe_version == POE1:
-            self.settings_tabs.addTab(self.term_review_tab, "Regex短縮設定")
-        self.settings_tabs.addTab(self.other_tab, "その他")
-        self.settings_tabs.addTab(self.about_tab, "アプリ情報")
+            self.settings_tabs.addTab(self.term_review_tab, "Regex Short Terms")
+        self.settings_tabs.addTab(self.other_tab, "Other")
+        self.settings_tabs.addTab(self.about_tab, "About")
         self._update_guide_reset_description()
 
     def _confirm_guide_progress_reset(self):
         answer = QMessageBox.question(
             self,
-            "ガイド進行を初期状態に戻す",
-            "ガイドの訪問回数と進行状況を初期状態に戻します。\n"
-            "タイマーの記録や設定は変更されません。実行しますか？",
+            "Reset guide progress",
+            "This resets guide visit counts and progress.\n"
+            "Timer records and settings are not changed. Continue?",
             QMessageBox.Yes | QMessageBox.No,
             QMessageBox.No,
         )
@@ -2865,8 +2865,8 @@ class SettingsDialog(QDialog):
         self.guide_progress_reset_callback(self.poe_version)
         QMessageBox.information(
             self,
-            "リセット完了",
-            "ガイド進行を初期状態に戻しました。",
+            "Reset Complete",
+            "Guide progress has been reset.",
         )
     
     def browse_log_file(self, poe_version=None):
@@ -2925,14 +2925,14 @@ class SettingsDialog(QDialog):
 
             sections = [{
                 "kind": "default",
-                "title": "通常時",
+                "title": "Default",
                 "guide": default_guide,
             }]
             for flag_key, flag_guide in sorted(flags.items()):
                 if isinstance(flag_guide, dict):
                     sections.append({
                         "kind": "flag",
-                        "title": f"フラグ進行後: {flag_key}",
+                        "title": f"After flag: {flag_key}",
                         "flag_key": flag_key,
                         "guide": flag_guide,
                     })
@@ -2952,17 +2952,17 @@ class SettingsDialog(QDialog):
         sections = []
         guide_v1 = get_visit_guide_for_edit(self.guide_data, zone_id, visit=1)
         guide_v2 = get_visit_guide_for_edit(self.guide_data, zone_id, visit=2)
-        sections.append({"kind": "visit", "title": "1回目", "visit": 1, "route": "", "guide": guide_v1})
-        sections.append({"kind": "visit", "title": "2回目", "visit": 2, "route": "", "guide": guide_v2})
+        sections.append({"kind": "visit", "title": "1st visit", "visit": 1, "route": "", "guide": guide_v1})
+        sections.append({"kind": "visit", "title": "2nd visit", "visit": 2, "route": "", "guide": guide_v2})
 
         for suffix in self._poe1_route_suffixes_for_zone(zone_id):
             route_name = suffix[1:].split("@")[0]
             visit = 2 if suffix.endswith("@2") else 1
-            display_route = {"library_detour": "図書館ルート", "underbelly": "裏道ルート"}.get(route_name, route_name)
+            display_route = {"library_detour": "Library route", "underbelly": "Underbelly route"}.get(route_name, route_name)
             route_guide = get_visit_guide_for_edit(self.guide_data, zone_id, visit=visit, route=route_name)
             sections.append({
                 "kind": "route",
-                "title": f"{display_route} {visit}回目",
+                "title": f"{display_route}, visit {visit}",
                 "visit": visit,
                 "route": route_name,
                 "guide": route_guide,
@@ -2974,7 +2974,7 @@ class SettingsDialog(QDialog):
                     flag_guide = route_flags.setdefault(flag_key, {})
                     sections.append({
                         "kind": "route_flag",
-                        "title": f"{display_route} {visit}回目 条件分岐: {flag_key}",
+                        "title": f"{display_route}, visit {visit}, condition: {flag_key}",
                         "visit": visit,
                         "route": route_name,
                         "flag_key": flag_key,
@@ -3074,7 +3074,7 @@ class SettingsDialog(QDialog):
         
         name_edit = QLineEdit("")
         name_edit.setFixedWidth(200)
-        name_edit.setPlaceholderText("エリア名")
+        name_edit.setPlaceholderText("Area name")
         name_edit.setStyleSheet(f"""
             QLineEdit {{ 
                 background: rgba(26,26,26,200); color: {self.theme.text};
@@ -3297,11 +3297,11 @@ class SettingsDialog(QDialog):
                 )
 
                 level = z.get("level", 0)
-                level_suffix = " [Lv動的]" if level == 0 else f" [Lv{level}]"
+                level_suffix = " [Lv varies]" if level == 0 else f" [Lv{level}]"
                 name_edit = QLineEdit(f"{z.get('zone', '')}{level_suffix}")
                 name_edit.setFixedWidth(260)
                 name_edit.setReadOnly(True)
-                name_edit.setToolTip("エリアレベルは訪問順で変動" if level == 0 else f"推奨エリアレベル: {level}")
+                name_edit.setToolTip("Area level depends on visit order" if level == 0 else f"Recommended area level: {level}")
                 name_edit.setStyleSheet(f"""
                     QLineEdit {{ 
                         background: rgba(26,26,26,200); color: {self.theme.text};
@@ -3311,8 +3311,8 @@ class SettingsDialog(QDialog):
                 """)
                 row.addWidget(name_edit)
 
-                memo_button = QPushButton("📝 エリアメモ")
-                memo_button.setToolTip(f"{z.get('zone', '')} のエリアメモを編集します")
+                memo_button = QPushButton("📝 Area Notes")
+                memo_button.setToolTip(f"{z.get('zone', '')}: edit area notes")
                 memo_button.setFixedWidth(105)
                 memo_button.setStyleSheet(Styles.BUTTON)
                 memo_button.clicked.connect(
@@ -3322,9 +3322,9 @@ class SettingsDialog(QDialog):
                 row.addWidget(memo_button)
 
                 if show_poe2_dev_editors:
-                    guide_button = QPushButton("ガイド編集")
+                    guide_button = QPushButton("Edit Guide")
                     guide_button.setObjectName(f"guideEditButton_{zone_id}")
-                    guide_button.setToolTip("公式ガイドを編集")
+                    guide_button.setToolTip("Edit the official guide")
                     guide_button.setFixedWidth(90)
                     guide_button.setStyleSheet(Styles.BUTTON)
                     guide_button.clicked.connect(
@@ -3333,9 +3333,9 @@ class SettingsDialog(QDialog):
                     )
                     row.addWidget(guide_button)
 
-                    mini_navi_button = QPushButton("みになび編集")
+                    mini_navi_button = QPushButton("Edit MiniNavi")
                     mini_navi_button.setObjectName(f"miniNaviEditButton_{zone_id}")
-                    mini_navi_button.setToolTip("みになびを編集")
+                    mini_navi_button.setToolTip("Edit MiniNavi text")
                     mini_navi_button.setFixedWidth(100)
                     mini_navi_button.setStyleSheet(Styles.BUTTON)
                     mini_navi_button.clicked.connect(
@@ -3348,7 +3348,7 @@ class SettingsDialog(QDialog):
                 act_layout.addLayout(row)
                 act_widgets.append((name_edit, zone_id))
 
-            add_btn = QPushButton("+ エリア追加")
+            add_btn = QPushButton("+ Add Area")
             add_btn.setFixedWidth(120)
             add_btn.setStyleSheet(f"""
                 QPushButton {{ 
@@ -3402,7 +3402,7 @@ class SettingsDialog(QDialog):
         supported = is_feature_supported(POETORE, self.poe_version)
         poetore_radio = self.app_mode_radios[POETORE_MODE]
         poetore_radio.setEnabled(supported)
-        poetore_radio.setToolTip("" if supported else "PoE2版は現在テスト中です")
+        poetore_radio.setToolTip("" if supported else "The PoE2 version is currently in testing")
         if not supported:
             if poetore_radio.isChecked():
                 self.app_mode_radios[POENAVI_MODE].setChecked(True)
@@ -3437,26 +3437,26 @@ class SettingsDialog(QDialog):
         duplicates = find_duplicate_hotkeys(hotkeys)
         if duplicates:
             labels = {
-                "start_stop": "開始/停止",
-                "reset": "リセット",
-                "lap": "ラップ（次のAct）",
-                "undo_lap": "ラップ取消",
-                "click_through": "クリックスルー",
-                "logout": "ログアウト",
-                "exit": "キャラクター選択へ戻る",
-                "monastery": "修道院へ移動",
-                "search_string_test": "検索文字列の貼り付け",
-                "poetore_capture": "ぽえとれ検索（操作モード）",
-                "poetore_auto_hide": "ぽえとれ検索（AUTO-HIDE）",
-                "map_check": "Map Modチェック",
-                "gem_shop_search": "ジェムショップ検索",
-                "cheat_sheets_toggle": "Cheat sheets表示",
+                "start_stop": "Start/Stop",
+                "reset": "Reset",
+                "lap": "Lap (next act)",
+                "undo_lap": "Undo lap",
+                "click_through": "Click-through",
+                "logout": "Logout",
+                "exit": "Return to character select",
+                "monastery": "Go to monastery",
+                "search_string_test": "Paste search text",
+                "poetore_capture": "PoETore search (interactive mode)",
+                "poetore_auto_hide": "PoETore search (AUTO-HIDE)",
+                "map_check": "Map mod check",
+                "gem_shop_search": "Gem shop search",
+                "cheat_sheets_toggle": "Show cheat sheets",
             }
             details = "\n".join(
                 f"{key}: {'、'.join(labels[action] for action in actions)}"
                 for key, actions in duplicates.items()
             )
-            QMessageBox.warning(self, "ホットキー重複", f"同じキーが複数の操作に設定されています。\n\n{details}")
+            QMessageBox.warning(self, "Duplicate Hotkey", f"The same key is assigned to multiple actions.\n\n{details}")
             return
         super().accept()
 

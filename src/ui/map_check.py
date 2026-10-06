@@ -61,7 +61,7 @@ class MapModManagerDialog(QDialog):
         super().__init__(parent)
         self.config = normalized_map_check_config(config)
         self.catalog = load_map_mod_catalog()
-        self.setWindowTitle("Map Mod管理")
+        self.setWindowTitle("Map Mod Manager")
         self.resize(820, 680)
         self.setProperty("density", "compact")
         apply_dialog_theme(self, POETORE_DIALOG_THEME)
@@ -79,11 +79,11 @@ class MapModManagerDialog(QDialog):
         root = QVBoxLayout(self)
         root.setContentsMargins(18, 18, 18, 18)
         root.setSpacing(12)
-        self.title_label = QLabel("Map Mod管理")
+        self.title_label = QLabel("Map Mod Manager")
         self.title_label.setProperty("uiRole", "title")
         root.addWidget(self.title_label)
         controls = QHBoxLayout()
-        controls.addWidget(QLabel("プロファイル:"))
+        controls.addWidget(QLabel("Profile:"))
         self.profile_buttons = []
         for profile in (1, 2, 3):
             button = QPushButton(str(profile))
@@ -93,13 +93,13 @@ class MapModManagerDialog(QDialog):
             controls.addWidget(button)
             self.profile_buttons.append(button)
         self.search = QLineEdit()
-        self.search.setPlaceholderText("Modを検索…")
+        self.search.setPlaceholderText("Search mods…")
         self.search.textChanged.connect(self._refresh)
         controls.addWidget(self.search, 1)
-        self.selected_only = QCheckBox("設定済みのみ表示")
+        self.selected_only = QCheckBox("Show configured only")
         self.selected_only.toggled.connect(self._refresh)
         controls.addWidget(self.selected_only)
-        self.show_new = QCheckBox("未確認Modを表示")
+        self.show_new = QCheckBox("Show unchecked mods")
         self.show_new.setChecked(self.config["show_new_stats"])
         self.show_new.toggled.connect(self._set_show_new)
         controls.addWidget(self.show_new)
@@ -108,7 +108,7 @@ class MapModManagerDialog(QDialog):
         self.count_label.setProperty("uiRole", "muted")
         root.addWidget(self.count_label)
         self.table = QTableWidget(0, 5)
-        self.table.setHorizontalHeaderLabels(["Map Mod", "危険", "警告", "有利", "解除"])
+        self.table.setHorizontalHeaderLabels(["Map Mod", "Danger", "Warning", "Good", "Clear"])
         self.table.horizontalHeader().setStretchLastSection(False)
         self.table.horizontalHeader().setSectionResizeMode(
             0, QHeaderView.ResizeMode.Stretch,
@@ -116,7 +116,7 @@ class MapModManagerDialog(QDialog):
         root.addWidget(self.table, 1)
         footer = QHBoxLayout()
         footer.addStretch()
-        self.close_button = QPushButton("閉じる")
+        self.close_button = QPushButton("Close")
         self.close_button.setProperty("buttonRole", "secondary")
         self.close_button.clicked.connect(self.accept)
         footer.addWidget(self.close_button)
@@ -149,8 +149,8 @@ class MapModManagerDialog(QDialog):
             decision = decision_for(self.config, entry.key)
             if self.selected_only.isChecked() and decision in {"-", "s"}:
                 continue
-            tag = {"heist_exclusive": "Heist限定", "ubermap_exclusive": "Uber Map限定",
-                   "outdated": "更新確認が必要"}.get(entry.scope, "")
+            tag = {"heist_exclusive": "Heist only", "ubermap_exclusive": "Uber Map only",
+                   "outdated": "Needs review"}.get(entry.scope, "")
             searchable = f"{entry.japanese} {entry.ref} {tag}".casefold()
             if query and query not in searchable:
                 continue
@@ -187,7 +187,7 @@ class MapModManagerDialog(QDialog):
                 button.setStyleSheet(f"QPushButton{{background:{color};}}")
                 button.clicked.connect(partial(self._choose, entry.key, value))
                 self.table.setCellWidget(row, column, button)
-        self.count_label.setText(f"{len(rows)}件（全{len(self.catalog)}件）")
+        self.count_label.setText(f"{len(rows)} shown (of{len(self.catalog)})")
 
     def _choose(self, key, value, _checked=False):
         set_decision(self.config, key, value)
@@ -229,7 +229,7 @@ class MapCheckWindow(QDialog):
         self.title = QLabel("Map Check")
         self.title.setStyleSheet("font-size:15px;font-weight:bold;")
         header.addWidget(self.title, 1)
-        header.addWidget(QLabel("プロファイル:"))
+        header.addWidget(QLabel("Profile:"))
         self.profile_buttons = []
         for profile in (1, 2, 3):
             button = QPushButton(str(profile))
@@ -307,10 +307,10 @@ class MapCheckWindow(QDialog):
         try:
             item = parse_item_text(read_item_clipboard(QApplication.clipboard()))
         except ItemParseError:
-            QMessageBox.warning(self.parentWidget(), "Map Check", "アイテムを取得できませんでした。")
+            QMessageBox.warning(self.parentWidget(), "Map Check", "Could not get the item.")
             return
         if not is_map_check_item(item):
-            QMessageBox.information(self.parentWidget(), "Map Check", "Map系アイテムではありません。")
+            QMessageBox.information(self.parentWidget(), "Map Check", "Not a map item.")
             return
         self._item = item
         self._render(item)
@@ -339,7 +339,7 @@ class MapCheckWindow(QDialog):
         for modifier in explicit_modifiers:
             entry = lookup.get(modifier.stat_id or "")
             if entry is None:
-                row = QLabel(f"未認識Mod — {modifier.text}")
+                row = QLabel(f"Unrecognized mod — {modifier.text}")
                 row.setStyleSheet("padding:7px;color:#efb366;")
                 self.body_layout.addWidget(row)
                 continue
@@ -362,7 +362,7 @@ class MapCheckWindow(QDialog):
             self.body_layout.addWidget(row_widget)
             self._style_mod_button(button, entry.key, modifier.text)
         if not explicit_modifiers:
-            self.body_layout.addWidget(QLabel("認識できるMap Modがありません。"))
+            self.body_layout.addWidget(QLabel("No recognizable map mods."))
         self.body_layout.addStretch()
 
     def _content_height(self):
@@ -431,16 +431,16 @@ class MapCheckWindow(QDialog):
     def _style_seen_button(self, button, key):
         decision = decision_for(self.config, key)
         if decision == "-":
-            button.setText("未確認")
-            button.setToolTip("クリックして、このModを確認済みにします")
+            button.setText("Unchecked")
+            button.setToolTip("Click to mark this mod as checked")
             button.setEnabled(True)
         elif decision == "s":
-            button.setText("確認済")
-            button.setToolTip("クリックして、未確認の状態に戻します")
+            button.setText("Checked")
+            button.setToolTip("Click to mark as unchecked again")
             button.setEnabled(True)
         else:
-            button.setText("設定済")
-            button.setToolTip("警告・危険・有利のいずれかに設定済みです")
+            button.setText("Set")
+            button.setToolTip("Set to Warning, Danger, or Good")
             button.setEnabled(False)
 
     def _select_profile(self, profile, _checked=False, save=True):

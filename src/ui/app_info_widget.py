@@ -27,9 +27,9 @@ class AppInfoWidget(QWidget):
         try:
             from main import __version__
         except ImportError:
-            __version__ = "不明"
+            __version__ = "Unknown"
 
-        version_label = QLabel(f"ぽえなび v{__version__}")
+        version_label = QLabel(f"PoENavi v{__version__}")
         version_label.setObjectName("appInfoVersion")
         if shared_dialog_theme:
             version_label.setProperty("uiRole", "title")
@@ -38,7 +38,7 @@ class AppInfoWidget(QWidget):
                 f"color: {theme.text}; font-size: 18px; font-weight: bold;"
             )
         layout.addWidget(version_label)
-        self.update_button = QPushButton("アップデートを確認")
+        self.update_button = QPushButton("Check for Updates")
         self.update_button.setObjectName("appInfoUpdateButton")
         if shared_dialog_theme:
             self.update_button.setProperty("buttonRole", "primary")
@@ -55,7 +55,7 @@ class AppInfoWidget(QWidget):
         layout.addWidget(self.update_button)
         layout.addWidget(
             self._link_button(
-                "GitHub（最新版のダウンロード）",
+                "GitHub (download the latest version)",
                 "https://github.com/buri34/poenavi/releases",
                 None
                 if shared_dialog_theme
@@ -67,7 +67,7 @@ class AppInfoWidget(QWidget):
         )
         layout.addWidget(self._separator(theme))
 
-        support_title = QLabel("☕ ぽえなびを応援する")
+        support_title = QLabel("☕ Support PoENavi")
         if shared_dialog_theme:
             support_title.setProperty("uiRole", "section")
         else:
@@ -76,8 +76,8 @@ class AppInfoWidget(QWidget):
             )
         layout.addWidget(support_title)
         support_desc = QLabel(
-            "ぽえなびを気に入っていただけたら、応援いただけると嬉しいです。\n"
-            "いただいたサポートは、開発環境の維持・改善に充てさせていただきます。"
+            "If you enjoy PoENavi, your support would be greatly appreciated.\n"
+            "Support goes toward maintaining and improving development."
         )
         if not shared_dialog_theme:
             support_desc.setStyleSheet(f"color: {theme.text}; font-size: 13px;")
@@ -86,13 +86,13 @@ class AppInfoWidget(QWidget):
 
         for text, url, color in (
             (
-                "OFUSE（おふせ）で応援する",
+                "Support on OFUSE",
                 "https://ofuse.me/48eca107",
                 "rgba(255,147,69,200)",
             ),
-            ("Ko-fi で応援する", "https://ko-fi.com/buri8857", "rgba(41,171,224,200)"),
+            ("Support on Ko-fi", "https://ko-fi.com/buri8857", "rgba(41,171,224,200)"),
             (
-                "Patreon で応援する",
+                "Support on Patreon",
                 "https://www.patreon.com/cw/Buri8857",
                 "rgba(255,66,77,200)",
             ),
@@ -107,7 +107,7 @@ class AppInfoWidget(QWidget):
                 )
             )
 
-        support_note = QLabel("※ ブラウザが開きます")
+        support_note = QLabel("* Opens in your browser")
         if shared_dialog_theme:
             support_note.setProperty("uiRole", "muted")
         else:
@@ -116,8 +116,8 @@ class AppInfoWidget(QWidget):
         layout.addWidget(self._separator(theme))
 
         self.disclaimer_label = QLabel(
-            "ぽえなびは無料の非公式ツールです。"
-            "Grinding Gear Gamesとの提携・承認関係はありません。"
+            "PoENavi is a free, unofficial tool. "
+            "It is not affiliated with or endorsed by Grinding Gear Games."
         )
         self.disclaimer_label.setObjectName("appDisclaimerLabel")
         self.disclaimer_label.setWordWrap(True)
@@ -130,8 +130,8 @@ class AppInfoWidget(QWidget):
         layout.addWidget(self.disclaimer_label)
 
         self.ndlocr_license_label = QLabel(
-            "補助OCR: NDLOCR-Lite 1.3.1 © 国立国会図書館 / CC BY 4.0\n"
-            "国立国会図書館の公認・提携製品ではありません。"
+            "Auxiliary OCR: NDLOCR-Lite 1.3.1 © National Diet Library, Japan / CC BY 4.0\n"
+            "Not endorsed by or affiliated with the National Diet Library."
         )
         self.ndlocr_license_label.setObjectName("ndlocrLicenseLabel")
         self.ndlocr_license_label.setWordWrap(True)

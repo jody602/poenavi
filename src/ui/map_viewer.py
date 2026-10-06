@@ -167,7 +167,7 @@ class MapImageDialog(QDialog):
         layout.setContentsMargins(10, 10, 10, 10)
         
         self.notice_label = QLabel(
-            "リーグ毎でPoE2はマップ構造自体が大きく変わり、掲載画像が現行リーグと異なる場合があるため、参考情報としてご利用ください。"
+            "PoE2 map layouts can change significantly each league, so these images may differ from the current league. Use them for reference only."
         )
         self.notice_label.setWordWrap(True)
         self.notice_label.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
@@ -230,7 +230,7 @@ class MapImageDialog(QDialog):
         fname = os.path.basename(path)
         total = len(self.all_paths)
         idx = self.current_index + 1
-        nav_hint = "画像の左右いずれかを左クリック、または←→キーで切替 / ESCで閉じる" if total > 1 else "ESCで閉じる"
+        nav_hint = "Left-click either side of the image or use ←/→ to switch / ESC to close" if total > 1 else "ESC to close"
         self.info_label.setText(f"{fname}  ({idx}/{total})   {nav_hint}")
         self.setWindowTitle(f"{fname} ({idx}/{total})")
     
@@ -320,7 +320,7 @@ class MapThumbnailWidget(QWidget):
         main_layout.setSpacing(2)
         
         # ヘッダ
-        self.header_label = QLabel("🗺 マップレイアウト")
+        self.header_label = QLabel("🗺 Map Layout")
         self.header_label.setStyleSheet(
             "color: rgba(176, 255, 123, 0.7); font-size: 11px; font-weight: bold;"
         )
@@ -382,7 +382,7 @@ class MapThumbnailWidget(QWidget):
             return
         
         self.setVisible(True)
-        self.header_label.setText(f"🗺 マップレイアウト ({len(paths)}パターン)")
+        self.header_label.setText(f"🗺 Map Layout ({len(paths)} patterns)")
         
         row_layout = QHBoxLayout()
         row_layout.setContentsMargins(0, 0, 0, 0)

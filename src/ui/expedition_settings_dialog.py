@@ -96,7 +96,7 @@ class ExpeditionRegionSelector(QDialog):
         guide_font.setBold(True)
         self.setFont(guide_font)
         self.setStyleSheet("font-size: 36px; font-weight: bold;")
-        self.setWindowTitle("エクスペ報酬の読取範囲を指定")
+        self.setWindowTitle("Set the Expedition Reward Capture Area")
         self.setWindowFlags(
             Qt.Dialog | Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint | Qt.Tool
         )
@@ -137,8 +137,8 @@ class ExpeditionRegionSelector(QDialog):
             if self.selected_region is None:
                 QMessageBox.warning(
                     self,
-                    "範囲を確認してください",
-                    "範囲が小さすぎるか、ゲーム画面の外を含んでいます。",
+                    "Check the Area",
+                    "The area is too small or extends outside the game screen.",
                 )
                 return
             self.accept()
@@ -162,7 +162,7 @@ class ExpeditionRegionSelector(QDialog):
         painter.drawText(
             self.rect().adjusted(20, 20, -20, -20),
             Qt.AlignTop | Qt.AlignHCenter,
-            "左上から右下へドラッグ\nEnter: 確定\nEsc: キャンセル",
+            "Drag from top-left to bottom-right\nEnter: Confirm\nEsc: Cancel",
         )
 
 
@@ -186,7 +186,7 @@ class RegionPreview(QWidget):
         painter.drawRect(panel)
         if self._region is None:
             painter.setPen(QColor(self.theme.muted_text))
-            painter.drawText(panel, Qt.AlignCenter, "読取範囲は未設定です")
+            painter.drawText(panel, Qt.AlignCenter, "Capture area is not set")
             return
         left = panel.left() + round(panel.width() * self._region["left"])
         top = panel.top() + round(panel.height() * self._region["top"])
@@ -224,7 +224,7 @@ class ExpeditionSettingsDialog(QDialog):
         self._example_image_path = Path(
             example_image_path or DEFAULT_EXAMPLE_IMAGE_PATH
         )
-        self.setWindowTitle("エクスペ報酬チェック設定")
+        self.setWindowTitle("Expedition Reward Check Settings")
         self.setMinimumSize(620, 820)
         self.theme = POETORE_DIALOG_THEME
         apply_dialog_theme(self, self.theme)
@@ -232,7 +232,7 @@ class ExpeditionSettingsDialog(QDialog):
         root = QVBoxLayout(self)
         root.setContentsMargins(14, 14, 14, 12)
         root.setSpacing(10)
-        self.title_label = QLabel("エクスペ報酬チェック設定")
+        self.title_label = QLabel("Expedition Reward Check Settings")
         self.title_label.setProperty("uiRole", "title")
         root.addWidget(self.title_label)
 
@@ -248,19 +248,19 @@ class ExpeditionSettingsDialog(QDialog):
         scroll.setWidget(content_widget)
         root.addWidget(scroll, 1)
 
-        basic_group, basic = self._section_group("1. 基本設定", "basicSettingsGroup")
+        basic_group, basic = self._section_group("1. Basic Settings", "basicSettingsGroup")
         reading_toggle_row = QHBoxLayout()
         reading_toggle_row.setSpacing(8)
-        self.enabled_checkbox = QCheckBox("ゲーム画面の読み取り機能を有効にする")
+        self.enabled_checkbox = QCheckBox("Enable game screen reading")
         self.enabled_checkbox.setChecked(bool(screen_reading_enabled))
         reading_toggle_row.addWidget(self.enabled_checkbox)
-        self.enable_required_hint = QLabel("※使用するにはチェックをONにしてください")
+        self.enable_required_hint = QLabel("* Check this box to use the feature")
         self.enable_required_hint.setObjectName("screenReadingEnableRequiredHint")
         reading_toggle_row.addWidget(self.enable_required_hint)
         reading_toggle_row.addStretch()
         basic.addLayout(reading_toggle_row)
         shared_hint = QLabel(
-            "エクスペ報酬価格チェックとアビス冒涜Modティアチェックで共通の設定です。"
+            "This setting is shared by the Expedition reward price check and the Abyss desecrated mod tier check."
         )
         shared_hint.setWordWrap(True)
         shared_hint.setProperty("uiRole", "muted")
@@ -276,28 +276,28 @@ class ExpeditionSettingsDialog(QDialog):
             allow_shift=True,
         )
         self.hotkey_widget.key_button.setStyleSheet("")
-        hotkey_form.addRow("読取ショートカット:", self.hotkey_widget)
+        hotkey_form.addRow("Capture shortcut:", self.hotkey_widget)
         basic.addLayout(hotkey_form)
         content.addWidget(basic_group)
 
-        range_group, ranges = self._section_group("2. 読取範囲", "readRegionsGroup")
+        range_group, ranges = self._section_group("2. Capture Area", "readRegionsGroup")
         instruction = QLabel(
-            "報酬カードの左端・右端、先頭カードの上端、報酬パネル内側の最下部を囲んでください。\n"
-            "タイトルや外枠は含めず、報酬が少ない時の空白部分は含めます。"
+            "Select from the left and right edges of the reward cards, the top of the first card, down to the inner bottom of the reward panel.\n"
+            "Exclude the title and outer frame, but include the empty space shown when there are few rewards."
         )
         instruction.setWordWrap(True)
         instruction.setObjectName("expeditionRegionInstruction")
         instruction.setProperty("uiRole", "muted")
         ranges.addWidget(instruction)
         size_warning = QLabel(
-            "PoE2のウィンドウサイズを変更した場合、位置が変わるため再設定が必要です。"
+            "If you change the PoE2 window size, positions shift and you will need to set this again."
         )
         size_warning.setWordWrap(True)
         size_warning.setObjectName("screenSizeRegionWarning")
         size_warning.setProperty("state", "warning")
         ranges.addWidget(size_warning)
 
-        current_region_heading = QLabel("現在の読取範囲")
+        current_region_heading = QLabel("Current capture area")
         current_region_heading.setObjectName("expeditionCurrentRegionHeading")
         current_region_heading.setProperty("uiRole", "section")
         ranges.addWidget(current_region_heading)
@@ -312,7 +312,7 @@ class ExpeditionSettingsDialog(QDialog):
         self.set_region_button = QPushButton()
         self.set_region_button.setObjectName("setExpeditionRegionButton")
         self.set_region_button.clicked.connect(self._choose_region)
-        self.reset_region_button = QPushButton("読取範囲をリセット")
+        self.reset_region_button = QPushButton("Reset Capture Area")
         self.reset_region_button.setObjectName("resetExpeditionRegionButton")
         self.reset_region_button.setProperty("buttonRole", "danger")
         self.reset_region_button.clicked.connect(self._reset_region)
@@ -321,12 +321,12 @@ class ExpeditionSettingsDialog(QDialog):
         ranges.addLayout(range_buttons)
 
         example_heading = QHBoxLayout()
-        example_title = QLabel("指定例")
+        example_title = QLabel("Example")
         example_title.setObjectName("expeditionExampleHeading")
         example_title.setProperty("uiRole", "section")
         example_heading.addWidget(example_title)
         self.example_hint_label = QLabel(
-            "※以下の画像をクリックするとポップアップで拡大表示します"
+            "* Click the image below to enlarge it in a popup"
         )
         self.example_hint_label.setObjectName("expeditionExampleHint")
         self.example_hint_label.setProperty("uiRole", "muted")
@@ -347,10 +347,10 @@ class ExpeditionSettingsDialog(QDialog):
 
         self.footer_layout = QHBoxLayout()
         self.footer_layout.addStretch()
-        self.cancel_button = QPushButton("キャンセル")
+        self.cancel_button = QPushButton("Cancel")
         self.cancel_button.setProperty("buttonRole", "secondary")
         self.cancel_button.clicked.connect(self.reject)
-        self.save_button = QPushButton("保存")
+        self.save_button = QPushButton("Save")
         self.save_button.setProperty("buttonRole", "primary")
         self.save_button.setDefault(True)
         self.save_button.clicked.connect(self.accept)
@@ -384,8 +384,8 @@ class ExpeditionSettingsDialog(QDialog):
         if client_rect is None:
             QMessageBox.warning(
                 self,
-                "PoE2が見つかりません",
-                "PoE2を起動して報酬画面を表示してから、もう一度お試しください。",
+                "PoE2 Not Found",
+                "Start PoE2, open the reward screen, and try again.",
             )
             return
         windows = [self]
@@ -410,8 +410,8 @@ class ExpeditionSettingsDialog(QDialog):
         if region is None:
             QMessageBox.warning(
                 self,
-                "範囲を確認してください",
-                "選択した範囲を保存できませんでした。",
+                "Check the Area",
+                "Could not save the selected area.",
             )
             return
         self._region = region
@@ -425,10 +425,10 @@ class ExpeditionSettingsDialog(QDialog):
 
     def _refresh_region_state(self):
         configured = self._region is not None
-        self.status_label.setText("設定済み" if configured else "未設定")
+        self.status_label.setText("Set" if configured else "Not set")
         self._set_label_state(self.status_label, "success" if configured else "warning")
         self.set_region_button.setText(
-            "読取範囲を再設定" if configured else "読取範囲を設定"
+            "Reset Capture Area" if configured else "Set Capture Area"
         )
         self.reset_region_button.setEnabled(configured)
 
@@ -436,17 +436,17 @@ class ExpeditionSettingsDialog(QDialog):
         pixmap = QPixmap(str(self._example_image_path))
         if pixmap.isNull():
             self.example_thumbnail.setText(
-                "指定例画像は準備中です\n（画像追加後、ここをクリックすると拡大表示します）"
+                "Example image coming soon\n(once added, click here to enlarge)"
             )
             return
         self.example_thumbnail.setPixmap(
             pixmap.scaled(QSize(500, 140), Qt.KeepAspectRatio, Qt.SmoothTransformation)
         )
-        self.example_thumbnail.setToolTip("クリックして拡大")
+        self.example_thumbnail.setToolTip("Click to enlarge")
 
     def _show_example_popup(self):
         popup = QDialog(self)
-        popup.setWindowTitle("読取範囲の指定例")
+        popup.setWindowTitle("Capture Area Example")
         popup.resize(900, 700)
         apply_dialog_theme(popup, self.theme)
         layout = QVBoxLayout(popup)
@@ -454,7 +454,7 @@ class ExpeditionSettingsDialog(QDialog):
         image.setAlignment(Qt.AlignCenter)
         pixmap = QPixmap(str(self._example_image_path))
         if pixmap.isNull():
-            image.setText("指定例画像は準備中です。")
+            image.setText("Example image coming soon.")
         else:
             image.setPixmap(
                 pixmap.scaled(
@@ -462,7 +462,7 @@ class ExpeditionSettingsDialog(QDialog):
                 )
             )
         layout.addWidget(image)
-        close = QPushButton("閉じる")
+        close = QPushButton("Close")
         close.setProperty("buttonRole", "secondary")
         close.clicked.connect(popup.accept)
         layout.addWidget(close, alignment=Qt.AlignRight)

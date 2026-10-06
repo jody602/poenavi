@@ -51,7 +51,7 @@ EXAMPLE_POPUP_IMAGE_SIZE = QSize(1290, 945)
 class DesecrationRegionSelector(ExpeditionRegionSelector):
     def __init__(self, client_rect, parent=None):
         super().__init__(client_rect, parent)
-        self.setWindowTitle("アビス冒涜Modの読取範囲を指定")
+        self.setWindowTitle("Set the Abyss Desecrated Mod Capture Area")
 
 
 class DesecrationSettingsDialog(QDialog):
@@ -83,7 +83,7 @@ class DesecrationSettingsDialog(QDialog):
         )
         self._ocr_pack_controller = ocr_pack_controller
         self._section_widgets = {}
-        self.setWindowTitle("アビス冒涜Modティアチェック設定")
+        self.setWindowTitle("Abyss Desecrated Mod Tier Check Settings")
         self.setMinimumSize(620, 820)
         self.theme = POETORE_DIALOG_THEME
         apply_dialog_theme(self, self.theme)
@@ -91,7 +91,7 @@ class DesecrationSettingsDialog(QDialog):
         root = QVBoxLayout(self)
         root.setContentsMargins(14, 14, 14, 12)
         root.setSpacing(10)
-        self.title_label = QLabel("アビス冒涜Modティアチェック設定")
+        self.title_label = QLabel("Abyss Desecrated Mod Tier Check Settings")
         self.title_label.setProperty("uiRole", "title")
         root.addWidget(self.title_label)
 
@@ -107,19 +107,19 @@ class DesecrationSettingsDialog(QDialog):
         scroll.setWidget(content_widget)
         root.addWidget(scroll, 1)
 
-        basic_group, basic = self._section_group("1. 基本設定", "basicSettingsGroup")
+        basic_group, basic = self._section_group("1. Basic Settings", "basicSettingsGroup")
         reading_toggle_row = QHBoxLayout()
         reading_toggle_row.setSpacing(8)
-        self.enabled_checkbox = QCheckBox("ゲーム画面の読み取り機能を有効にする")
+        self.enabled_checkbox = QCheckBox("Enable game screen reading")
         self.enabled_checkbox.setChecked(bool(screen_reading_enabled))
         reading_toggle_row.addWidget(self.enabled_checkbox)
-        self.enable_required_hint = QLabel("※使用するにはチェックをONにしてください")
+        self.enable_required_hint = QLabel("* Check this box to use the feature")
         self.enable_required_hint.setObjectName("screenReadingEnableRequiredHint")
         reading_toggle_row.addWidget(self.enable_required_hint)
         reading_toggle_row.addStretch()
         basic.addLayout(reading_toggle_row)
         shared_hint = QLabel(
-            "エクスペ報酬価格チェックとアビス冒涜Modティアチェックで共通の設定です。"
+            "This setting is shared by the Expedition reward price check and the Abyss desecrated mod tier check."
         )
         shared_hint.setWordWrap(True)
         shared_hint.setProperty("uiRole", "muted")
@@ -135,7 +135,7 @@ class DesecrationSettingsDialog(QDialog):
             allow_shift=True,
         )
         self.hotkey_widget.key_button.setStyleSheet("")
-        form.addRow("読取ショートカット:", self.hotkey_widget)
+        form.addRow("Capture shortcut:", self.hotkey_widget)
         basic.addLayout(form)
         content.addWidget(basic_group)
 
@@ -145,18 +145,18 @@ class DesecrationSettingsDialog(QDialog):
         self.ocr_pack_retry = pack_group.retry_button
         content.addWidget(pack_group)
 
-        range_group, ranges = self._section_group("3. 読取範囲", "readRegionsGroup")
+        range_group, ranges = self._section_group("3. Capture Area", "readRegionsGroup")
         instruction = QLabel(
-            "タイトル・装備画像・確認ボタンを含めず、3つのMod選択肢部分だけを囲んでください。\n"
-            "読取時は「インベントリを開いた状態」を先に確認し、読取に失敗した場合は"
-            "「閉じた状態」を確認します。"
+            "Select only the three mod choices, excluding the title, item image, and confirm button.\n"
+            "When reading, the \"inventory open\" area is tried first; if that fails, "
+            "the \"inventory closed\" area is tried."
         )
         instruction.setWordWrap(True)
         instruction.setObjectName("desecrationRegionInstruction")
         instruction.setProperty("uiRole", "muted")
         ranges.addWidget(instruction)
         size_warning = QLabel(
-            "PoE2のウィンドウサイズを変更した場合、位置が変わるため再設定が必要です。"
+            "If you change the PoE2 window size, positions shift and you will need to set this again."
         )
         size_warning.setWordWrap(True)
         size_warning.setObjectName("screenSizeRegionWarning")
@@ -165,21 +165,21 @@ class DesecrationSettingsDialog(QDialog):
         self._add_region_section(
             ranges,
             "inventory_open_region",
-            "インベントリを開いた状態",
+            "Inventory open",
             required=True,
         )
         self._add_region_section(
             ranges,
             "inventory_closed_region",
-            "インベントリを閉じた状態（任意）",
-            note="※インベントリを閉じると位置がずれて読取に失敗するため",
+            "Inventory closed (optional)",
+            note="* Closing the inventory shifts the position and causes reading to fail",
         )
         heading = QHBoxLayout()
-        example_heading = QLabel("指定例")
+        example_heading = QLabel("Example")
         example_heading.setObjectName("desecrationExampleHeading")
         example_heading.setProperty("uiRole", "section")
         heading.addWidget(example_heading)
-        hint = QLabel("※以下の画像をクリックするとポップアップで拡大表示します")
+        hint = QLabel("* Click the image below to enlarge it in a popup")
         hint.setProperty("uiRole", "muted")
         heading.addWidget(hint)
         heading.addStretch()
@@ -196,9 +196,9 @@ class DesecrationSettingsDialog(QDialog):
         content.addWidget(range_group)
 
         display_group, display = self._section_group(
-            "4. 表示設定", "displaySettingsGroup"
+            "4. Display Settings", "displaySettingsGroup"
         )
-        self.show_ranges_checkbox = QCheckBox("Tierの数値範囲を表示する（例：15–25%）")
+        self.show_ranges_checkbox = QCheckBox("Show tier value ranges (e.g. 15–25%)")
         self.show_ranges_checkbox.setChecked(
             bool(self._config.get("show_tier_ranges", True))
         )
@@ -208,10 +208,10 @@ class DesecrationSettingsDialog(QDialog):
 
         self.footer_layout = QHBoxLayout()
         self.footer_layout.addStretch()
-        self.cancel_button = QPushButton("キャンセル")
+        self.cancel_button = QPushButton("Cancel")
         self.cancel_button.setProperty("buttonRole", "secondary")
         self.cancel_button.clicked.connect(self.reject)
-        self.save_button = QPushButton("保存")
+        self.save_button = QPushButton("Save")
         self.save_button.setProperty("buttonRole", "primary")
         self.save_button.setDefault(True)
         self.save_button.clicked.connect(self.accept)
@@ -239,7 +239,7 @@ class DesecrationSettingsDialog(QDialog):
         title_label.setProperty("uiRole", "section")
         heading.addWidget(title_label)
         if required:
-            required_label = QLabel("（必須）")
+            required_label = QLabel(" (required)")
             required_label.setObjectName("desecrationRequiredLabel")
             required_label.setProperty("state", "warning")
             heading.addWidget(required_label)
@@ -261,7 +261,7 @@ class DesecrationSettingsDialog(QDialog):
         choose.clicked.connect(
             lambda _checked=False, item=key: self._choose_region(item)
         )
-        reset = QPushButton("読取範囲をリセット")
+        reset = QPushButton("Reset Capture Area")
         reset.setProperty("buttonRole", "danger")
         reset.clicked.connect(lambda _checked=False, item=key: self._reset_region(item))
         row.addWidget(choose)
@@ -284,8 +284,8 @@ class DesecrationSettingsDialog(QDialog):
         if client_rect is None:
             QMessageBox.warning(
                 self,
-                "PoE2が見つかりません",
-                "PoE2を起動して冒涜Modの3択画面を表示してから、もう一度お試しください。",
+                "PoE2 Not Found",
+                "Start PoE2, open the three-choice desecrated mod screen, and try again.",
             )
             return
         windows = [self]
@@ -309,7 +309,7 @@ class DesecrationSettingsDialog(QDialog):
         region = valid_normalized_region(selector.selected_region)
         if region is None:
             QMessageBox.warning(
-                self, "範囲を確認してください", "選択した範囲を保存できませんでした。"
+                self, "Check the Area", "Could not save the selected area."
             )
             return
         self._regions[key] = region
@@ -324,11 +324,11 @@ class DesecrationSettingsDialog(QDialog):
             configured = self._regions[key] is not None
             required = key == "inventory_open_region"
             if configured:
-                text, state = "設定済み", "success"
+                text, state = "Set", "success"
             elif required:
-                text, state = "未設定（読取ショートカットは無効）", "warning"
+                text, state = "Not set (capture shortcut disabled)", "warning"
             else:
-                text, state = "未設定", "muted"
+                text, state = "Not set", "muted"
             status.setText(text)
             if state == "muted":
                 status.setProperty("uiRole", "muted")
@@ -337,14 +337,14 @@ class DesecrationSettingsDialog(QDialog):
                 status.setProperty("uiRole", None)
                 self._set_label_state(status, state)
             preview.set_region(self._regions[key])
-            choose.setText("読取範囲を再設定" if configured else "読取範囲を設定")
+            choose.setText("Reset Capture Area" if configured else "Set Capture Area")
             reset.setEnabled(configured)
 
     def _load_example_thumbnail(self):
         pixmap = QPixmap(str(self._example_image_path))
         if pixmap.isNull():
             self.example_thumbnail.setText(
-                "指定例画像は準備中です\n（画像追加後、ここをクリックすると拡大表示します）"
+                "Example image coming soon\n(once added, click here to enlarge)"
             )
             return
         self.example_thumbnail.setPixmap(
@@ -353,7 +353,7 @@ class DesecrationSettingsDialog(QDialog):
 
     def _show_example_popup(self):
         popup = QDialog(self)
-        popup.setWindowTitle("読取範囲の指定例")
+        popup.setWindowTitle("Capture Area Example")
         popup.resize(EXAMPLE_POPUP_SIZE)
         apply_dialog_theme(popup, self.theme)
         layout = QVBoxLayout(popup)
@@ -362,7 +362,7 @@ class DesecrationSettingsDialog(QDialog):
         image.setAlignment(Qt.AlignCenter)
         pixmap = QPixmap(str(self._example_image_path))
         image.setText(
-            "指定例画像は準備中です。"
+            "Example image coming soon."
         ) if pixmap.isNull() else image.setPixmap(
             pixmap.scaled(
                 EXAMPLE_POPUP_IMAGE_SIZE,
@@ -371,7 +371,7 @@ class DesecrationSettingsDialog(QDialog):
             )
         )
         layout.addWidget(image)
-        close = QPushButton("閉じる")
+        close = QPushButton("Close")
         close.setProperty("buttonRole", "secondary")
         close.clicked.connect(popup.accept)
         layout.addWidget(close, alignment=Qt.AlignRight)

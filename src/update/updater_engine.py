@@ -18,7 +18,7 @@ class UpdateApplyError(RuntimeError):
     def user_message(self) -> str:
         if self.backup is None:
             return str(self)
-        return f"{self}\n\n対象フォルダ:\n{self.backup}"
+        return f"{self}\n\nTarget folder:\n{self.backup}"
 
 
 def retry_transient_file_operation(
@@ -53,33 +53,33 @@ def wait_for_process_exit(
 
 def _validate_install_directory(path: Path, label: str) -> None:
     if not path.is_dir():
-        detail = "フォルダではありません"
+        detail = "is not a folder"
     else:
         missing = [name for name in REQUIRED_INSTALL_FILES if not (path / name).is_file()]
         if not missing:
             return
-        detail = f"不足しているファイル: {', '.join(missing)}"
+        detail = f"Missing files: {', '.join(missing)}"
 
-    if label == "既存のバックアップ":
+    if label == "The existing backup":
         message = (
-            f"{label}の内容を安全に確認できないため、アップデートを中止しました。"
-            f"\n（{detail}）\n\n"
-            "対処方法:\n"
-            "1. この画面を閉じます。\n"
-            "2. 下記の対象フォルダを、PoENaviフォルダの外へ移動します。"
-            "削除する必要はありません。\n"
-            "3. ぽえなびを起動し、もう一度アップデートしてください。\n\n"
-            "安全を確認できなかったため、ファイルの削除や変更は行っていません。"
+            f"{label} could not be safely verified, so the update was cancelled."
+            f"\n({detail})\n\n"
+            "How to fix:\n"
+            "1. Close this window.\n"
+            "2. Move the target folder below out of the PoENavi folder."
+            " You do not need to delete it.\n"
+            "3. Start PoENavi and run the update again.\n\n"
+            "Because safety could not be confirmed, no files were deleted or changed."
         )
     else:
         message = (
-            f"{label}の内容を確認できないため、アップデートを中止しました。"
-            f"\n（{detail}）\n\n"
-            "対処方法:\n"
-            "1. この画面を閉じます。\n"
-            "2. 公式配布の PoENavi.zip をもう一度ダウンロードします。\n"
-            "3. ZIPを新しいフォルダへ展開し、PoENavi.exeを起動してください。\n\n"
-            "現在のフォルダは変更していません。"
+            f"{label} could not be verified, so the update was cancelled."
+            f"\n({detail})\n\n"
+            "How to fix:\n"
+            "1. Close this window.\n"
+            "2. Download the official PoENavi.zip again.\n"
+            "3. Extract the ZIP to a new folder and run PoENavi.exe.\n\n"
+            "The current folder has not been changed."
         )
     raise UpdateApplyError(message, path)
 
@@ -111,17 +111,17 @@ def apply_update(
     backup = install_dir.with_name(f"{install_dir.name}.backup")
     failed = install_dir.with_name(f"{install_dir.name}.failed")
     shutil.rmtree(stage, ignore_errors=True)
-    _validate_install_directory(install_dir, "現在のインストール先")
+    _validate_install_directory(install_dir, "Current install location")
     if failed.exists():
         raise UpdateApplyError(
-            "前回のアップデートで作成された失敗フォルダが残っているため、"
-            "アップデートを中止しました。\n\n"
-            "対処方法:\n"
-            "1. この画面を閉じます。\n"
-            "2. 下記の対象フォルダを、PoENaviフォルダの外へ移動します。"
-            "削除する必要はありません。\n"
-            "3. ぽえなびを起動し、もう一度アップデートしてください。\n\n"
-            "安全のため、失敗フォルダは自動削除していません。",
+            "A failure folder from a previous update still exists, "
+            "so the update was cancelled.\n\n"
+            "How to fix:\n"
+            "1. Close this window.\n"
+            "2. Move the target folder below out of the PoENavi folder."
+            " You do not need to delete it.\n"
+            "3. Start PoENavi and run the update again.\n\n"
+            "For safety, the failure folder was not deleted automatically.",
             failed,
         )
 
@@ -136,24 +136,24 @@ def apply_update(
         else stage
     )
     if not (replacement / "PoENavi.exe").is_file():
-        raise UpdateApplyError("更新後の PoENavi.exe がありません")
+        raise UpdateApplyError("Updated PoENavi.exe is missing")
 
     stale_backup = None
     if backup.exists():
-        _validate_install_directory(backup, "既存のバックアップ")
+        _validate_install_directory(backup, "The existing backup")
         stale_backup = _next_stale_backup_path(backup, timestamp())
         try:
             retry_transient_file_operation(lambda: backup.rename(stale_backup))
         except Exception as exc:
             raise UpdateApplyError(
-                "既存のバックアップを移動できなかったため、アップデートを中止しました。"
-                f"\n（Windowsからの詳細: {exc}）\n\n"
-                "対処方法:\n"
-                "1. この画面を閉じます。\n"
-                "2. OneDriveの同期やセキュリティソフトの確認処理が終わるまで待ちます。\n"
-                "3. ぽえなびを起動し、もう一度アップデートしてください。\n"
-                "4. 繰り返し発生する場合は、Windowsを再起動してから再度お試しください。\n\n"
-                "ファイルの削除や変更は行っていません。",
+                "The update was cancelled because the existing backup could not be moved."
+                f"\n(Details from Windows: {exc})\n\n"
+                "How to fix:\n"
+                "1. Close this window.\n"
+                "2. Wait for OneDrive sync or security software scans to finish.\n"
+                "3. Start PoENavi and run the update again.\n"
+                "4. If this keeps happening, restart Windows and try again.\n\n"
+                "No files were deleted or changed.",
                 backup,
             ) from exc
 
@@ -164,7 +164,7 @@ def apply_update(
         shutil.move(str(replacement), str(install_dir))
         process = launcher(install_dir / "PoENavi.exe")
         if not startup_check(process):
-            raise RuntimeError("更新後のぽえなびが起動直後に終了しました")
+            raise RuntimeError("The updated PoENavi exited right after starting")
         if stale_backup is not None:
             shutil.rmtree(stale_backup, ignore_errors=True)
         return backup
@@ -178,12 +178,12 @@ def apply_update(
         if stale_backup is not None and stale_backup.exists() and not backup.exists():
             retry_transient_file_operation(lambda: stale_backup.rename(backup))
         raise UpdateApplyError(
-            "アップデートに失敗したため、更新前のぽえなびを復元しました。"
-            f"\n（詳細: {exc}）\n\n"
-            "対処方法:\n"
-            "1. この画面を閉じます。\n"
-            "2. 現在のPoENavi.exeを起動できることを確認します。\n"
-            "3. 起動できた場合は、もう一度アップデートしてください。\n"
-            "4. 繰り返し失敗する場合は、この画面の内容を添えてご報告ください。",
+            "The update failed, so the previous version of PoENavi was restored."
+            f"\n(Details: {exc})\n\n"
+            "How to fix:\n"
+            "1. Close this window.\n"
+            "2. Check that the current PoENavi.exe starts.\n"
+            "3. If it starts, run the update again.\n"
+            "4. If it keeps failing, please report it along with the contents of this window.",
             install_dir,
         ) from exc

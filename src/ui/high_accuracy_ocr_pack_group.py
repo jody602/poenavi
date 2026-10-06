@@ -11,7 +11,7 @@ from src.poetore.poe2.ndlocr_pack import PACK_VERSION
 class HighAccuracyOcrPackGroup(QGroupBox):
     """Show and control the shared NDLOCR-Lite pack installation state."""
 
-    def __init__(self, controller=None, parent=None, *, title="2. 高精度OCR"):
+    def __init__(self, controller=None, parent=None, *, title="2. High-Accuracy OCR"):
         super().__init__(title, parent)
         self._controller = controller
         self.setObjectName("highAccuracyOcrGroup")
@@ -31,7 +31,7 @@ class HighAccuracyOcrPackGroup(QGroupBox):
         self.progress_bar.setTextVisible(True)
         layout.addWidget(self.progress_bar)
 
-        self.retry_button = QPushButton("再試行")
+        self.retry_button = QPushButton("Retry")
         self.retry_button.setObjectName("highAccuracyOcrRetry")
         self.retry_button.clicked.connect(self._retry)
         layout.addWidget(self.retry_button, alignment=Qt.AlignLeft)
@@ -56,13 +56,13 @@ class HighAccuracyOcrPackGroup(QGroupBox):
 
         if state == "ready":
             self.status_label.setText(
-                f"✓ 高精度OCRを利用できます\nNDLOCR-Lite {PACK_VERSION}"
+                f"✓ High-accuracy OCR is available\nNDLOCR-Lite {PACK_VERSION}"
             )
             self._set_label_state("success")
         elif state in {"checking", "idle"}:
             self.status_label.setText(
-                "高精度OCRを準備しています\n"
-                "初回のみ高精度OCRパックをダウンロードします"
+                "Preparing high-accuracy OCR\n"
+                "The high-accuracy OCR pack is downloaded the first time only"
             )
             self._set_label_state("")
         elif state == "downloading":
@@ -71,25 +71,25 @@ class HighAccuracyOcrPackGroup(QGroupBox):
             if total > 0:
                 self.progress_bar.setValue(percent)
             self.status_label.setText(
-                f"高精度OCRをダウンロードしています… {percent}%"
+                f"Downloading high-accuracy OCR… {percent}%"
                 if total > 0
-                else "高精度OCRをダウンロードしています…"
+                else "Downloading high-accuracy OCR…"
             )
             self._set_label_state("")
         elif state == "installing":
-            self.status_label.setText("高精度OCRをインストールしています…")
+            self.status_label.setText("Installing high-accuracy OCR…")
             self._set_label_state("")
         elif state == "error":
             message = (
-                "高精度OCRを準備できませんでした\n"
-                "通常の読み取り機能は引き続き利用できます"
+                "Could not prepare high-accuracy OCR\n"
+                "Standard reading still works"
             )
             if detail:
                 message += f"\n{detail}"
             self.status_label.setText(message)
             self._set_label_state("warning")
         else:
-            self.status_label.setText("高精度OCRの状態を確認できません")
+            self.status_label.setText("Cannot check high-accuracy OCR status")
             self._set_label_state("")
 
     def _set_label_state(self, state: str) -> None:

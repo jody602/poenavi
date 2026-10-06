@@ -120,9 +120,9 @@ def run():
     if not single_instance.start():
         QMessageBox.information(
             None,
-            "ぽえなびは起動済みです",
-            "ぽえなびはすでに起動しています。\n"
-            "起動中の画面を前面に表示します。",
+            "PoENavi is already running",
+            "PoENavi is already running.\n"
+            "Bringing the running window to the front.",
         )
         return 0
     config = ConfigManager.load_config()

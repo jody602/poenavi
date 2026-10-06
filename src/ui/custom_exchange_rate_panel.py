@@ -28,8 +28,8 @@ from src.ui.app_theme import POETORE_THEME
 
 RATE_CHECK_INTERVAL_MSEC = 10 * 60 * 1000
 OFFICIAL_DATA_TOOLTIP = (
-    "公式Currency Exchange APIは、完了した1時間ごとの取引データを提供する仕様です。"
-    "ぽえとれは新しい時間データの公開を自動確認します。"
+    "The official Currency Exchange API provides trade data for each completed hour. "
+    "PoETore automatically checks when new hourly data is published."
 )
 
 
@@ -121,16 +121,16 @@ class CustomExchangeRatePanel(QWidget):
         root.setContentsMargins(0, 0, 0, 0)
         root.setSpacing(8)
         title_row = QHBoxLayout()
-        self.title_label = QLabel("カレンシー交換レート")
+        self.title_label = QLabel("Currency Exchange Rates")
         self.title_label.setStyleSheet(
             f"color: {POETORE_THEME.accent}; font-size: 15px; font-weight: bold;"
         )
         self.title_label.setToolTip(OFFICIAL_DATA_TOOLTIP)
         title_row.addWidget(self.title_label)
         title_row.addStretch()
-        self.manage_button = QPushButton("管理")
-        self.manage_button.setAccessibleName("レート表示の管理を開く")
-        self.manage_button.setToolTip("登録、削除、並べ替え")
+        self.manage_button = QPushButton("Manage")
+        self.manage_button.setAccessibleName("Open rate display management")
+        self.manage_button.setToolTip("Add, remove, reorder")
         self.manage_button.clicked.connect(self.on_manage)
         title_row.addWidget(self.manage_button)
         root.addLayout(title_row)
@@ -149,12 +149,12 @@ class CustomExchangeRatePanel(QWidget):
         root.addWidget(self.card)
 
         footer = QHBoxLayout()
-        self.status_label = QLabel("最新データを確認中…")
+        self.status_label = QLabel("Checking for latest data…")
         self.status_label.setStyleSheet("color: #98A39F; font-size: 11px;")
         self.status_label.setWordWrap(True)
         self.status_label.setToolTip(OFFICIAL_DATA_TOOLTIP)
         footer.addWidget(self.status_label, 1)
-        self.refresh_button = QPushButton("最新データ確認")
+        self.refresh_button = QPushButton("Check Latest Data")
         self.refresh_button.setFocusPolicy(Qt.NoFocus)
         self.refresh_button.setToolTip(OFFICIAL_DATA_TOOLTIP)
         self.refresh_button.clicked.connect(
@@ -190,9 +190,9 @@ class CustomExchangeRatePanel(QWidget):
                     result.end_hour or 0,
                 )
             elif result.status == "no_trades":
-                display = "取引データなし"
+                display = "No trade data"
             elif result.status == "unconfirmed":
-                display = "価格未確定"
+                display = "Price pending"
             else:
                 cached = self.value_cache.get(
                     self.poe_version, league, pair.left_item_id, pair.right_item_id
@@ -203,9 +203,9 @@ class CustomExchangeRatePanel(QWidget):
                     latest_cached_at = max(latest_cached_at or 0, cached.confirmed_at)
                 else:
                     display = (
-                        "最新データ取得中…"
+                        "Fetching latest data…"
                         if self._sync_in_progress
-                        else "最新データを取得できません"
+                        else "Cannot fetch latest data"
                     )
             row = self._make_row(
                 index,
@@ -220,8 +220,8 @@ class CustomExchangeRatePanel(QWidget):
         if len(pairs) < MAX_RATE_PAIRS:
             self.add_button = QPushButton("＋")
             self.add_button.setObjectName("customRateAddButton")
-            self.add_button.setAccessibleName("表示する交換レートを追加")
-            self.add_button.setToolTip("レート表示の管理を開く")
+            self.add_button.setAccessibleName("Add an exchange rate to display")
+            self.add_button.setToolTip("Open rate display management")
             self.add_button.setFixedHeight(30 if pairs else 54)
             self.add_button.setStyleSheet(
                 "QPushButton { color: #68716E; background: transparent; "
@@ -236,14 +236,14 @@ class CustomExchangeRatePanel(QWidget):
 
         state = self.service.sync_state(self.poe_version, league)
         if self._sync_in_progress:
-            self.status_label.setText("最新データを確認中…")
+            self.status_label.setText("Checking for latest data…")
         elif state.available:
             self.status_label.setText(
-                f"{league} ・ 公式取引データ（1時間単位・自動取得）"
+                f"{league} · Official trade data (hourly, auto-fetched)"
             )
         elif latest_cached_at is not None:
             age_hours = max(0, int((time.time() - latest_cached_at) // 3600))
-            self.status_label.setText(f"最終確認 {age_hours}時間前")
+            self.status_label.setText(f"Last checked {age_hours}h ago")
         self.on_rows_changed()
 
     def _make_row(
@@ -271,7 +271,7 @@ class CustomExchangeRatePanel(QWidget):
             f"color: {POETORE_THEME.accent}; font-size: 13px;"
         )
         layout.addWidget(left_name)
-        value_text = f"1 ＝ {display}" if display_is_rate else display
+        value_text = f"1 = {display}" if display_is_rate else display
         value = QLabel(value_text)
         value.setObjectName(f"customRateValue{index}")
         value.setAlignment(Qt.AlignCenter)
@@ -298,8 +298,8 @@ class CustomExchangeRatePanel(QWidget):
         delete.setIcon(self.style().standardIcon(QStyle.SP_TrashIcon))
         delete.setIconSize(QSize(17, 17))
         delete.setFixedSize(32, 32)
-        delete.setToolTip("このレートを削除")
-        delete.setAccessibleName("このレートを削除")
+        delete.setToolTip("Remove this rate")
+        delete.setAccessibleName("Remove this rate")
         delete.clicked.connect(lambda _checked=False, i=index: self._remove(i))
         layout.addWidget(delete)
         return row
@@ -337,7 +337,7 @@ class CustomExchangeRatePanel(QWidget):
     def refresh(self, *, manual: bool = False) -> None:
         self._manual_check = self._manual_check or manual
         self._sync_in_progress = True
-        self.status_label.setText("最新データを確認中…")
+        self.status_label.setText("Checking for latest data…")
         self.refresh_button.setEnabled(False)
         self.render_rows()
         league = self.league_getter()
@@ -358,9 +358,9 @@ class CustomExchangeRatePanel(QWidget):
         self._manual_check = False
         self.render_rows()
         if result.status == "updated":
-            self.status_label.setText("最新の公式データへ更新しました")
+            self.status_label.setText("Updated to the latest official data")
         elif result.status == "no_new_data" and manual:
-            self.status_label.setText("新しい公式データはまだありません")
+            self.status_label.setText("No new official data yet")
         elif result.status == "failed":
             has_cached = any(
                 self.value_cache.get(
@@ -372,7 +372,7 @@ class CustomExchangeRatePanel(QWidget):
                 for pair in self.store.pairs(self.poe_version)
             )
             if not has_cached:
-                self.status_label.setText("公式データを取得できませんでした")
+                self.status_label.setText("Could not fetch official data")
 
     def available_item_ids(self) -> frozenset[str]:
         return self.service.exchange_item_ids(

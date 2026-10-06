@@ -57,16 +57,16 @@ SPECIAL_REWARD_ALIASES = {
     "ランダムなカレンシー": RANDOM_CURRENCY_REWARD_ID,
 }
 RANDOM_CURRENCY_MESSAGES = (
-    "価格：あなたの運次第",
-    "夢を買う5個",
-    "あなたの運：Priceless",
-    "ここでミラーをひとつまみ",
-    "当たりが出るとは言ってない",
-    "返品・交換はできません",
-    "結果には個人差があります",
-    "欲望に従え",
-    "期待値よりロマン",
-    "カランドラの鏡５個　と思いたい",
+    "Price: depends on your luck",
+    "Buying 5 dreams",
+    "Your luck: Priceless",
+    "A pinch of Mirror here",
+    "Never said you'd hit",
+    "No returns or exchanges",
+    "Results may vary",
+    "Follow your greed",
+    "Romance over EV",
+    "5 Mirrors of Kalandra, hopefully",
 )
 
 
@@ -79,11 +79,11 @@ def expedition_diagnostics_enabled(marker_root: Path | None = None) -> bool:
 
 
 def format_expedition_diagnostic_report(steps: list[str]) -> str:
-    body = "\n".join(steps) if steps else "診断情報を取得できませんでした。"
+    body = "\n".join(steps) if steps else "Could not get diagnostic info."
     return (
-        "エクスペディション報酬OCR 診断結果\n\n"
+        "Expedition Reward OCR Diagnostics\n\n"
         f"{body}\n\n"
-        "この画面全体をスクリーンショットして送ってください。"
+        "Please take a screenshot of this whole window and send it."
     )
 
 
@@ -302,7 +302,7 @@ def format_exalted_unit_price(value: float) -> str:
         amount = f"{value:.1f}".rstrip("0").rstrip(".")
     else:
         amount = f"{value:.0f}"
-    return f"{amount} 高貴/個"
+    return f"{amount} ex each"
 
 
 def expedition_exalted_icon_path() -> Path:
@@ -661,19 +661,19 @@ class ExpeditionRewardController(QObject):
             self._scan_coordinator is not None
             and not self._scan_coordinator.try_begin(self._scan_owner)
         ):
-            self.failed.emit("別の画面読み取り処理中です。")
+            self.failed.emit("Another screen read is in progress.")
             return False
         self._diagnostic_steps = []
         client_rect = path_of_exile_client_rect()
         if client_rect is None:
             self._trace(
-                "❌ 1. ゲーム画面検出: "
-                "Path of Exileのゲーム画面が見つかりませんでした。"
+                "❌ 1. Game window detection: "
+                "Could not find the Path of Exile game window."
             )
-            self._finish_error("Path of Exileのゲーム画面が見つかりませんでした。")
+            self._finish_error("Could not find the Path of Exile game window.")
             return False
         self._trace(
-            f"✅ 1. ゲーム画面検出: {client_rect.width()}x{client_rect.height()}"
+            f"✅ 1. Game window detection: {client_rect.width()}x{client_rect.height()}"
         )
         self._running = True
         self._scan_generation += 1
@@ -683,12 +683,12 @@ class ExpeditionRewardController(QObject):
         self._capture_rect = expedition_capture_rect(client_rect, self._region_getter())
         if self._capture_rect is None or self._capture_rect.isEmpty():
             self._finish_error(
-                "読取範囲が未設定です。設定の「エクスペ報酬チェック」から範囲を指定してください。"
+                "No capture area is set. Set one under \"Expedition reward check\" in Settings."
             )
             return False
         self._captures = []
         self.warm_up()
-        self.status.emit("エクスペディション報酬を読み取っています…")
+        self.status.emit("Reading Expedition rewards…")
         self._capture_frame()
         return True
 
@@ -708,14 +708,14 @@ class ExpeditionRewardController(QObject):
             return
         image = self._grab_game()
         if image.isNull():
-            self._trace("❌ 2. 画面キャプチャ: 画像を取得できません")
-            self._finish_error("ゲーム画面をキャプチャできませんでした。")
+            self._trace("❌ 2. Screen capture: could not get image")
+            self._finish_error("Could not capture the game screen.")
             return
         self._captures.append(image)
         if len(self._captures) < 3:
             QTimer.singleShot(220, self._capture_frame)
             return
-        self._trace("✅ 2. 画面キャプチャ: 3/3枚")
+        self._trace("✅ 2. Screen capture: 3/3 images")
         images = list(self._captures)
         client_rect = QRect(self._client_rect)
         capture_rect = QRect(self._capture_rect)
@@ -737,20 +737,20 @@ class ExpeditionRewardController(QObject):
                 for image in images
             ]
             row_counts = "/".join(str(len(frame.images)) for frame in prepared)
-            self._trace(f"✅ 3. 報酬行検出: {row_counts}行")
+            self._trace(f"✅ 3. Reward row detection: {row_counts} rows")
             all_crops = [
                 crop for frame in prepared for crop in frame.images
             ]
             try:
                 self._ocr.start()
             except Exception as exc:
-                self._trace(f"❌ 4. Windows日本語OCR起動: {exc}")
+                self._trace(f"❌ 4. Windows Japanese OCR startup: {exc}")
                 raise
-            self._trace("✅ 4. Windows日本語OCR起動: ja-JP 利用可能")
+            self._trace("✅ 4. Windows Japanese OCR startup: ja-JP available")
             raw_texts = self._ocr.recognize(all_crops)
             non_empty_count = sum(bool(text.strip()) for text in raw_texts)
             self._trace(
-                f"✅ 5. OCR応答: {non_empty_count}/{len(all_crops)}行に文字あり"
+                f"✅ 5. OCR response: {non_empty_count}/{len(all_crops)} rows contain text"
             )
             offset = 0
             frames: list[list[RewardIdentity]] = []
@@ -784,14 +784,14 @@ class ExpeditionRewardController(QObject):
             )
             if retry_count:
                 self._trace(
-                    f"✅ 5b. 失敗行再OCR: {recovered}/{retry_count}行を追加確定"
+                    f"✅ 5b. Re-OCR of failed rows: {recovered}/{retry_count} rows added"
                 )
             stable = [row for row in stable_reward_identities(frames) if row.english_name]
             resolved_counts = "/".join(
                 str(sum(bool(row.english_name) for row in frame)) for frame in frames
             )
             self._trace(
-                f"✅ 6. 名称照合: 各フレーム {resolved_counts}件、安定確定 {len(stable)}件"
+                f"✅ 6. Name matching: per frame {resolved_counts}, stable {len(stable)}"
             )
             if not stable:
                 samples = list(dict.fromkeys(
@@ -800,8 +800,8 @@ class ExpeditionRewardController(QObject):
                     if text.strip()
                 ))[:5]
                 if samples:
-                    self._trace("   OCR文字例: " + " / ".join(samples))
-                raise RuntimeError("安全に特定できる報酬名がありませんでした。")
+                    self._trace("   OCR text samples: " + " / ".join(samples))
+                raise RuntimeError("No reward names could be identified reliably.")
 
             league = self._league_getter()
             priceable = priceable_reward_identities(stable)
@@ -817,7 +817,7 @@ class ExpeditionRewardController(QObject):
                 ninja_requested_names = resolution.ninja_requested_names
                 if ninja_error is not None:
                     self._trace(
-                        f"⚠️ 7. poe.ninjaフォールバック取得失敗: {ninja_error}"
+                        f"⚠️ 7. poe.ninja fallback fetch failed: {ninja_error}"
                     )
             priced_count = sum(
                 row.english_name in prices and prices[row.english_name] is not None
@@ -829,10 +829,10 @@ class ExpeditionRewardController(QObject):
             )
             special_count = len(stable) - len(priceable)
             self._trace(
-                f"✅ 7. 参考価格取得: {priced_count}/{len(priceable)}件（{league}）、"
-                f"公式 {official_count}件、"
-                f"poe.ninja照会 {len(ninja_requested_names)}件、"
-                f"特別表示 {special_count}件"
+                f"✅ 7. Reference prices: {priced_count}/{len(priceable)} ({league}), "
+                f"official {official_count}, "
+                f"poe.ninja lookups {len(ninja_requested_names)}, "
+                f"special {special_count}件"
             )
             first = prepared[0]
             vertical_offset = capture_rect.y() - client_rect.y()
@@ -845,7 +845,7 @@ class ExpeditionRewardController(QObject):
                 vertical_scale=vertical_scale,
             )
             if not shown:
-                raise RuntimeError("特定した報酬の参考価格が見つかりませんでした。")
+                raise RuntimeError("No reference prices were found for the identified rewards.")
             panel_right = capture_rect.right() - client_rect.x() + 1
             self._ready.emit(
                 client_rect, shown, (client_rect.width(), client_rect.height()),
@@ -867,13 +867,13 @@ class ExpeditionRewardController(QObject):
                 client_rect, source_size[0], source_size[1], self._panel_width, rows,
             )
         except Exception as exc:  # noqa: BLE001 - final UI boundary is diagnosed
-            self._trace(f"❌ 8. オーバーレイ表示: {exc}")
-            self._finish_error(f"価格表示に失敗しました: {exc}")
+            self._trace(f"❌ 8. Overlay display: {exc}")
+            self._finish_error(f"Failed to show prices: {exc}")
             return
         self._monitor_misses = 0
         self._monitor.start()
-        self.status.emit(f"{len(rows)}/{stable_count}件の報酬情報を表示しました。")
-        self._trace(f"✅ 8. オーバーレイ表示: {len(rows)}/{stable_count}件")
+        self.status.emit(f"{len(rows)}/{stable_count} rewards shown.")
+        self._trace(f"✅ 8. Overlay display: {len(rows)}/{stable_count}件")
         self._emit_diagnostic()
 
     def _finish_error(self, message: str) -> None:
@@ -881,7 +881,7 @@ class ExpeditionRewardController(QObject):
         self._release_scan()
         self.failed.emit(message)
         if not self._diagnostic_steps or not self._diagnostic_steps[-1].startswith("❌"):
-            self._trace(f"❌ 処理停止: {message}")
+            self._trace(f"❌ Stopped: {message}")
         self._emit_diagnostic()
 
     def _release_scan(self) -> None:
@@ -906,4 +906,4 @@ class ExpeditionRewardController(QObject):
         self._monitor_misses += 1
         if self._monitor_misses >= 2:
             self.hide()
-            self.status.emit("エクスペディション報酬画面を閉じたため表示を消しました。")
+            self.status.emit("The Expedition reward screen was closed, so the overlay was cleared.")
